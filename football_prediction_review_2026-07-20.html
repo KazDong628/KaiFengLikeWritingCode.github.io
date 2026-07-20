@@ -126,33 +126,59 @@ button,input{font:inherit}a{color:#0b6b5f}
 .search{cursor:text;min-width:200px;margin-left:auto}
 
 .match{
-  border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff;margin-bottom:12px;
+  border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff;margin-bottom:14px;
   box-shadow:0 6px 20px rgba(10,30,45,.05);transition:transform .18s,box-shadow .18s;
-  border-left:5px solid #98b6a8;
+  border-left:8px solid #98b6a8;
 }
 .match:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(10,30,45,.1)}
-.match.hit{border-left-color:var(--ok)}
-.match.partial{border-left-color:var(--amber)}
-.match.miss{border-left-color:var(--rose)}
+.match.hit{border-left-color:#1f9a62;background:linear-gradient(90deg,rgba(31,154,98,.06),#fff 48px)}
+.match.partial{border-left-color:#d39a1f;background:linear-gradient(90deg,rgba(211,154,31,.07),#fff 48px)}
+.match.miss{border-left-color:#d4544c;background:linear-gradient(90deg,rgba(212,84,76,.06),#fff 48px)}
 .match-head{padding:14px 16px;cursor:pointer}
 .meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:12px;color:#567}
 .dot{width:7px;height:7px;border-radius:50%;background:#2aa0b8}
-.tag{padding:2px 8px;border-radius:6px;font-size:11px;font-weight:800}
-.tag.hit{background:#e8f7ef;color:var(--ok)}
-.tag.partial{background:#fff6e5;color:#9a6b1a}
-.tag.miss{background:#fff0ee;color:var(--rose)}
-.teams{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:17px;font-weight:800}
+.stamp{
+  margin-left:auto;display:inline-flex;align-items:center;gap:8px;
+  padding:8px 14px;border-radius:999px;font-size:13px;font-weight:900;letter-spacing:.02em;
+  border:2px solid transparent;box-shadow:0 4px 14px rgba(0,0,0,.08);
+}
+.stamp .ico{
+  width:22px;height:22px;border-radius:50%;display:grid;place-items:center;
+  font-size:12px;font-weight:900;background:rgba(255,255,255,.25);
+}
+.stamp.hit{background:#1f9a62;color:#fff;border-color:#167a4d}
+.stamp.partial{background:#e0a01e;color:#fff;border-color:#b88010}
+.stamp.miss{background:#d4544c;color:#fff;border-color:#b33d37}
+.teams-row{display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
+.teams{display:flex;align-items:center;gap:10px;font-size:17px;font-weight:800;flex:1;min-width:220px}
 .crest{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:10px;font-weight:900;background:linear-gradient(145deg,#355064,#6a8498)}
-.score{padding:3px 10px;border-radius:8px;background:#123040;color:#fff;font-size:14px}
+.score{padding:4px 12px;border-radius:8px;background:#123040;color:#fff;font-size:15px}
 .score small{opacity:.7;font-weight:600;margin-left:4px}
-.predline{margin-top:10px;display:flex;gap:6px;flex-wrap:wrap}
+.section-label{
+  margin-top:12px;margin-bottom:6px;font-size:11px;font-weight:800;letter-spacing:.08em;
+  text-transform:uppercase;color:#7a8b99;
+}
+.predline{display:flex;gap:6px;flex-wrap:wrap}
 .chip{padding:4px 8px;border-radius:8px;border:1px solid #e1e8ec;background:#fbfcfd;font-size:12px}
-.chip.key{background:#e8f7f3;border-color:#b7e4d8;color:#0b6b5f;font-weight:700}
-.chip.result-hit{background:#e8f7ef;border-color:#b7e0cb;color:var(--ok);font-weight:800}
-.chip.result-partial{background:#fff6e5;border-color:#ebd4a4;color:#9a6b1a;font-weight:800}
-.chip.result-miss{background:#fff0ee;border-color:#e8c4c0;color:var(--rose);font-weight:800}
-.toggle{margin-left:auto;color:var(--teal);font-weight:800;font-size:12px}
-.match.open .toggle:after{content:" 收起"}
+.chip.key{background:#eef6f4;border-color:#cfe3dd;color:#355a52;font-weight:700}
+.verdicts{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:4px;
+}
+.verdict{
+  display:flex;gap:8px;align-items:flex-start;border-radius:12px;padding:10px 10px;
+  color:#fff;min-height:64px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);
+}
+.verdict .v-ico{
+  width:26px;height:26px;border-radius:8px;flex-shrink:0;display:grid;place-items:center;
+  font-size:13px;font-weight:900;background:rgba(0,0,0,.18);
+}
+.verdict small{display:block;opacity:.85;font-size:10px;font-weight:700;letter-spacing:.04em}
+.verdict b{display:block;font-size:12px;line-height:1.35;font-weight:800;margin-top:2px}
+.verdict.hit{background:linear-gradient(145deg,#168a56,#27b575)}
+.verdict.partial{background:linear-gradient(145deg,#c48812,#e0a82a)}
+.verdict.miss{background:linear-gradient(145deg,#c2433c,#e0645c)}
+.toggle{color:var(--teal);font-weight:800;font-size:12px;margin-top:10px;display:inline-block}
+.match.open .toggle:after{content:" 收起明细"}
 .match:not(.open) .toggle:after{content:" 展开分析"}
 .detail{display:none;padding:0 16px 16px;border-top:1px solid #eef2f5;background:linear-gradient(180deg,#f7fafc,#fff)}
 .match.open .detail{display:block}
@@ -172,12 +198,16 @@ button,input{font:inherit}a{color:#0b6b5f}
 .scores{display:flex;gap:6px;flex-wrap:wrap}
 .sc{padding:3px 8px;border-radius:7px;border:1px solid #e3e8ec;font-size:12px}
 .sc.top{background:#123040;color:#fff;border-color:#123040;font-weight:700}
-.hitboard{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
-.hb{border-radius:10px;padding:8px;font-size:12px;border:1px solid var(--line)}
-.hb.hit{background:#e8f7ef;border-color:#b7e0cb}
-.hb.partial{background:#fff6e5;border-color:#ebd4a4}
-.hb.miss{background:#fff0ee;border-color:#e8c4c0}
-.hb b{display:block;margin-bottom:2px}
+.legend-hits{
+  display:flex;gap:10px;flex-wrap:wrap;margin:0 0 12px;font-size:12px;color:#567;
+}
+.legend-hits span{display:inline-flex;align-items:center;gap:6px}
+.legend-hits i{
+  width:14px;height:14px;border-radius:4px;display:inline-block;
+}
+.legend-hits .l-hit{background:#1f9a62}
+.legend-hits .l-partial{background:#e0a01e}
+.legend-hits .l-miss{background:#d4544c}
 
 .today-hero{
   display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px;
@@ -214,9 +244,11 @@ button,input{font:inherit}a{color:#0b6b5f}
 
 @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 @media(max-width:960px){
-  .nav,.kpi-grid,.charts,.split,.today-hero,.hitboard,.grid2,.compare{grid-template-columns:1fr}
+  .nav,.kpi-grid,.charts,.split,.today-hero,.grid2,.compare{grid-template-columns:1fr}
+  .verdicts{grid-template-columns:1fr 1fr}
   .search{margin-left:0;width:100%}
   .brand h1{font-size:22px}
+  .stamp{margin-left:0;width:100%;justify-content:center}
 }
 @media print{
   .nav,.legal,.modal-mask,.toggle,.filters{display:none!important}
@@ -299,7 +331,12 @@ button,input{font:inherit}a{color:#0b6b5f}
   <section class="panel" id="review">
     <div class="card">
       <h2>22 场逐场复盘 + 原预测档案</h2>
-      <p class="sub">✅ 第一选择命中 · ◐ 防守/第二选择命中 · ❌ 未覆盖。点击卡片展开完整分析。命中项绿色高亮。</p>
+      <p class="sub">未展开也能直接看四项复盘结果：绿=命中，黄=防守/第二选择命中，红=未覆盖。</p>
+      <div class="legend-hits">
+        <span><i class="l-hit"></i>主选命中</span>
+        <span><i class="l-partial"></i>防守命中</span>
+        <span><i class="l-miss"></i>未覆盖</span>
+      </div>
       <div class="filters" id="revFilters"></div>
       <div id="reviewList"></div>
     </div>
@@ -452,8 +489,16 @@ document.getElementById('ruleLine').textContent=D.meta.rule;
 
 function initials(n){return n.replace(/FC|SK|市民|现代|制铁|联/g,'').slice(0,2)}
 function resClass(x){return x==='hit'?'hit':x==='partial'?'partial':'miss'}
-function resMark(x){return x==='hit'?'✅':x==='partial'?'◐':'❌'}
-
+function resMark(x){return x==='hit'?'✓':x==='partial'?'◐':'✕'}
+function resText(x){return x==='hit'?'主选命中':x==='partial'?'防守命中':'未覆盖'}
+function cleanLabel(s){
+  const t=String(s||'').replace(/^[✅◐❌✓✕]\s*/,'').trim();
+  return t||(s&&String(s).includes('◐')?'第二选择':s&&/^[✅✓]/.test(String(s))?'命中':'未覆盖');
+}
+function verdictCell(state, title, label){
+  const st=resClass(state);
+  return `<div class="verdict ${st}" title="${title}"><span class="v-ico">${resMark(state)}</span><div><small>${title}</small><b>${cleanLabel(label)}</b></div></div>`;
+}
 document.getElementById('kpis').innerHTML=D.reviewKpis.map(k=>`
   <div class="kpi"><b>${k.hit}</b><span>${k.label} · ${k.pct}%</span>
   <div class="bar"><i style="width:${k.pct}%;background:linear-gradient(90deg,${k.color},#7dffd6)"></i></div></div>`).join('');
@@ -496,28 +541,30 @@ function reviewCard(m){
   const rc=resClass(m.res.r);
   return `<article class="match ${rc}" data-state="${m.res.r}" data-day="${m.day}" data-league="${m.league}" data-search="${m.day}${m.id}${m.home}${m.away}">
     <div class="match-head">
-      <div class="meta"><span>${m.day}${m.id}</span><span class="dot"></span><b>${m.league}</b>
-        <span class="tag ${rc}">${resMark(m.res.r)} ${m.res.r==='hit'?'主选命中':m.res.r==='partial'?'防守命中':'未覆盖'}</span>
+      <div class="meta">
+        <span>${m.day}${m.id}</span><span class="dot"></span><b>${m.league}</b>
         <span class="chip">置信 ${m.conf}</span>
-        <span class="toggle"></span></div>
-      <div class="teams"><span class="crest">${initials(m.home)}</span>${m.home}
-        <span class="score">${m.score}${m.extra?`<small>${m.extra}</small>`:''}</span>
-        ${m.away}<span class="crest">${initials(m.away)}</span></div>
+        <span class="stamp ${rc}"><span class="ico">${resMark(m.res.r)}</span>${resText(m.res.r)}</span>
+      </div>
+      <div class="teams-row">
+        <div class="teams"><span class="crest">${initials(m.home)}</span>${m.home}
+          <span class="score">${m.score}${m.extra?`<small>${m.extra}</small>`:''}</span>
+          ${m.away}<span class="crest">${initials(m.away)}</span></div>
+      </div>
+      <div class="section-label">赛前预测</div>
       <div class="predline">
         <span class="chip key">${m.pick}</span><span class="chip key">${m.hc}</span><span class="chip">${m.goals}</span>
-        <span class="chip result-${resClass(m.res.r)}">${m.res.rl}</span>
-        <span class="chip result-${resClass(m.res.h)}">${m.res.hl}</span>
-        <span class="chip result-${resClass(m.res.g)}">${m.res.gl}</span>
-        <span class="chip result-${resClass(m.res.s)}">${m.res.sl}</span>
       </div>
+      <div class="section-label">复盘结果 · 绿命中 / 黄防守 / 红未中</div>
+      <div class="verdicts">
+        ${verdictCell(m.res.r,'胜平负',m.res.rl)}
+        ${verdictCell(m.res.h,'让球',m.res.hl)}
+        ${verdictCell(m.res.g,'总进球',m.res.gl)}
+        ${verdictCell(m.res.s,'七比分',m.res.sl)}
+      </div>
+      <span class="toggle"></span>
     </div>
     <div class="detail">
-      <div class="hitboard">
-        <div class="hb ${resClass(m.res.r)}"><b>胜平负</b>${m.res.rl}</div>
-        <div class="hb ${resClass(m.res.h)}"><b>让球</b>${m.res.hl}</div>
-        <div class="hb ${resClass(m.res.g)}"><b>总进球</b>${m.res.gl}</div>
-        <div class="hb ${resClass(m.res.s)}"><b>七比分</b>${m.res.sl}</div>
-      </div>
       <div class="grid2">
         <div class="box"><h4>模型胜平负</h4>${probBars(m)}<p style="margin:8px 0 0;font-size:12px;color:#667">${m.summary}</p></div>
         <div class="box"><h4>七比分池</h4><div class="scores">${m.scores.map((s,i)=>`<span class="sc ${i<3?'top':''}">${s}</span>`).join('')}</div></div>
