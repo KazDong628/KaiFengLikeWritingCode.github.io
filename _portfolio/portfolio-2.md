@@ -1,8 +1,10 @@
----
+﻿---
+published: false
 title: "小米南京安卓工程师训练营项目开发"
 excerpt: "企业级App开发流程<br/><img src='./images/安卓-设计稿.png'>"
 collection: portfolio
 ---
+published: false
 
 **项目周期：** 2024年3月17日 – 2024年4月2日
  **所在团队：** 小米南京安卓部门培训组

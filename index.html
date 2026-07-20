@@ -3,175 +3,240 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="足球竞赛赛果结构分析与复盘研究。内容可能含 AI 辅助生成，仅供学习研究，不构成投注或收益建议。">
+<meta name="description" content="MatchStruct（赛理）足球赛果结构研究平台。分层复盘 · 情景推演 · 方法透明。AI 辅助整理，仅供学习研究；不构成投注、理财或收益建议。">
 <meta name="robots" content="index,follow">
-<title>足球竞赛分析｜赛果结构与复盘研究</title>
+<meta name="theme-color" content="#0f1c24">
+<meta name="application-name" content="MatchStruct">
+<meta property="og:title" content="MatchStruct 赛理｜足球赛果结构研究平台">
+<meta property="og:description" content="可审计的分层复盘与情景推演研究台。AI 辅助 · 非投注意见 · 隐私最小化。">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<title>MatchStruct 赛理｜足球赛果结构研究平台</title>
+<link rel="icon" href="images/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#e8f0f4;--paper:#ffffff;--ink:#1a2834;--muted:#6b7a88;
-  --line:#d5e0e8;--green:#2a8a66;--green-soft:#e8f6ef;--blue:#3a6f8c;
-  --red:#b8544c;--red-soft:#fff1ee;--orange:#b87a28;--orange-soft:#fff6e6;
-  --warn:#7a4e1e;--warn-bg:#fff8ef;--warn-line:#e8d2b0;
-  --shadow:0 10px 32px rgba(26,50,70,.08);
-  --display:"Fraunces",Georgia,"Songti SC",serif;
-  --sans:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  --ink:#0e1a22;--muted:#5a6d7c;--line:#d5e0e8;--paper:#fff;--paper2:#f5f8fa;
+  --teal:#0c6b61;--teal-deep:#084f48;--teal-soft:#e6f4f1;
+  --amber:#8a5f16;--amber-bg:#fff7ea;--amber-line:#e6d2a4;
+  --rose:#9a4540;--rose-soft:#fff1ef;--ok:#2a7354;--ok-soft:#e8f5ef;
+  --slate:#1c2e3b;--shadow:0 14px 44px rgba(10,28,40,.09);
+  --sans:"IBM Plex Sans","Noto Sans SC",-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  --radius:14px;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
   margin:0;color:var(--ink);font:14px/1.7 var(--sans);
   background:
-    radial-gradient(1200px 480px at 12% -10%,rgba(74,150,120,.16),transparent 55%),
-    radial-gradient(900px 420px at 92% 8%,rgba(70,130,160,.12),transparent 50%),
-    linear-gradient(180deg,#e6eef3 0%,#f3f7fa 40%,#e9f0f4 100%);
+    linear-gradient(180deg,rgba(15,28,36,.04),transparent 180px),
+    repeating-linear-gradient(90deg,transparent 0 46px,rgba(15,122,110,.035) 46px 47px),
+    repeating-linear-gradient(0deg,transparent 0 46px,rgba(15,122,110,.03) 46px 47px),
+    radial-gradient(1000px 420px at 8% -8%,rgba(15,122,110,.14),transparent 55%),
+    radial-gradient(800px 360px at 100% 0%,rgba(36,70,90,.1),transparent 50%),
+    linear-gradient(180deg,#e9eef2,#f4f7f9 42%,#e8eef2);
   min-height:100vh;
 }
-button,input,select{font:inherit}
-.page{width:min(1040px,calc(100% - 24px));margin:20px auto 64px}
+a{color:var(--teal-deep)}
+button,input{font:inherit}
+.skip{position:absolute;left:-999px;top:auto}.skip:focus{left:12px;top:12px;z-index:200;background:#fff;padding:8px 12px;border-radius:8px}
 
-.legal-banner{
-  background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:12px;
-  padding:12px 14px;margin-bottom:12px;color:var(--warn);font-size:12px;line-height:1.65;
+.sysbar{
+  background:#0f1c24;color:rgba(255,255,255,.82);font-size:12px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.sysbar-inner{
+  width:min(1120px,calc(100% - 24px));margin:0 auto;
+  display:flex;gap:14px;align-items:center;justify-content:space-between;
+  padding:8px 0;flex-wrap:wrap;
+}
+.sysbar .left,.sysbar .right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.badge{
+  display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;
+  border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);font-weight:600;
+}
+.badge i{width:6px;height:6px;border-radius:50%;background:#3dcfb0;box-shadow:0 0 0 3px rgba(61,207,176,.18)}
+.badge.warn i{background:#f0c36a;box-shadow:0 0 0 3px rgba(240,195,106,.18)}
+.sysbar a{color:#9fd9ce;text-decoration:none}.sysbar a:hover{text-decoration:underline}
+
+.page{width:min(1120px,calc(100% - 24px));margin:18px auto 72px}
+
+.compliance{
+  display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;
+  background:var(--amber-bg);border:1px solid var(--amber-line);border-radius:var(--radius);
+  padding:12px 14px;margin-bottom:14px;color:var(--amber);font-size:12px;line-height:1.65;
   animation:rise .4s ease both;
 }
-.legal-banner strong{color:#5c3a12}
-.legal-banner a{color:#3d708a}
+.compliance .mark{
+  width:34px;height:34px;border-radius:10px;background:#fff;border:1px solid var(--amber-line);
+  display:grid;place-items:center;font-weight:800;color:#7a5314;flex-shrink:0;
+}
+.compliance strong{color:#5c3d10}
+.compliance .actions{display:flex;gap:8px;flex-wrap:wrap}
+.compliance .linkbtn{
+  border:1px solid var(--amber-line);background:#fff;border-radius:8px;
+  padding:6px 10px;color:#6b4a16;text-decoration:none;white-space:nowrap;
+}
+.compliance .linkbtn:hover{border-color:#c9a45a}
 
-.topbar{
-  background:rgba(255,255,255,.88);border:1px solid rgba(213,224,232,.9);
-  border-radius:16px;box-shadow:var(--shadow);padding:14px;
-  position:sticky;top:8px;z-index:20;backdrop-filter:blur(14px);
+.docbar{
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;
+  margin-bottom:12px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;
+  background:rgba(255,255,255,.82);font-size:12px;color:var(--muted);
+}
+.docbar b{color:var(--ink)}
+.docbar .seg{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.docbar .sep{opacity:.35}
+
+.capabilities{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;
+}
+.cap{
+  background:rgba(255,255,255,.88);border:1px solid var(--line);border-radius:12px;padding:12px 14px;
+  animation:rise .5s .04s ease both;
+}
+.cap .label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--teal-deep);margin-bottom:4px}
+.cap b{display:block;font-size:14px;color:var(--ink);margin-bottom:4px}
+.cap span{font-size:12px;color:var(--muted);line-height:1.55}
+
+.riskboard{
+  margin-bottom:14px;border:1px solid #e2c9c6;background:linear-gradient(180deg,#fff9f8,#fff);border-radius:14px;padding:14px 16px;
+  animation:rise .5s .08s ease both;
+}
+.riskboard h2{margin:0 0 8px;font-size:14px;font-weight:800;color:var(--rose);letter-spacing:.02em}
+.riskboard ol{margin:0;padding-left:18px;color:#6a4542;font-size:12px}
+.riskboard li{margin:4px 0}
+
+.shell{
+  background:rgba(255,255,255,.9);border:1px solid rgba(215,225,233,.95);
+  border-radius:18px;box-shadow:var(--shadow);overflow:hidden;
   animation:rise .45s ease both;
 }
-.brand{display:flex;align-items:center;gap:12px;padding:4px 6px 14px}
+.header{
+  padding:18px 18px 14px;
+  background:
+    linear-gradient(135deg,rgba(15,122,110,.08),transparent 42%),
+    linear-gradient(180deg,#fff, #f8fbfc);
+  border-bottom:1px solid var(--line);
+}
+.brandrow{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}
+.brand{display:flex;gap:12px;align-items:center}
 .logo{
-  width:42px;height:42px;border-radius:12px;flex-shrink:0;
-  background:linear-gradient(145deg,#247a5c,#4fa888);color:#fff;
-  display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:13px;
-  box-shadow:0 6px 16px rgba(36,122,92,.28);
+  width:48px;height:48px;border-radius:14px;
+  background:linear-gradient(145deg,#0a5c53,#149687);
+  color:#fff;display:grid;place-items:center;font-weight:800;letter-spacing:.02em;
+  box-shadow:0 10px 24px rgba(15,122,110,.28);font-size:13px;
 }
-.brand h1{font-family:var(--display);font-size:22px;margin:0;letter-spacing:.01em;font-weight:700}
-.brand small{display:block;color:var(--muted);margin-top:2px;font-size:12px}
-.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.tab{
-  border:1px solid var(--line);background:#fff;border-radius:10px;
-  padding:11px 12px;text-align:left;cursor:pointer;
-  transition:border-color .18s,background .18s,transform .18s,box-shadow .18s;
-}
-.tab:hover{border-color:#9fc7b5;transform:translateY(-1px)}
-.tab.active{
-  background:linear-gradient(180deg,#edf9f2,#e4f4eb);border-color:#8fc9ae;
-  color:#1f684c;box-shadow:0 4px 14px rgba(42,138,102,.12);
-}
-.tab b{display:block;font-size:14px}.tab span{font-size:12px;color:var(--muted)}.tab.active span{color:#3f7d64}
-
-.hero{
-  margin-top:14px;background:var(--paper);border:1px solid var(--line);
-  border-radius:16px;padding:20px;box-shadow:var(--shadow);
-  animation:rise .5s .06s ease both;
-}
-.hero-title{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}
-.hero h2{margin:0 0 6px;font-family:var(--display);font-size:26px;font-weight:700;letter-spacing:.01em}
-.hero p{margin:0;color:var(--muted);max-width:62ch}
-.hero-actions{display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0}
-.btn{
-  border:1px solid var(--line);background:#fff;border-radius:9px;
-  padding:8px 12px;cursor:pointer;color:#425160;transition:.15s;
-}
-.btn:hover{border-color:#9fc7b5;color:#1f684c}
-.btn.primary{background:#3d708a;color:#fff;border-color:#3d708a}
-.btn.primary:hover{background:#335f75}
-
-.summary{margin-top:14px;border-radius:12px;padding:14px;transition:background .25s,border-color .25s}
-.summary.review{background:#fff7f5;border:1px solid #ead2ce}
-.summary.today{background:#f3f9f6;border:1px solid #c9e2d5}
-.summary.method,.summary.legal{background:#f4f8fb;border:1px solid #d0dde8}
-.summary-title{font-weight:700;margin-bottom:8px}
-.summary.review .summary-title{color:#76524e}
-.summary.today .summary-title{color:#2d6b52}
-.summary.method .summary-title,.summary.legal .summary-title{color:#3a5f74}
-.metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-.metric{background:rgba(255,255,255,.78);border:1px solid rgba(0,0,0,.06);border-radius:9px;padding:10px}
-.metric b{font-size:20px;display:block;font-family:var(--display);font-weight:700}
-.summary.review .metric b{color:#a04f49}
-.summary.today .metric b{color:#2a7a58}
-.summary.method .metric b,.summary.legal .metric b{color:#3a6f8c}
-.metric span{color:#7a6e6b;font-size:12px}
-.summary.today .metric span,.summary.method .metric span,.summary.legal .metric span{color:#5f726c}
-.cumulative{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+.brand h1{margin:0;font-size:24px;font-weight:800;letter-spacing:-.02em}
+.brand .sub{margin-top:2px;color:var(--muted);font-size:12px}
+.meta-pills{display:flex;gap:8px;flex-wrap:wrap}
 .pill{
-  display:inline-flex;gap:5px;align-items:center;border:1px solid var(--line);
-  background:#fff;border-radius:999px;padding:5px 10px;color:#596673;font-size:12px;
+  display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);
+  background:#fff;border-radius:999px;padding:6px 10px;color:#516575;font-size:12px;font-weight:600;
 }
-.pill b{color:#34424e}
+.pill b{color:var(--ink)}
 
-.section{margin-top:16px;animation:rise .55s .1s ease both}
-.section-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px}
-.section-head h2{font-family:var(--display);font-size:20px;margin:0;font-weight:700}
-.section-head p{margin:0;color:var(--muted);font-size:12px}
-.filters{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
-.filter{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 12px;cursor:pointer;transition:.15s}
-.filter:hover{border-color:#9fc7b5}
-.filter.active{background:#3d708a;color:#fff;border-color:#3d708a}
-.search{margin-left:auto;border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 10px;min-width:210px}
+.nav{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px 18px 16px;
+  background:rgba(247,250,252,.9);
+}
+.tab{
+  border:1px solid var(--line);background:#fff;border-radius:12px;
+  padding:12px;text-align:left;cursor:pointer;transition:.18s;
+}
+.tab:hover{border-color:#9ec9c1;transform:translateY(-1px)}
+.tab.active{
+  background:linear-gradient(180deg,#eef8f6,#e4f3f0);border-color:#8fc4bb;
+  color:var(--teal-deep);box-shadow:0 6px 16px rgba(15,122,110,.1);
+}
+.tab b{display:block;font-size:14px}.tab span{display:block;margin-top:2px;font-size:12px;color:var(--muted)}
+.tab.active span{color:#3f7f76}
 
-.panel{display:none}.panel.active{display:block}
-.match-list{display:grid;gap:12px}
-.match-card{
-  background:var(--paper);border:1px solid var(--line);border-left:4px solid #98b6a8;
-  border-radius:12px;box-shadow:0 5px 18px rgba(40,62,78,.06);overflow:hidden;
+.workspace{padding:18px}
+.hero{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;flex-wrap:wrap}
+.hero h2{margin:0 0 6px;font-size:28px;letter-spacing:-.03em;font-weight:800}
+.hero p{margin:0;color:var(--muted);max-width:64ch}
+.hero-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{
+  border:1px solid var(--line);background:#fff;border-radius:10px;
+  padding:9px 12px;cursor:pointer;color:#425160;font-weight:600;transition:.15s;
+}
+.btn:hover{border-color:#9ec9c1;color:var(--teal-deep)}
+.btn.primary{background:var(--teal);color:#fff;border-color:var(--teal)}
+.btn.primary:hover{background:var(--teal-deep)}
+
+.kpis{margin-top:16px;display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.kpi{
+  background:var(--paper2);border:1px solid var(--line);border-radius:12px;padding:12px;
   transition:transform .2s,box-shadow .2s;
 }
-.match-card:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(40,62,78,.1)}
-.match-card.hit{border-color:#df9f98;border-left-color:#d47a70}
-.match-card.miss{border-left-color:#77ae8e}
-.match-card.strong{border-left-color:#d17363}
-.match-card.stable{border-left-color:#4e9778}
-.match-card.watch{border-left-color:#ce9a4a}
+.kpi:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(18,40,55,.06)}
+.kpi b{display:block;font-size:22px;font-weight:800;letter-spacing:-.02em;color:var(--slate)}
+.kpi span{display:block;margin-top:2px;font-size:12px;color:var(--muted)}
+.tags{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
 
-.card-main{padding:14px}
-.match-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:#54715f;font-size:12px}
-.dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:#268bb5}
-.tag{display:inline-flex;align-items:center;border-radius:6px;padding:2px 7px;font-size:11px;font-weight:700}
-.tag.strong{background:var(--red-soft);color:#b45047}
-.tag.stable{background:var(--green-soft);color:#2e7c5e}
-.tag.watch{background:var(--orange-soft);color:#9b6c25}
-.status{margin-left:auto;font-weight:700}
-.status.hit{color:#b35a52}.status.miss{color:#607969}.status.pending{color:#557f94}
-
-.teams{display:flex;align-items:center;gap:10px;margin-top:9px;font-size:16px;font-weight:700}
-.team{display:flex;align-items:center;gap:7px}
-.crest{
-  width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
-  color:#fff;font-size:10px;font-weight:900;background:linear-gradient(145deg,#516b7f,#7891a4);
+.toolbar{
+  margin-top:22px;display:flex;justify-content:space-between;gap:12px;align-items:end;flex-wrap:wrap;
 }
-.scoreline{padding:2px 8px;border-radius:6px;background:#f1f5f7;font-weight:800}
-.subscore{font-weight:500;color:var(--muted);font-size:12px}
+.toolbar h3{margin:0;font-size:18px;font-weight:800}
+.toolbar p{margin:4px 0 0;color:var(--muted);font-size:12px}
+.filters{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.filter{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 12px;cursor:pointer;font-weight:600}
+.filter.active{background:var(--slate);color:#fff;border-color:var(--slate)}
+.search{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 10px;min-width:220px}
 
-.pickline{margin-top:12px;border:1px solid #e7ecef;border-radius:8px;background:#fcfdfd;padding:10px}
-.chips{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
-.chip{border:1px solid #e1e6ea;background:#fff;border-radius:6px;padding:3px 7px;font-size:12px}
-.chip.key{border-color:#e3b8b3;background:#fff5f3;color:#a74e47;font-weight:700}
-.short-note{color:#6f7c86;margin-top:7px;font-size:12px}
-.analysis-toggle{margin-left:auto;color:#317b61;font-weight:700;cursor:pointer;user-select:none}
+.panel{display:none;margin-top:14px}.panel.active{display:block}
+.match-list{display:grid;gap:12px}
+.match-card{
+  background:#fff;border:1px solid var(--line);border-left:4px solid #8fb5ad;
+  border-radius:14px;overflow:hidden;box-shadow:0 4px 16px rgba(18,40,55,.04);
+  transition:transform .2s,box-shadow .2s;
+}
+.match-card:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(18,40,55,.08)}
+.match-card.hit{border-left-color:#c87973}
+.match-card.miss{border-left-color:#6fa88c}
+.match-card.strong{border-left-color:#c87973}
+.match-card.stable{border-left-color:#3f9474}
+.match-card.watch{border-left-color:#c49a4a}
+.card-main{padding:14px 16px}
+.match-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:#4f6b62;font-size:12px}
+.dot{width:7px;height:7px;border-radius:50%;background:#2a8fa8}
+.tag{display:inline-flex;border-radius:6px;padding:2px 7px;font-size:11px;font-weight:800}
+.tag.strong{background:var(--rose-soft);color:var(--rose)}
+.tag.stable{background:var(--ok-soft);color:var(--ok)}
+.tag.watch{background:var(--amber-bg);color:var(--amber)}
+.status{margin-left:auto;font-weight:800}
+.status.hit{color:var(--rose)}.status.miss{color:#5f746c}.status.pending{color:#3f6f84}
+.teams{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:16px;font-weight:800}
+.team{display:flex;align-items:center;gap:8px}
+.crest{
+  width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:#fff;
+  font-size:10px;font-weight:900;background:linear-gradient(145deg,#355064,#6a8498);
+}
+.scoreline{padding:3px 10px;border-radius:8px;background:#eef3f6;font-weight:800}
+.subscore{font-weight:500;color:var(--muted);font-size:12px}
+.pickline{margin-top:12px;border:1px solid #e5ecf0;border-radius:10px;background:#fbfcfd;padding:10px 12px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{border:1px solid #e1e8ec;background:#fff;border-radius:7px;padding:4px 8px;font-size:12px}
+.chip.key{border-color:#dfc0bc;background:#fff6f4;color:#9a4540;font-weight:700}
+.short-note{color:#667987;margin-top:8px;font-size:12px}
+.analysis-toggle{margin-left:auto;color:var(--teal);font-weight:800;cursor:pointer;user-select:none}
 .analysis-toggle:after{content:'›';margin-left:6px;display:inline-block;transition:transform .2s}
 .match-card.open .analysis-toggle:after{transform:rotate(90deg)}
-
-.details{border-top:1px solid #edf0f2;background:#fbfcfd;padding:0 14px;max-height:0;overflow:hidden;opacity:0;transition:max-height .35s ease,padding .35s ease,opacity .25s ease}
-.match-card.open .details{max-height:1200px;padding:0 14px 14px;opacity:1}
+.details{border-top:1px solid #edf1f3;background:#f8fafb;padding:0 16px;max-height:0;overflow:hidden;opacity:0;transition:max-height .35s ease,padding .35s ease,opacity .25s}
+.match-card.open .details{max-height:1400px;padding:0 16px 16px;opacity:1}
 .detail-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:12px;margin-top:12px}
-.box{background:#fff;border:1px solid #e4eaee;border-radius:9px;padding:12px}
-.box h4{margin:0 0 7px;font-size:13px}
+.box{background:#fff;border:1px solid #e4eaee;border-radius:10px;padding:12px}
+.box h4{margin:0 0 8px;font-size:13px;font-weight:800}
 .box ul{margin:0;padding-left:18px}.box li{margin:4px 0}
 .riskbox{background:#fff8f0;border-color:#ecd8bd}
-.reviewbox{background:#f2faf6;border-color:#cfe5d8}
+.reviewbox{background:#f1faf5;border-color:#cfe5d8}
 .prob-row{display:grid;grid-template-columns:66px 1fr 45px;gap:8px;align-items:center;margin:6px 0;font-size:12px}
 .bar{height:8px;border-radius:999px;background:#e7edf1;overflow:hidden}
-.bar i{display:block;height:100%;border-radius:999px;transition:width .6s ease}
-.bar.home i{background:#4c9c7d}.bar.draw i{background:#d2a553}.bar.away i{background:#5d91ab}
+.bar i{display:block;height:100%;border-radius:999px}
+.bar.home i{background:#3f9a78}.bar.draw i{background:#d2a553}.bar.away i{background:#5d91ab}
 .scores{display:flex;gap:6px;flex-wrap:wrap}
 .score{border:1px solid #e3e8ec;border-radius:6px;padding:3px 7px;background:#fff}
 .score.top{border-color:#deb2ad;background:#fff3f1;color:#a84e46;font-weight:700}
@@ -179,200 +244,319 @@ button,input,select{font:inherit}
 .odds table{width:100%;border-collapse:collapse;font-size:12px}
 .odds th,.odds td{padding:4px 5px;text-align:center;border-bottom:1px solid #edf1f3}
 .odds th{color:var(--muted);font-weight:600}
-.footnote{margin-top:10px;color:#8b969f;font-size:11px}
+.footnote{margin-top:8px;color:#8b969f;font-size:11px}
 
-.combos{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.combos{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
 .combo{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px}
-.combo h3{font-size:14px;margin:0 0 8px}.combo strong{color:#3a6f8c}
-.combo p{margin:6px 0 0;color:var(--muted);font-size:12px}
+.combo h3{font-size:13px;margin:0 0 8px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.combo strong{color:var(--slate);font-size:14px}
+.combo p{margin:8px 0 0;color:var(--muted);font-size:12px}
 
-.method{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px}
-.method-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.method-item{border:1px solid #e6ebef;border-radius:9px;padding:11px;background:#fbfcfd}
+.method,.legal-doc{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px}
+.method-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.method-item{border:1px solid #e6ebef;border-radius:12px;padding:12px;background:var(--paper2)}
 .method-item b{display:block;margin-bottom:4px}.method-item span{font-size:12px;color:var(--muted)}
 .legal-doc h3{margin:18px 0 8px;font-size:15px}.legal-doc h3:first-child{margin-top:0}
 .legal-doc ul{margin:0;padding-left:18px}.legal-doc li{margin:6px 0}
+.matrix{width:100%;border-collapse:collapse;margin:10px 0 0;font-size:13px}
+.matrix th,.matrix td{border:1px solid var(--line);padding:10px;text-align:left;vertical-align:top}
+.matrix th{background:var(--paper2);font-weight:700}
 
 .empty{padding:28px;text-align:center;color:var(--muted);background:#fff;border:1px dashed var(--line);border-radius:12px}
 
-.footer{margin-top:20px;padding:16px 4px;color:#83909a;font-size:12px;text-align:center;line-height:1.8}
-.footer a{color:#3d708a;text-decoration:none}.footer a:hover{text-decoration:underline}
+.site-footer{
+  margin-top:18px;padding:18px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.78);
+  color:#6b7c89;font-size:12px;line-height:1.8;
+}
+.site-footer .cols{display:grid;grid-template-columns:2fr 1fr 1fr;gap:16px}
+.site-footer h4{margin:0 0 8px;color:var(--ink);font-size:13px}
+.site-footer a{color:var(--teal-deep);text-decoration:none}.site-footer a:hover{text-decoration:underline}
+.site-footer .copy{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);text-align:center}
 
-.modal-mask{
-  position:fixed;inset:0;background:rgba(18,28,38,.55);z-index:100;
-  display:flex;align-items:center;justify-content:center;padding:20px;
-}
-.modal{
-  width:min(520px,100%);background:#fff;border-radius:16px;padding:22px;
-  box-shadow:0 20px 50px rgba(0,0,0,.22);border:1px solid #e4ebf0;
-}
-.modal h3{margin:0 0 10px;font-family:var(--display);font-size:22px}
+.modal-mask{position:fixed;inset:0;background:rgba(10,18,24,.58);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.modal{width:min(560px,100%);background:#fff;border-radius:18px;padding:24px;box-shadow:0 24px 60px rgba(0,0,0,.28);border:1px solid #e4ebf0}
+.modal h3{margin:0 0 8px;font-size:22px;font-weight:800}
 .modal p{margin:0 0 10px;color:#4a5a68;font-size:13px}
-.modal ul{margin:0 0 14px;padding-left:18px;color:#4a5a68;font-size:13px}
-.modal .btn.primary{width:100%;padding:11px}
+.modal ul{margin:0 0 16px;padding-left:18px;color:#4a5a68;font-size:13px}
+.modal .btn.primary{width:100%;padding:12px}
 
 @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 
-@media(max-width:860px){.tabs{grid-template-columns:1fr 1fr}}
+@media(max-width:960px){
+  .nav,.kpis,.combos,.method-grid,.site-footer .cols,.capabilities{grid-template-columns:1fr 1fr}
+}
 @media(max-width:760px){
-  .page{width:min(100% - 12px,1040px);margin-top:8px}
-  .topbar{top:2px}.tabs{grid-template-columns:1fr}
-  .hero-title,.section-head{align-items:stretch;flex-direction:column}
-  .metrics{grid-template-columns:repeat(2,1fr)}
-  .detail-grid,.odds,.combos,.method-grid{grid-template-columns:1fr}
-  .search{margin-left:0;width:100%}
-  .teams{font-size:14px;flex-wrap:wrap}
-  .hero h2{font-size:22px}
-  .brand h1{font-size:18px}
+  .page{width:min(100% - 12px,1120px)}
+  .nav,.kpis,.combos,.method-grid,.detail-grid,.odds,.site-footer .cols,.compliance,.capabilities{grid-template-columns:1fr}
+  .hero h2{font-size:24px}.brand h1{font-size:20px}
+  .search{min-width:0;width:100%}
   .analysis-toggle{margin-left:0;width:100%;text-align:right;margin-top:4px}
 }
 @media print{
-  body{background:#fff}
-  .topbar,.legal-banner,.modal-mask{position:static;box-shadow:none}
-  .modal-mask{display:none!important}
-  .hero-actions,.filters,.analysis-toggle{display:none}
-  .details{max-height:none!important;opacity:1!important;padding:0 14px 14px!important}
-  .panel{display:block!important}.tab{display:none}
-  .panel:not(.active){display:none!important}
-  .match-card{break-inside:avoid}
+  .sysbar,.compliance,.hero-actions,.filters,.analysis-toggle,.modal-mask{display:none!important}
+  body{background:#fff}.shell,.match-card{box-shadow:none}
+  .details{max-height:none!important;opacity:1!important;padding:0 16px 16px!important}
+  .panel{display:block!important}.nav{display:none}.panel:not(.active){display:none!important}
 }
 </style>
 </head>
 <body>
+<a class="skip" href="#main">跳到主要内容</a>
+
+<div class="sysbar">
+  <div class="sysbar-inner">
+    <div class="left">
+      <span class="badge"><i></i>研究演示模式</span>
+      <span class="badge warn"><i></i>AI 辅助内容</span>
+      <span>版本 MS-2026.07.20</span>
+    </div>
+    <div class="right">
+      <span>数据快照：2026-07-20</span>
+      <a id="linkTermsTop" href="terms/">合规声明</a>
+      <a id="linkPrivacyTop" href="privacy/">隐私说明</a>
+      <a id="linkAboutTop" href="about/">关于产品</a>
+    </div>
+  </div>
+</div>
+
 <div class="page">
-  <div class="legal-banner" role="note">
-    <strong>免责声明：</strong>本站为足球赛果结构分析与复盘研究展示，内容可能含 <strong>AI 辅助生成</strong>，仅供学习讨论。
-    <strong>不构成投注、购彩或理财建议，不承诺任何收益。</strong>
-    请遵守当地法律法规。详见 <a href="/terms/">完整免责声明</a> 与 <a href="/about/">关于本站</a>。
-  </div>
-
-  <div class="topbar">
-    <div class="brand">
-      <div class="logo">分析</div>
-      <div>
-        <h1>足球竞赛分析</h1>
-        <small>赛果结构复盘 + 情景推演｜示例日期 2026-07-20 · AI 辅助 · 非投注意见</small>
-      </div>
+  <div class="docbar" aria-label="文档控制信息">
+    <div class="seg">
+      <span><b>文件</b> MS-DESK-001</span><span class="sep">|</span>
+      <span><b>版本</b> 2026.07.20</span><span class="sep">|</span>
+      <span><b>分类</b> 公开研究演示</span>
     </div>
-    <div class="tabs">
-      <button class="tab active" data-panel="review" type="button"><b>07-19 复盘</b><span>7场 · 方向覆盖评估</span></button>
-      <button class="tab" data-panel="today" type="button"><b>07-20 推演</b><span>4场 · 赛前情景</span></button>
-      <button class="tab" data-panel="method" type="button"><b>方法说明</b><span>口径与局限</span></button>
-      <button class="tab" data-panel="legal" type="button"><b>免责声明</b><span>AI / 法律提示</span></button>
+    <div class="seg">
+      <span><b>口径</b> 常规时间 90′+</span><span class="sep">|</span>
+      <span><b>隐私</b> 最小化 · 无账户体系</span>
     </div>
   </div>
 
-  <div class="hero">
-    <div class="hero-title">
-      <div>
-        <h2 id="heroTitle">上一轮情景命中复盘</h2>
-        <p id="heroSub">按赛果方向、让球覆盖、总进球区间和七比分池分别统计，用于检验模型结构，而非评价投注结果。</p>
-      </div>
-      <div class="hero-actions">
-        <button class="btn" id="expandAll" type="button">全部展开</button>
-        <button class="btn" id="collapseAll" type="button">全部收起</button>
-        <button class="btn primary" type="button" onclick="window.print()">打印 / 导出 PDF</button>
-      </div>
+  <div class="compliance" role="note">
+    <div class="mark">!</div>
+    <div>
+      <strong>合规提示：</strong>MatchStruct（赛理）为足球赛果<strong>结构研究与复盘</strong>平台。页面内容可能含 AI 辅助生成，仅供学习研究。
+      <strong>不构成投注、购彩、理财或收益建议，不承诺任何结果。</strong>请遵守当地法律法规。平台不采集投注账户或支付信息。
     </div>
-    <div class="summary review" id="summaryBox">
-      <div class="summary-title" id="summaryTitle">07-19 结构覆盖概览</div>
-      <div class="metrics" id="metrics"></div>
-      <div class="cumulative" id="cumulative"></div>
+    <div class="actions">
+      <a class="linkbtn" id="linkTermsBanner" href="terms/">完整条款</a>
+      <a class="linkbtn" id="linkPrivacyBanner" href="privacy/">隐私说明</a>
+      <button class="linkbtn" type="button" id="openLegalTab">站内声明</button>
     </div>
   </div>
 
-  <section class="section">
-    <div class="section-head">
-      <div>
-        <h2 id="sectionTitle">07-19 赛果复盘</h2>
-        <p id="sectionHint">“命中”仅表示模型主方向或明确防守情景被赛果覆盖，用于方法评估。</p>
-      </div>
-      <div class="filters" id="filters"></div>
-    </div>
+  <div class="capabilities" aria-label="产品能力">
+    <div class="cap"><div class="label">Module 01</div><b>分层复盘</b><span>按第一选择、防守方向、让球范围、进球区间与比分池分别评估。</span></div>
+    <div class="cap"><div class="label">Module 02</div><b>情景推演</b><span>整合公开赔率参考、状态、伤停与结构变化，输出可讨论情景。</span></div>
+    <div class="cap"><div class="label">Module 03</div><b>方法透明</b><span>公开评估框架、覆盖口径与已知局限，便于复核与迭代。</span></div>
+    <div class="cap"><div class="label">Module 04</div><b>治理合规</b><span>AI 声明、非投注意见边界、隐私最小化与使用确认机制。</span></div>
+  </div>
 
-    <div class="panel active" id="reviewPanel"><div class="match-list" id="reviewList"></div></div>
-    <div class="panel" id="todayPanel">
-      <div class="combos" style="margin-bottom:12px">
-        <div class="combo"><h3>赛果方向观察</h3><strong>202 拉赫蒂客胜 · 203 佐加顿斯客胜</strong><p>方向相对清晰，但均为市场热门；203 需保留 1-1 防守情景。仅供结构讨论。</p></div>
-        <div class="combo"><h3>让球覆盖观察</h3><strong>201 TPS +1让胜 · 204 卡尔马-1让负</strong><p>覆盖面通常宽于普通三项，适合观察净胜幅度，不构成操作建议。</p></div>
-        <div class="combo"><h3>进球区间观察</h3><strong>201 / 202 / 204 · 2/3球</strong><p>精确球数方差高，仅作情景对照；请勿当作确定性结论。</p></div>
-      </div>
-      <div class="match-list" id="todayList"></div>
-    </div>
-    <div class="panel" id="methodPanel">
-      <div class="method">
-        <h3 style="margin-top:0">评估框架</h3>
-        <div class="method-grid">
-          <div class="method-item"><b>市场与热度</b><span>将公开赔率去水得到参考概率，并对照关注度，识别过热方向。</span></div>
-          <div class="method-item"><b>球队状态</b><span>区分主客场、对手强度、比赛内容和短期进球转化率。</span></div>
-          <div class="method-item"><b>结构变化</b><span>换帅、阵型、转会、欧战轮换、伤停与停赛单独记录。</span></div>
-          <div class="method-item"><b>统一比分矩阵</b><span>赛果、让球、总进球与七比分尽量由同一情景分布推导。</span></div>
+  <div class="riskboard" role="region" aria-label="重要风险因素">
+    <h2>重要风险因素（摘要）</h2>
+    <ol>
+      <li><b>模型风险：</b>概率估计与真实赛果可能显著偏离，覆盖指标仅用于方法评估。</li>
+      <li><b>信息风险：</b>公开数据可能延迟、缺失或被修订；临场首发变化可改变情景权重。</li>
+      <li><b>AI 风险：</b>辅助生成内容可能错误、片面或过时，不得作为事实或决策依据。</li>
+      <li><b>合规风险：</b>将研究输出误用作投注依据可能导致损失，且可能违反当地法律；责任由用户自担。</li>
+    </ol>
+  </div>
+
+  <div class="shell" id="main">
+    <div class="header">
+      <div class="brandrow">
+        <div class="brand">
+          <div class="logo" aria-hidden="true">MS</div>
+          <div>
+            <h1>MatchStruct 赛理</h1>
+            <div class="sub">足球赛果结构研究平台 · 分层复盘 · 情景推演 · 方法透明 · 治理披露</div>
+          </div>
         </div>
-        <h3>覆盖口径（研究用）</h3>
-        <ul>
-          <li><b>第一选择：</b>胜、平、负中的首选情景。</li>
-          <li><b>含防守方向：</b>首选或明确标注的“防平/防负”被赛果覆盖。</li>
-          <li><b>让球范围：</b>推荐的首选或明确第二情景被覆盖。</li>
-          <li><b>七比分：</b>实际常规时间比分落入七个比分池。</li>
-        </ul>
-        <h3>重要限制</h3>
-        <ul>
-          <li>精确比分与精确总进球单点概率通常很低，只适合情景覆盖讨论。</li>
-          <li>换帅不是固定加分：先扩大不确定性，再根据比赛内容调整。</li>
-          <li>临场首发与伤停变化，可能使概率移动约 5—10 个百分点。</li>
-          <li>本站用于概率结构研究与赛后复盘，<b>不构成收益承诺或投注意见</b>。</li>
-        </ul>
+        <div class="meta-pills">
+          <span class="pill">覆盖联赛 <b>世界杯 / 瑞超 / 芬超 / 韩职</b></span>
+          <span class="pill">研究口径 <b>常规时间 90′+</b></span>
+          <span class="pill">输出定位 <b>非投注意见</b></span>
+          <span class="pill">数据主体 <b>无个人档案</b></span>
+        </div>
       </div>
     </div>
-    <div class="panel" id="legalPanel">
-      <div class="method legal-doc">
-        <h3>1. 网站性质</h3>
-        <ul>
-          <li>本站展示足球竞赛的赛果结构分析与复盘方法，属于学习研究型信息展示。</li>
-          <li>本站不是博彩平台，不提供购彩代理、跟单、代购或资金往来服务。</li>
-        </ul>
-        <h3>2. AI 声明</h3>
-        <ul>
-          <li>页面文案、概率整理与复盘表述可能由人工智能（AI）辅助生成或改写。</li>
-          <li>AI 内容可能存在错误、幻觉、滞后或不完整，不能替代官方信息与独立判断。</li>
-        </ul>
-        <h3>3. 非投注意见</h3>
-        <ul>
-          <li>“方向 / 概率 / 比分池 / 优先级”等用语仅描述比赛情景结构，不构成投注、购彩或理财建议。</li>
-          <li>本站不承诺命中率、不承诺收益、不鼓动下注。</li>
-          <li>用户如自行参与任何博彩相关活动，须遵守当地法律并自行承担全部风险与责任。</li>
-        </ul>
-        <h3>4. 数据口径</h3>
-        <ul>
-          <li>默认按常规时间（90 分钟及伤停补时）理解赛果，通常不含加时与点球。</li>
-          <li>赔率、热度与伤停等信息可能来自公开渠道或示例数据，存在误差。</li>
-        </ul>
-        <p style="margin:14px 0 0;font-size:13px">完整条款：<a href="/terms/">免责声明与使用条款</a> · <a href="/about/">关于本站</a></p>
-      </div>
-    </div>
-  </section>
 
-  <div class="footer">
-    分析默认按常规时间（90 分钟及伤停补时）。内容可能含 AI 辅助生成，仅供学习研究，不构成投注或收益建议。<br>
-    <a href="/terms/">免责声明</a> · <a href="/about/">关于本站</a> · 请遵守您所在地法律法规
+    <div class="nav" role="tablist" aria-label="研究台导航">
+      <button class="tab active" data-panel="review" type="button" role="tab" aria-selected="true"><b>复盘台</b><span>07-19 · 7 场结构覆盖</span></button>
+      <button class="tab" data-panel="today" type="button" role="tab" aria-selected="false"><b>推演台</b><span>07-20 · 4 场情景</span></button>
+      <button class="tab" data-panel="method" type="button" role="tab" aria-selected="false"><b>方法论</b><span>口径 · 局限 · 评估</span></button>
+      <button class="tab" data-panel="legal" type="button" role="tab" aria-selected="false"><b>治理与合规</b><span>AI · 责任 · 边界</span></button>
+    </div>
+
+    <div class="workspace">
+      <div class="hero">
+        <div>
+          <h2 id="heroTitle">上一轮情景覆盖复盘</h2>
+          <p id="heroSub">按赛果方向、让球覆盖、总进球区间与七比分池分层统计，用于检验模型结构，而非评价投注结果。</p>
+        </div>
+        <div class="hero-actions">
+          <button class="btn" id="expandAll" type="button">全部展开</button>
+          <button class="btn" id="collapseAll" type="button">全部收起</button>
+          <button class="btn primary" type="button" onclick="window.print()">导出 PDF</button>
+        </div>
+      </div>
+
+      <div class="kpis" id="metrics"></div>
+      <div class="tags" id="cumulative"></div>
+
+      <div class="toolbar">
+        <div>
+          <h3 id="sectionTitle">07-19 赛果复盘</h3>
+          <p id="sectionHint">“覆盖”表示模型主方向或明确防守情景被赛果命中，仅用于方法评估。</p>
+        </div>
+        <div class="filters" id="filters"></div>
+      </div>
+
+      <div class="panel active" id="reviewPanel"><div class="match-list" id="reviewList"></div></div>
+
+      <div class="panel" id="todayPanel">
+        <div class="combos">
+          <div class="combo"><h3>Direction Watch</h3><strong>202 拉赫蒂客胜 · 203 佐加顿斯客胜</strong><p>方向相对清晰，但均为市场热门；203 需保留 1-1 防守情景。仅供结构讨论。</p></div>
+          <div class="combo"><h3>Handicap Cover</h3><strong>201 TPS +1让胜 · 204 卡尔马-1让负</strong><p>覆盖面通常宽于普通三项，适合观察净胜幅度，不构成操作建议。</p></div>
+          <div class="combo"><h3>Goals Band</h3><strong>201 / 202 / 204 · 2/3 球</strong><p>精确球数方差高，仅作情景对照；请勿当作确定性结论。</p></div>
+        </div>
+        <div class="match-list" id="todayList"></div>
+      </div>
+
+      <div class="panel" id="methodPanel">
+        <div class="method">
+          <h3 style="margin-top:0">评估框架</h3>
+          <div class="method-grid">
+            <div class="method-item"><b>市场与热度</b><span>公开赔率去水得到参考概率，并对照关注度，识别过热方向。</span></div>
+            <div class="method-item"><b>球队状态</b><span>主客场、对手强度、比赛内容与短期进球转化率。</span></div>
+            <div class="method-item"><b>结构变化</b><span>换帅、阵型、转会、欧战轮换、伤停与停赛单独记录。</span></div>
+            <div class="method-item"><b>统一比分矩阵</b><span>赛果、让球、总进球与七比分尽量由同一情景分布推导。</span></div>
+          </div>
+          <h3>覆盖口径（研究用）</h3>
+          <table class="matrix">
+            <thead><tr><th>层级</th><th>定义</th><th>用途</th></tr></thead>
+            <tbody>
+              <tr><td>第一选择</td><td>胜 / 平 / 负中的首选情景</td><td>主方向评估</td></tr>
+              <tr><td>含防守方向</td><td>首选或明确“防平 / 防负”被赛果覆盖</td><td>容错结构评估</td></tr>
+              <tr><td>让球范围</td><td>首选或明确第二情景被覆盖</td><td>净胜幅度评估</td></tr>
+              <tr><td>七比分池</td><td>常规时间比分落入七个比分池</td><td>情景覆盖评估</td></tr>
+            </tbody>
+          </table>
+          <h3>已知局限</h3>
+          <ul>
+            <li>精确比分与精确总进球单点概率通常很低，只适合情景覆盖讨论。</li>
+            <li>换帅不是固定加分：先扩大不确定性，再根据比赛内容调整。</li>
+            <li>临场首发与伤停变化，可能使概率移动约 5—10 个百分点。</li>
+            <li>平台输出用于结构研究与赛后复盘，<b>不构成收益承诺或投注意见</b>。</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" id="legalPanel">
+        <div class="legal-doc">
+          <h3>1. 平台性质</h3>
+          <ul>
+            <li>MatchStruct（赛理）展示足球竞赛的赛果结构分析与复盘方法，属于学习研究型信息展示。</li>
+            <li>本平台不是博彩平台，不提供购彩代理、跟单、代购或资金往来服务。</li>
+          </ul>
+          <h3>2. AI 声明</h3>
+          <ul>
+            <li>页面文案、概率整理与复盘表述可能由人工智能（AI）辅助生成或改写。</li>
+            <li>AI 内容可能存在错误、幻觉、滞后或不完整，不能替代官方信息与独立判断。</li>
+          </ul>
+          <h3>3. 非投注意见</h3>
+          <ul>
+            <li>“方向 / 概率 / 比分池 / 优先级 / 信心”等用语仅描述比赛情景结构，不构成投注、购彩或理财建议。</li>
+            <li>本平台不承诺命中率、不承诺收益、不鼓动下注。</li>
+            <li>用户如自行参与任何博彩相关活动，须遵守当地法律并自行承担全部风险与责任。</li>
+          </ul>
+          <h3>4. 隐私最小化</h3>
+          <ul>
+            <li>平台不主动收集投注账户、支付信息或证件号码，不建立个人用户档案。</li>
+            <li>浏览器本地仅可能保存“已阅读声明”状态，用于合规确认。</li>
+            <li>完整隐私说明见独立页面，遵循最小化与可清除原则。</li>
+          </ul>
+          <h3>5. 风险因素</h3>
+          <ul>
+            <li>模型、信息、AI 与合规风险可能导致判断偏差或违法使用风险，详见合规文件。</li>
+          </ul>
+          <p style="margin:16px 0 0;font-size:13px">完整法律文本：
+            <a id="linkTermsBody" href="terms/">免责声明与使用条款</a> ·
+            <a id="linkPrivacyBody" href="privacy/">隐私说明</a> ·
+            <a id="linkAboutBody" href="about/">关于产品</a>
+          </p>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <footer class="site-footer">
+    <div class="cols">
+      <div>
+        <h4>MatchStruct 赛理</h4>
+        足球赛果结构研究平台。分析默认按常规时间（90 分钟及伤停补时）。内容可能含 AI 辅助生成，仅供学习研究，不构成投注或收益建议。本站不采集个人投注或支付信息。
+      </div>
+      <div>
+        <h4>产品</h4>
+        <a id="linkAboutFoot" href="about/">关于产品</a><br>
+        <a href="#main">研究台</a><br>
+        <span style="color:#8a9aa6">文件 MS-DESK-001</span>
+      </div>
+      <div>
+        <h4>合规与隐私</h4>
+        <a id="linkTermsFoot" href="terms/">免责声明</a><br>
+        <a id="linkPrivacyFoot" href="privacy/">隐私说明</a><br>
+        <a href="#" id="openLegalFooter">治理与合规</a>
+      </div>
+    </div>
+    <div class="copy">© 2026 MatchStruct Research Desk · MS-LEGAL-001 / Privacy Notice · 请遵守您所在地法律法规 · No personal account system</div>
+  </footer>
 </div>
 
 <div class="modal-mask" id="consentModal" hidden>
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="consentTitle">
-    <h3 id="consentTitle">使用前请确认</h3>
-    <p>进入本站前，请确认您已知悉：</p>
+    <h3 id="consentTitle">合规确认</h3>
+    <p>进入 MatchStruct 研究台前，请确认您已知悉：</p>
     <ul>
-      <li>本站为足球赛果<strong>分析与复盘研究</strong>展示，不是购彩或博彩服务；</li>
+      <li>本平台为足球赛果<strong>分析与复盘研究</strong>展示，不是购彩或博彩服务；</li>
       <li>内容可能含 <strong>AI 辅助生成</strong>，存在错误风险；</li>
       <li><strong>不构成</strong>投注、购彩、理财建议，也不承诺任何收益；</li>
-      <li>您将遵守所在地法律法规，并对自身行为负责。</li>
+      <li>您将遵守所在地法律法规，并对自身行为负责；</li>
+      <li>本平台不收集您的姓名、电话、投注账户或支付信息。</li>
     </ul>
-    <button class="btn primary" id="consentBtn" type="button">我已阅读并同意，进入分析页</button>
+    <button class="btn primary" id="consentBtn" type="button">我已阅读并同意，进入研究台</button>
   </div>
 </div>
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "MatchStruct",
+  "alternateName": "赛理",
+  "applicationCategory": "SportsAnalysisApplication",
+  "description": "足球赛果结构研究与复盘平台。AI 辅助整理，仅供学习研究，不构成投注建议。",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "featureList": ["分层复盘", "情景推演", "方法论披露", "合规与AI声明"]
+}
+</script>
+
 <script>
+const BASE=(function(){
+  const parts=location.pathname.split('/').filter(Boolean);
+  if(parts[0]==='KaiFengLikeWritingCode.github.io') return '/KaiFengLikeWritingCode.github.io';
+  return '';
+})();
+function abs(path){return BASE + '/' + path.replace(/^\//,'')}
+const linkMap={
+  linkTermsTop:'terms/', linkTermsBanner:'terms/', linkTermsBody:'terms/', linkTermsFoot:'terms/',
+  linkPrivacyTop:'privacy/', linkPrivacyBanner:'privacy/', linkPrivacyBody:'privacy/', linkPrivacyFoot:'privacy/',
+  linkAboutTop:'about/', linkAboutBody:'about/', linkAboutFoot:'about/'
+};
+Object.keys(linkMap).forEach(id=>{
+  const el=document.getElementById(id); if(el) el.setAttribute('href', abs(linkMap[id]));
+});
+
 const reviewData=[
  {id:'104',league:'世界杯',time:'2026-07-20 03:00',home:'西班牙',away:'阿根廷',handicap:'西班牙 -1',score:'0:0',extra:'加时 1:0',overall:'hit',grade:'观察',pred:['胜，防平','-1让负','1/2球，防0球','1:0;0:0;1:1;0:1;2:0;2:1;0:2'],hits:['胜平负防平覆盖','让球让负覆盖','0球防守覆盖','七比分第2位覆盖'],misses:['第一选择“西班牙胜”未覆盖'],note:'决赛90分钟低节奏判断有效，但应提高平局作为第一选择的条件。',reasons:['决赛风险厌恶使90分钟平局权重上升。','西班牙控球占优，阿根廷低位防守压缩高质量机会。'],risks:['决赛不宜套用普通强弱局平局先验。','常规时间赛果与最终冠军结果应分开统计。']},
  {id:'201',league:'韩职',time:'2026-07-19 18:30',home:'富川FC',away:'首尔FC',handicap:'富川 +1',score:'1:3',overall:'hit',grade:'观察',pred:['首尔FC客胜','+1让胜/让负','2球，防1/3球','0:1;0:2;1:1;1:2;0:0;0:3;1:0'],hits:['客胜第一选择覆盖','+1让负由第二情景覆盖'],misses:['总进球4球未覆盖','1:3未进入七比分'],note:'实力方向正确，但低估了首尔扩大比分与比赛开放度。',reasons:['首尔排名与阵容质量占优。','富川低位防守，落后后面前压导致空间放大。'],risks:['强客破局后可能连续进球。','总进球对3球以上尾部仍偏保守。']},
@@ -391,61 +575,50 @@ const todayData=[
 
 const summaries={
   review:{
-    cls:'review',title:'07-19 结构覆盖概览（研究口径）',
     metrics:[['4/7','第一选择 · 57.1%'],['6/7','含防守方向 · 85.7%'],['5/7','让球范围 · 71.4%'],['4/7','总进球区间 · 57.1%'],['5/7','七比分池 · 71.4%']],
-    pills:['上一批22场：主选 <b>12/22</b>','含防守 <b>16/22</b>','让球范围 <b>13/22</b>','总进球 <b>14/22</b>','七比分 <b>15/22</b>','用途：<b>模型评估</b>']
+    pills:['上一批22场主选 <b>12/22</b>','含防守 <b>16/22</b>','让球范围 <b>13/22</b>','总进球 <b>14/22</b>','七比分 <b>15/22</b>','用途 <b>模型评估</b>']
   },
   today:{
-    cls:'today',title:'07-20 赛前情景结构（非投注意见）',
     metrics:[['4','覆盖场次'],['1','强势方向'],['2','平稳观察'],['1','谨慎观察'],['研究','使用定位']],
-    pills:['方向观察：<b>202 / 203 客胜</b>','让球观察：<b>201让胜 · 204让负</b>','进球观察：<b>2/3球情景</b>','热度风险：<b>203 防1-1</b>']
+    pills:['方向观察 <b>202 / 203 客胜</b>','让球观察 <b>201让胜 · 204让负</b>','进球观察 <b>2/3球情景</b>','热度风险 <b>203 防1-1</b>']
   },
   method:{
-    cls:'method',title:'方法口径速览',
     metrics:[['4','评估维度'],['2','覆盖层级'],['7','比分池'],['5–10%','临场波动'],['研究','使用定位']],
-    pills:['维度：市场热度 / 球队状态 / 结构变化 / 统一比分矩阵','定位：排序、覆盖与风险识别，<b>非收益承诺</b>']
+    pills:['市场热度 / 球队状态 / 结构变化 / 统一矩阵','定位：排序、覆盖与风险识别，<b>非收益承诺</b>']
   },
   legal:{
-    cls:'legal',title:'合规要点',
-    metrics:[['分析','网站性质'],['AI','内容声明'],['非建议','投注边界'],['自担','用户责任'],['研究','使用目的']],
+    metrics:[['分析','平台性质'],['AI','内容声明'],['非建议','投注边界'],['最小','隐私原则'],['自担','用户责任']],
     pills:['<b>AI 可能出错</b>','<b>非购彩服务</b>','<b>不承诺收益</b>','请遵守当地法律']
   }
 };
 
 const panels={
-  review:{panel:'reviewPanel',title:'上一轮情景命中复盘',sub:'按赛果方向、让球覆盖、总进球区间和七比分池分别统计，用于检验模型结构，而非评价投注结果。',section:'07-19 赛果复盘',hint:'“命中”仅表示模型主方向或明确防守情景被赛果覆盖，用于方法评估。'},
-  today:{panel:'todayPanel',title:'07-20 四场赛前情景推演',sub:'结合公开赔率参考、主客场状态、换帅与伤停等因素，整理情景覆盖。内容可能含 AI 辅助，仅供研究。',section:'今日逐场分析',hint:'强势=方向与基本面较一致；平稳=可观察但需保护；观察=三项接近或结构冲突。'},
-  method:{panel:'methodPanel',title:'模型口径与复盘方法',sub:'把预测拆成赛果方向、净胜幅度、总进球和比分情景，分别评价，避免结论互相矛盾。',section:'方法说明',hint:'模型概率不是确定结果，主要用于排序、覆盖与风险识别。'},
-  legal:{panel:'legalPanel',title:'免责声明与 AI 说明',sub:'请完整阅读后再使用本站内容。详细条款见独立免责声明页面。',section:'法律与合规提示',hint:'继续使用即表示您理解本站性质、AI 风险与责任边界。'}
+  review:{title:'上一轮情景覆盖复盘',sub:'按赛果方向、让球覆盖、总进球区间与七比分池分层统计，用于检验模型结构，而非评价投注结果。',section:'07-19 赛果复盘',hint:'“覆盖”表示模型主方向或明确防守情景被赛果命中，仅用于方法评估。',panel:'reviewPanel'},
+  today:{title:'07-20 四场赛前情景推演',sub:'结合公开赔率参考、主客场状态、换帅与伤停等因素整理情景覆盖。内容可能含 AI 辅助，仅供研究。',section:'今日逐场分析',hint:'强势=方向与基本面较一致；平稳=可观察但需保护；观察=三项接近或结构冲突。',panel:'todayPanel'},
+  method:{title:'方法论与评估口径',sub:'将输出拆成赛果方向、净胜幅度、总进球与比分情景，分别评价，避免结论互相矛盾。',section:'方法说明',hint:'模型概率不是确定结果，主要用于排序、覆盖与风险识别。',panel:'methodPanel'},
+  legal:{title:'治理、AI 与合规边界',sub:'请完整阅读后再使用本站内容。详细条款见独立合规声明页面。',section:'治理与合规',hint:'继续使用即表示您理解平台性质、AI 风险与责任边界。',panel:'legalPanel'}
 };
 
 function initials(name){return name.replace(/FC|SK|图尔|现代|竞技|联/g,'').slice(0,2)}
 function chips(items,cls=''){return items.map(x=>`<span class="chip ${cls}">${x}</span>`).join('')}
-
 function reviewCard(m){
  return `<article class="match-card ${m.overall==='hit'?'hit':'miss'}" data-state="${m.overall}" data-search="${m.id}${m.home}${m.away}">
   <div class="card-main">
-   <div class="match-meta"><span>周日${m.id}</span><span>${m.time}</span><span class="dot"></span><b>${m.league}</b><span class="tag ${m.grade==='强势'?'strong':m.grade==='平稳'?'stable':'watch'}">${m.grade}</span><span class="status ${m.overall}">${m.overall==='hit'?'覆盖':'未覆盖'}</span></div>
+   <div class="match-meta"><span>周日 ${m.id}</span><span>${m.time}</span><span class="dot"></span><b>${m.league}</b><span class="tag ${m.grade==='强势'?'strong':m.grade==='平稳'?'stable':'watch'}">${m.grade}</span><span class="status ${m.overall}">${m.overall==='hit'?'已覆盖':'未覆盖'}</span></div>
    <div class="teams"><span class="team"><i class="crest">${initials(m.home)}</i>${m.home}</span><span class="scoreline">${m.score}${m.extra?` <span class="subscore">(${m.extra})</span>`:''}</span><span class="team">${m.away}<i class="crest">${initials(m.away)}</i></span></div>
-   <div class="pickline"><div class="chips">${chips(m.pred.slice(0,2),'key')}${chips(m.pred.slice(2,3))}<span class="chip">${m.pred[3]}</span><span class="analysis-toggle">分析</span></div><div class="short-note">${m.note}</div></div>
+   <div class="pickline"><div class="chips">${chips(m.pred.slice(0,2),'key')}${chips(m.pred.slice(2,3))}<span class="chip">${m.pred[3]}</span><span class="analysis-toggle">明细</span></div><div class="short-note">${m.note}</div></div>
   </div>
-  <div class="details"><div class="detail-grid"><div class="box reviewbox"><h4>覆盖项</h4><ul>${m.hits.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="box riskbox"><h4>未覆盖与偏差</h4><ul>${m.misses.map(x=>`<li>${x}</li>`).join('')}</ul></div></div><div class="detail-grid"><div class="box"><h4>原判断依据</h4><ul>${m.reasons.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="box riskbox"><h4>模型需要修正</h4><ul>${m.risks.map(x=>`<li>${x}</li>`).join('')}</ul></div></div></div>
+  <div class="details"><div class="detail-grid"><div class="box reviewbox"><h4>覆盖项</h4><ul>${m.hits.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="box riskbox"><h4>未覆盖与偏差</h4><ul>${m.misses.map(x=>`<li>${x}</li>`).join('')}</ul></div></div><div class="detail-grid"><div class="box"><h4>原判断依据</h4><ul>${m.reasons.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="box riskbox"><h4>模型修正点</h4><ul>${m.risks.map(x=>`<li>${x}</li>`).join('')}</ul></div></div></div>
  </article>`
 }
-
-function probBars(m){
-  const labels=['主胜','平局','客胜'],classes=['home','draw','away'];
-  return m.model.map((v,i)=>`<div class="prob-row"><span>${labels[i]}</span><div class="bar ${classes[i]}"><i style="width:${v}%"></i></div><b>${v}%</b></div>`).join('')
-}
-function oddsTable(title,odds,support){
-  return `<div><b style="font-size:12px">${title}</b><table><tr><th>胜</th><th>平</th><th>负</th></tr><tr>${odds.map(x=>`<td>${x}</td>`).join('')}</tr><tr>${support.map(x=>`<td>${x}%</td>`).join('')}</tr></table><div class="footnote">上行为参考赔率，下行为市场关注度（示意）</div></div>`
-}
+function probBars(m){const labels=['主胜','平局','客胜'],classes=['home','draw','away'];return m.model.map((v,i)=>`<div class="prob-row"><span>${labels[i]}</span><div class="bar ${classes[i]}"><i style="width:${v}%"></i></div><b>${v}%</b></div>`).join('')}
+function oddsTable(title,odds,support){return `<div><b style="font-size:12px">${title}</b><table><tr><th>胜</th><th>平</th><th>负</th></tr><tr>${odds.map(x=>`<td>${x}</td>`).join('')}</tr><tr>${support.map(x=>`<td>${x}%</td>`).join('')}</tr></table><div class="footnote">上行：参考赔率 · 下行：市场关注度（示意）</div></div>`}
 function todayCard(m){
   const gradeClass=m.grade==='强势'?'strong':m.grade==='平稳'?'stable':'watch';
   return `<article class="match-card ${gradeClass}" data-state="${m.grade}" data-search="${m.id}${m.home}${m.away}">
-  <div class="card-main"><div class="match-meta"><span>周一${m.id}</span><span>${m.time}</span><span class="dot"></span><b>${m.league}</b><span class="tag ${gradeClass}">${m.grade}</span><span class="status pending">待赛 · ${m.confidence}</span></div>
+  <div class="card-main"><div class="match-meta"><span>周一 ${m.id}</span><span>${m.time}</span><span class="dot"></span><b>${m.league}</b><span class="tag ${gradeClass}">${m.grade}</span><span class="status pending">待赛 · ${m.confidence}</span></div>
   <div class="teams"><span class="team"><i class="crest">${initials(m.home)}</i>${m.home}</span><span class="scoreline">VS</span><span class="team">${m.away}<i class="crest">${initials(m.away)}</i></span></div>
-  <div class="pickline"><div class="chips"><span class="chip key">${m.pick}</span><span class="chip key">${m.handicapPick}</span><span class="chip">${m.goals}</span><span class="analysis-toggle">分析</span></div><div class="short-note">${m.summary}</div></div></div>
+  <div class="pickline"><div class="chips"><span class="chip key">${m.pick}</span><span class="chip key">${m.handicapPick}</span><span class="chip">${m.goals}</span><span class="analysis-toggle">明细</span></div><div class="short-note">${m.summary}</div></div></div>
   <div class="details"><div class="detail-grid"><div class="box"><h4>模型胜平负概率</h4>${probBars(m)}</div><div class="box"><h4>七比分池</h4><div class="scores">${m.scores.map((x,i)=>`<span class="score ${i<3?'top':''}">${x}${i<3?' ★':''}</span>`).join('')}</div><div class="footnote">前三为核心情景，后四项负责相邻比分、平局与尾部覆盖。仅供研究。</div></div></div>
   <div class="detail-grid"><div class="box"><h4>判断依据</h4><ul>${m.reasons.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="box riskbox"><h4>主要不确定性</h4><ul>${m.risks.map(x=>`<li>${x}</li>`).join('')}</ul></div></div>
   <div class="box odds"><h4 style="grid-column:1/-1">参考赔率与市场关注度</h4>${oddsTable('胜平负',m.odds[0],m.support[0])}${oddsTable(m.handicap,m.odds[1],m.support[1])}</div></div>
@@ -454,77 +627,61 @@ function todayCard(m){
 
 function renderSummary(key){
   const s=summaries[key];
-  const box=document.getElementById('summaryBox');
-  box.className='summary '+s.cls;
-  document.getElementById('summaryTitle').textContent=s.title;
-  document.getElementById('metrics').innerHTML=s.metrics.map(([a,b])=>`<div class="metric"><b>${a}</b><span>${b}</span></div>`).join('');
+  document.getElementById('metrics').innerHTML=s.metrics.map(([a,b])=>`<div class="kpi"><b>${a}</b><span>${b}</span></div>`).join('');
   document.getElementById('cumulative').innerHTML=s.pills.map(x=>`<span class="pill">${x}</span>`).join('');
 }
-
 function switchPanel(key){
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
   document.getElementById(panels[key].panel).classList.add('active');
-  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.panel===key));
+  document.querySelectorAll('.tab').forEach(x=>{
+    const on=x.dataset.panel===key; x.classList.toggle('active',on); x.setAttribute('aria-selected',on?'true':'false');
+  });
   document.getElementById('heroTitle').textContent=panels[key].title;
   document.getElementById('heroSub').textContent=panels[key].sub;
   document.getElementById('sectionTitle').textContent=panels[key].section;
   document.getElementById('sectionHint').textContent=panels[key].hint;
   document.getElementById('filters').style.display=(key==='method'||key==='legal')?'none':'flex';
-  renderSummary(key);
-  buildFilters(key);
+  renderSummary(key); buildFilters(key);
 }
-
 function buildFilters(key){
   const wrap=document.getElementById('filters');
   if(key==='method'||key==='legal'){wrap.innerHTML='';return}
   const isReview=key==='review';
   wrap.innerHTML=`<button class="filter active" data-filter="all" type="button">全部 ${isReview?7:4}</button>${isReview?'<button class="filter" data-filter="hit" type="button">已覆盖 6</button><button class="filter" data-filter="miss" type="button">未覆盖 1</button>':'<button class="filter" data-filter="强势" type="button">强势 1</button><button class="filter" data-filter="平稳" type="button">平稳 2</button><button class="filter" data-filter="观察" type="button">观察 1</button>'}<input class="search" id="search" placeholder="搜索球队或编号" aria-label="搜索球队或编号">`;
   wrap.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{
-    wrap.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active');
+    wrap.querySelectorAll('.filter').forEach(x=>x.classList.remove('active')); b.classList.add('active');
     applyFilter(key,b.dataset.filter,wrap.querySelector('#search').value);
   });
   wrap.querySelector('#search').oninput=e=>applyFilter(key,wrap.querySelector('.filter.active').dataset.filter,e.target.value);
 }
-
 function applyFilter(key,filter,q){
   const list=document.getElementById(key==='review'?'reviewList':'todayList');
   let shown=0;
   [...list.querySelectorAll('.match-card')].forEach(card=>{
-    const okFilter=filter==='all'||card.dataset.state===filter;
-    const okSearch=card.dataset.search.toLowerCase().includes((q||'').toLowerCase());
-    const show=okFilter&&okSearch;
-    card.style.display=show?'':'none';
-    if(show) shown++;
+    const show=(filter==='all'||card.dataset.state===filter)&&card.dataset.search.toLowerCase().includes((q||'').toLowerCase());
+    card.style.display=show?'':'none'; if(show) shown++;
   });
   let empty=list.querySelector('.empty');
-  if(!shown){
-    if(!empty){empty=document.createElement('div');empty.className='empty';empty.textContent='没有符合条件的比赛';list.appendChild(empty)}
-    empty.style.display='';
-  }else if(empty){empty.style.display='none'}
+  if(!shown){ if(!empty){empty=document.createElement('div');empty.className='empty';empty.textContent='没有符合条件的比赛';list.appendChild(empty)} empty.style.display=''; }
+  else if(empty) empty.style.display='none';
 }
 
 document.getElementById('reviewList').innerHTML=reviewData.map(reviewCard).join('');
 document.getElementById('todayList').innerHTML=todayData.map(todayCard).join('');
-document.addEventListener('click',e=>{
-  const t=e.target.closest('.analysis-toggle');
-  if(t) t.closest('.match-card').classList.toggle('open');
-});
+document.addEventListener('click',e=>{const t=e.target.closest('.analysis-toggle'); if(t) t.closest('.match-card').classList.toggle('open')});
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>switchPanel(t.dataset.panel));
 document.getElementById('expandAll').onclick=()=>document.querySelectorAll('.panel.active .match-card').forEach(x=>x.classList.add('open'));
 document.getElementById('collapseAll').onclick=()=>document.querySelectorAll('.match-card').forEach(x=>x.classList.remove('open'));
-renderSummary('review');
-buildFilters('review');
+document.getElementById('openLegalTab').onclick=()=>switchPanel('legal');
+document.getElementById('openLegalFooter').onclick=e=>{e.preventDefault();switchPanel('legal');window.scrollTo({top:0,behavior:'smooth'})};
+renderSummary('review'); buildFilters('review');
 
 (function initConsent(){
-  const key='football_analysis_consent_v1';
+  const key='matchstruct_consent_v3';
   const modal=document.getElementById('consentModal');
   if(localStorage.getItem(key)==='1'){modal.hidden=true;return}
   modal.hidden=false;
-  document.getElementById('consentBtn').onclick=()=>{
-    localStorage.setItem(key,'1');
-    modal.hidden=true;
-  };
+  document.getElementById('consentBtn').onclick=()=>{localStorage.setItem(key,'1');modal.hidden=true};
 })();
 </script>
 </body>

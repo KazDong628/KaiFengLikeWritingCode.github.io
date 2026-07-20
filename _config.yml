@@ -9,23 +9,23 @@
 # Basic Site Settings
 locale                   : "zh-CN"
 site_theme               : "default"
-title                    : "足球竞赛分析"
+title                    : "MatchStruct 赛理"
 title_separator          : "-"
-name                     : &name "足球竞赛分析"
-description              : &description "足球赛果结构分析与复盘研究站点。内容含 AI 辅助生成，仅供学习研究，不构成任何投注、理财或收益建议。"
+name                     : &name "MatchStruct"
+description              : &description "MatchStruct（赛理）足球赛果结构研究平台。分层复盘、情景推演与合规披露；AI 辅助整理，仅供学习研究，不构成投注或收益建议。不采集个人投注/支付信息。"
 
-url                      : "https://KaiFengLikeWritingCode.github.io"
-baseurl                  : ""
-repository               : "KaiFengLikeWritingCode/KaiFengLikeWritingCode.github.io"
+url                      : "https://kazdong628.github.io"
+baseurl                  : "/KaiFengLikeWritingCode.github.io"
+repository               : "KazDong628/KaiFengLikeWritingCode.github.io"
 
 
 
-# Site Author - blanked for a non-personal sports analysis site
+# Site Author - institutional product identity only (no personal PII)
 author:
   avatar           :
-  name             : "足球竞赛分析"
+  name             : "MatchStruct"
   pronouns         :
-  bio              : "赛果结构分析 · AI 辅助研究 · 非投注意见"
+  bio              : "足球赛果结构研究 · AI 辅助 · 非投注意见"
   location         :
   employer         :
   uri              :

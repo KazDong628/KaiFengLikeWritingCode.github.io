@@ -1,9 +1,12 @@
 main:
-  - title: "赛果分析"
+  - title: "研究台"
     url: /
 
-  - title: "关于本站"
+  - title: "关于产品"
     url: /about/
 
-  - title: "免责声明"
+  - title: "合规声明"
     url: /terms/
+
+  - title: "隐私说明"
+    url: /privacy/

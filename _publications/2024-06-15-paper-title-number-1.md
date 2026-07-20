@@ -1,48 +1,7 @@
----
-title: "基于场景图的红外与可见光多模态图像融合"
-collection: publications
-category: manuscripts
-permalink: /publication/2009-10-01-paper-title-number-1
-excerpt: '本论文提出 MSGFusion——首个利用对齐场景图注入高层语义的一体化红外–可见光图像融合框架，在视觉质量与下游检测任务上均达到了最新水平。'
-date: 2024-06-15
-venue: 'IEEE Transactions on Multimedia'
-slidesurl: 'http://academicpages.github.io/files/slides1.pdf'
-paperurl: 'http://academicpages.github.io/files/paper1.pdf'
-bibtexurl: 'http://academicpages.github.io/files/bibtex1.bib'
-citation: 'Liu, K., Dong, K., & Zhang, H. (2024). “MSGFusion：基于场景图的红外与可见光多模态图像融合.” <i>IEEE Transactions on Multimedia</i>.'
+﻿---
+published: false
+title: "Archived"
+permalink: /publications/2024-06-15-paper-title-number-1/
 ---
 
-## 摘要
-
-红外（IR）与可见光（VIS）图像融合旨在将 IR 的热目标信息与 VIS 的丰富纹理信息合成一幅复合图，该图既利于人类观察，也能提升后续视觉算法的效果。传统方法多聚焦于低层的像素或中层特征，但往往忽略了场景的语义结构。MSGFusion 首次引入**对齐的多模态场景图**作为高层语义桥梁：从每个模态提取对象与关系节点，通过图神经网络对齐，生成语义嵌入，再将该嵌入注入融合网络，以实现语义一致的细粒度融合。
-
-------
-
-## 方法
-
-1. **场景图构建与对齐**
-   - **视觉场景图**：对 IR/VIS 图像分别采用改进版 Faster R-CNN 进行目标检测与实例分割，构建对象节点与空间／语义关系边。
-   - **文本场景图**：基于统一类别标签生成“对象–关系–对象”三元组，与视觉节点一一对应。
-   - **跨模态对齐**：通过交叉注意力与图神经网络，将视觉图与文本图映射到同一语义空间，完成节点与边的结构化对齐。
-2. **融合网络架构**
-   - **双路编码器**：分别提取 IR 与 VIS 图像的多尺度特征金字塔。
-   - **场景图引导模块**：将对齐后的场景图嵌入注入编码器各层，生成语义权重，用以突出前景目标、抑制背景冗余。
-   - **融合解码器**：融合加权特征与原始图像特征，依次采用跨通道注意力与残差连接，恢复高分辨率融合结果。
-3. **联合损失设计**
-   - **前景重建损失**：对检测到的目标区域进行像素级 L1 重建，保证目标细节与热源清晰。
-   - **背景一致性损失**：结合结构相似度（SSIM）与多尺度对比损失，维护背景自然过渡。
-   - **局部对比度正则化**：在语义重要区域强制提升对比度，提升下游检测性能。
-
-------
-
-## 实验与结果
-
-- 在 TNO、RoadScene、OTCBVS 等公开数据集上，MSGFusion 在**均方误差 (MSE)**、**互信息 (MI)**、**结构相似度 (SSIM)** 等指标均优于现有方法。
-- 在**目标检测**任务中，基于 YOLOv5 的实验显示，融合图像训练的平均 mAP 提升 **3.8%**。
-- 消融实验表明，加入场景图对齐模块后，融合质量与检测 mAP 分别提升 **2.1%** 和 **1.7%**，验证了高层语义一致性的关键作用。
-
-------
-
-## 结论
-
-MSGFusion 首次将**多模态场景图**引入红外–可见光图像融合，从高层语义角度强化了融合网络，从而在保持视觉质量的同时显著提升了下游检测性能，为多模态视觉融合领域提供了新思路。
+This item has been archived and is not part of the MatchStruct public site.

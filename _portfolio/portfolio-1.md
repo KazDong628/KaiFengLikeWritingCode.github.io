@@ -1,8 +1,10 @@
----
+﻿---
+published: false
 title: "智慧鱼苗检测与管理系统"
 excerpt: "研发一套“一站式”智慧鱼苗检测与养殖管控平台，实现鱼苗自动计数、库存追溯、投喂策略推荐及远程数据可视化<br/><img src='./images/2024 SRDP展板.png'>"
 collection: portfolio
 ---
+published: false
 
 **项目周期：2022.12 – 2023.11
  所在团队：黄磊、温琦实验室 
