@@ -64,7 +64,7 @@ button,input{font:inherit}a{color:#0b6b5f}
 .legal strong{color:#fff}
 
 .nav{
-  margin-top:14px;display:grid;grid-template-columns:repeat(5,1fr);gap:8px;position:relative;z-index:1;
+  margin-top:14px;display:grid;grid-template-columns:repeat(6,1fr);gap:8px;position:relative;z-index:1;
 }
 .tab{
   border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.22);color:#d7efe9;
@@ -214,6 +214,36 @@ button,input{font:inherit}a{color:#0b6b5f}
 .legend-hits .l-hit{background:#1f9a62}
 .legend-hits .l-partial{background:#e0a01e}
 .legend-hits .l-miss{background:#d4544c}
+.legend-hits .l-core{background:#1f9a62}
+.legend-hits .l-pool{background:#2a8fad}
+.legend-hits .l-dir{background:#c4923a}
+.wc-stage{
+  border:1px solid var(--line);border-radius:14px;padding:14px;background:linear-gradient(160deg,#fff,#f7fafc);
+}
+.wc-stage .name{font-weight:800;color:#0b5c52;font-size:13px}
+.wc-stage .n{font-size:28px;font-weight:900;margin:6px 0 8px;color:#123040}
+.wc-stage .lines{display:grid;gap:4px;font-size:12px;color:#667}
+.wc-stage .lines b{color:#123040}
+.wc-stages{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:12px}
+.wc-note{margin:10px 0 6px;font-size:13px;color:#445;line-height:1.55}
+.wc-detail{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.wc-detail>div{border:1px solid #e5ecf0;border-radius:10px;padding:8px 10px;background:#f8fbfc}
+.wc-detail small{display:block;font-size:10px;color:#7a8b99;font-weight:800;letter-spacing:.04em}
+.wc-detail b{display:block;margin-top:4px;font-size:12px;line-height:1.45;font-weight:700;color:#234}
+.match.wc-core{border-left-color:#1f9a62;background:linear-gradient(90deg,rgba(31,154,98,.06),#fff 48px)}
+.match.wc-pool{border-left-color:#2a8fad;background:linear-gradient(90deg,rgba(42,143,173,.07),#fff 48px)}
+.match.wc-dir{border-left-color:#c4923a;background:linear-gradient(90deg,rgba(196,146,58,.07),#fff 48px)}
+.match.wc-miss{border-left-color:#d4544c;background:linear-gradient(90deg,rgba(212,84,76,.06),#fff 48px)}
+.stamp.wc-core{background:#1f9a62;color:#fff;border-color:#167a4d}
+.stamp.wc-pool{background:#2a8fad;color:#fff;border-color:#1f6f88}
+.stamp.wc-dir{background:#c4923a;color:#fff;border-color:#9a7124}
+.stamp.wc-miss{background:#d4544c;color:#fff;border-color:#b33d37}
+.notice-box{
+  margin-top:12px;padding:12px 14px;border-radius:12px;font-size:13px;line-height:1.7;color:#6a5318;
+  background:#fff8ef;border:1px solid #ead7a8;
+}
+@media(max-width:1100px){.wc-stages{grid-template-columns:repeat(2,1fr)}.wc-detail{grid-template-columns:1fr 1fr}}
+@media(max-width:720px){.wc-stages,.wc-detail{grid-template-columns:1fr}}
 
 .today-hero{
   display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px;
@@ -292,6 +322,7 @@ button,input{font:inherit}a{color:#0b6b5f}
     <div class="nav" role="tablist">
       <button class="tab active" data-panel="dash" type="button"><b>复盘看板</b><span>命中率 · 图表 · 结论</span></button>
       <button class="tab" data-panel="review" type="button"><b>22场明细</b><span>逐场分析 · 命中高亮</span></button>
+      <button class="tab" data-panel="wc86" type="button"><b>世界杯86场</b><span>七比分官方复盘档案</span></button>
       <button class="tab" data-panel="today" type="button"><b>今日推演</b><span>4场深度情景</span></button>
       <button class="tab" data-panel="rank" type="button"><b>优先级</b><span>串关观察 · 热度风险</span></button>
       <button class="tab" data-panel="method" type="button"><b>方法迭代</b><span>问题 · 下一步</span></button>
@@ -334,8 +365,8 @@ button,input{font:inherit}a{color:#0b6b5f}
     </div>
     <div class="card" style="margin-top:14px">
       <h2>历史档案 · 世界杯86场</h2>
-      <p class="sub">2026世界杯七比分模型官方赛果复盘：核心3命中36/86（41.9%），完整比分池覆盖57/86（66.3%），方向或比分覆盖78/86（90.7%）。</p>
-      <p style="margin:0"><a id="wcArchive" href="worldcup86.html" style="display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:12px;background:linear-gradient(145deg,#123040,#1a5a7a);color:#fff;text-decoration:none;font-weight:800">打开世界杯86场复盘 →</a></p>
+      <p class="sub">2026世界杯七比分模型官方赛果复盘：核心3命中36/86（41.9%），完整比分池覆盖57/86（66.3%），方向或比分覆盖78/86（90.7%）。完整明细已并入本页「世界杯86场」标签。</p>
+      <p style="margin:0"><button type="button" class="bulk expand" id="goWc86" style="padding:10px 16px">查看世界杯86场复盘 →</button></p>
     </div>
   </section>
 
@@ -350,6 +381,39 @@ button,input{font:inherit}a{color:#0b6b5f}
       </div>
       <div class="filters" id="revFilters"></div>
       <div id="reviewList"></div>
+    </div>
+  </section>
+
+
+  <section class="panel" id="wc86">
+    <div class="card">
+      <h2>世界杯86场 · 官方赛果复盘</h2>
+      <p class="sub">七比分模型按开赛顺序核验；淘汰赛比分按90分钟常规时间判定。绿=核心3，蓝=比分池，黄=方向，红=未中。</p>
+      <div class="legend-hits">
+        <span><i class="l-core"></i>核心3命中</span>
+        <span><i class="l-pool"></i>比分池命中</span>
+        <span><i class="l-dir"></i>方向命中</span>
+        <span><i class="l-miss"></i>未覆盖</span>
+      </div>
+      <div class="kpi-grid" id="wcKpis"></div>
+      <div class="notice-box" id="wcNotice"></div>
+      <div class="wc-stages" id="wcStages"></div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <h2>逐场复盘</h2>
+      <p class="sub">可按阶段 / 命中层级筛选；淘汰赛可展开查看候选池与方向明细。</p>
+      <div class="filters" id="wcFilters"></div>
+      <div id="wcList"></div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <h2>8场完全未中</h2>
+      <p class="sub">比分与方向均未覆盖的场次，优先用于迭代。</p>
+      <div class="list" id="wcMisses"></div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <h2>模型规律与下一版迭代</h2>
+      <p class="sub" id="wcSummary"></p>
+      <div class="split" id="wcLessons" style="grid-template-columns:1fr 1fr"></div>
     </div>
   </section>
 
@@ -419,7 +483,7 @@ button,input{font:inherit}a{color:#0b6b5f}
   <footer class="footer">
     MatchStruct Research Desk · 足球演示 · 世界杯86场档案 · 七星彩/大乐透待验证 · 不构成投注或购彩建议<br>
     <a id="fTerms" href="terms/">免责声明</a> · <a id="fPrivacy" href="privacy/">隐私说明</a> · <a id="fAbout" href="about/">关于产品</a>
-    · <a href="worldcup86.html" id="fWc">世界杯86场</a> · <a href="qixingcai.html" id="fQx">七星彩实验室</a> · <a href="dlt.html" id="fDlt">大乐透实验室</a>
+    · <a href="qixingcai.html" id="fQx">七星彩实验室</a> · <a href="dlt.html" id="fDlt">大乐透实验室</a>
   </footer>
 </div>
 
@@ -481,6 +545,8 @@ button,input{font:inherit}a{color:#0b6b5f}
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
 <script src="assets/js/matchstruct-data.js"></script>
+<script src="assets/js/worldcup86-data.js"></script>
+<script src="assets/js/worldcup86-ui.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 function boot(){
@@ -490,8 +556,6 @@ const abs=p=>BASE+'/'+p.replace(/^\//,'');
 ['aTerms','fTerms'].forEach(id=>{const el=document.getElementById(id); if(el) el.href=abs('terms/');});
 ['aPrivacy','fPrivacy'].forEach(id=>{const el=document.getElementById(id); if(el) el.href=abs('privacy/');});
 ['aAbout','fAbout'].forEach(id=>{const el=document.getElementById(id); if(el) el.href=abs('about/');});
-const fWc=document.getElementById('fWc'); if(fWc) fWc.href=abs('worldcup86.html');
-const wcArchive=document.getElementById('wcArchive'); if(wcArchive) wcArchive.href=abs('worldcup86.html');
 const fQx=document.getElementById('fQx'); if(fQx) fQx.href=abs('qixingcai.html');
 const fDlt=document.getElementById('fDlt'); if(fDlt) fDlt.href=abs('dlt.html');
 
@@ -711,13 +775,18 @@ document.addEventListener('click',e=>{
     if(card.closest('#today') && card.classList.contains('open')) paintTodayCharts();
   }
 });
-document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+function activatePanel(id){
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
-  t.classList.add('active');
-  document.getElementById(t.dataset.panel).classList.add('active');
-  if(t.dataset.panel==='today') paintTodayCharts();
-});
+  const tab=document.querySelector('.tab[data-panel="'+id+'"]');
+  if(tab) tab.classList.add('active');
+  const panel=document.getElementById(id);
+  if(panel) panel.classList.add('active');
+  if(id==='today') paintTodayCharts();
+}
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>activatePanel(t.dataset.panel));
+const goWc=document.getElementById('goWc86');
+if(goWc) goWc.onclick=()=>{activatePanel('wc86'); window.scrollTo({top:0,behavior:'smooth'});};
 
 } catch (err) {
   console.error('MatchStruct init failed:', err);
