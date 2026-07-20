@@ -3,17 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="竞彩足球预测与复盘中心：按胜平负、让球、总进球与七比分分别评估，覆盖赛前分析与赛后复盘。">
-<title>竞彩足球预测与复盘中心｜2026-07-20</title>
+<meta name="description" content="足球竞赛赛果结构分析与复盘研究。内容可能含 AI 辅助生成，仅供学习研究，不构成投注或收益建议。">
+<meta name="robots" content="index,follow">
+<title>足球竞赛分析｜赛果结构与复盘研究</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#e8f0f4;--paper:#ffffff;--ink:#1a2834;--muted:#6b7a88;
-  --line:#d5e0e8;--green:#2a8a66;--green-soft:#e8f6ef;--blue:#3a6f8c;--blue-soft:#e8f2f7;
+  --line:#d5e0e8;--green:#2a8a66;--green-soft:#e8f6ef;--blue:#3a6f8c;
   --red:#b8544c;--red-soft:#fff1ee;--orange:#b87a28;--orange-soft:#fff6e6;
-  --shadow:0 10px 32px rgba(26,50,70,.08);--radius:14px;
+  --warn:#7a4e1e;--warn-bg:#fff8ef;--warn-line:#e8d2b0;
+  --shadow:0 10px 32px rgba(26,50,70,.08);
   --display:"Fraunces",Georgia,"Songti SC",serif;
   --sans:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
 }
@@ -22,13 +24,21 @@ html{scroll-behavior:smooth}
 body{
   margin:0;color:var(--ink);font:14px/1.7 var(--sans);
   background:
-    radial-gradient(1200px 480px at 12% -10%,rgba(74,150,120,.18),transparent 55%),
-    radial-gradient(900px 420px at 92% 8%,rgba(70,130,160,.14),transparent 50%),
+    radial-gradient(1200px 480px at 12% -10%,rgba(74,150,120,.16),transparent 55%),
+    radial-gradient(900px 420px at 92% 8%,rgba(70,130,160,.12),transparent 50%),
     linear-gradient(180deg,#e6eef3 0%,#f3f7fa 40%,#e9f0f4 100%);
   min-height:100vh;
 }
 button,input,select{font:inherit}
 .page{width:min(1040px,calc(100% - 24px));margin:20px auto 64px}
+
+.legal-banner{
+  background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:12px;
+  padding:12px 14px;margin-bottom:12px;color:var(--warn);font-size:12px;line-height:1.65;
+  animation:rise .4s ease both;
+}
+.legal-banner strong{color:#5c3a12}
+.legal-banner a{color:#3d708a}
 
 .topbar{
   background:rgba(255,255,255,.88);border:1px solid rgba(213,224,232,.9);
@@ -40,12 +50,12 @@ button,input,select{font:inherit}
 .logo{
   width:42px;height:42px;border-radius:12px;flex-shrink:0;
   background:linear-gradient(145deg,#247a5c,#4fa888);color:#fff;
-  display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:15px;
+  display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:13px;
   box-shadow:0 6px 16px rgba(36,122,92,.28);
 }
 .brand h1{font-family:var(--display);font-size:22px;margin:0;letter-spacing:.01em;font-weight:700}
 .brand small{display:block;color:var(--muted);margin-top:2px;font-size:12px}
-.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .tab{
   border:1px solid var(--line);background:#fff;border-radius:10px;
   padding:11px 12px;text-align:left;cursor:pointer;
@@ -78,19 +88,19 @@ button,input,select{font:inherit}
 .summary{margin-top:14px;border-radius:12px;padding:14px;transition:background .25s,border-color .25s}
 .summary.review{background:#fff7f5;border:1px solid #ead2ce}
 .summary.today{background:#f3f9f6;border:1px solid #c9e2d5}
-.summary.method{background:#f4f8fb;border:1px solid #d0dde8}
+.summary.method,.summary.legal{background:#f4f8fb;border:1px solid #d0dde8}
 .summary-title{font-weight:700;margin-bottom:8px}
 .summary.review .summary-title{color:#76524e}
 .summary.today .summary-title{color:#2d6b52}
-.summary.method .summary-title{color:#3a5f74}
+.summary.method .summary-title,.summary.legal .summary-title{color:#3a5f74}
 .metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
 .metric{background:rgba(255,255,255,.78);border:1px solid rgba(0,0,0,.06);border-radius:9px;padding:10px}
 .metric b{font-size:20px;display:block;font-family:var(--display);font-weight:700}
 .summary.review .metric b{color:#a04f49}
 .summary.today .metric b{color:#2a7a58}
-.summary.method .metric b{color:#3a6f8c}
+.summary.method .metric b,.summary.legal .metric b{color:#3a6f8c}
 .metric span{color:#7a6e6b;font-size:12px}
-.summary.today .metric span,.summary.method .metric span{color:#5f726c}
+.summary.today .metric span,.summary.method .metric span,.summary.legal .metric span{color:#5f726c}
 .cumulative{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
 .pill{
   display:inline-flex;gap:5px;align-items:center;border:1px solid var(--line);
@@ -146,8 +156,7 @@ button,input,select{font:inherit}
 .chip{border:1px solid #e1e6ea;background:#fff;border-radius:6px;padding:3px 7px;font-size:12px}
 .chip.key{border-color:#e3b8b3;background:#fff5f3;color:#a74e47;font-weight:700}
 .short-note{color:#6f7c86;margin-top:7px;font-size:12px}
-.analysis-toggle{margin-left:auto;color:#317b61;font-weight:700;cursor:pointer;user-select:none;transition:color .15s}
-.analysis-toggle:hover{color:#1f684c}
+.analysis-toggle{margin-left:auto;color:#317b61;font-weight:700;cursor:pointer;user-select:none}
 .analysis-toggle:after{content:'›';margin-left:6px;display:inline-block;transition:transform .2s}
 .match-card.open .analysis-toggle:after{transform:rotate(90deg)}
 
@@ -173,23 +182,38 @@ button,input,select{font:inherit}
 .footnote{margin-top:10px;color:#8b969f;font-size:11px}
 
 .combos{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.combo{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;transition:transform .2s,box-shadow .2s}
-.combo:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(40,62,78,.08)}
-.combo h3{font-size:14px;margin:0 0 8px}.combo strong{color:#a95049}
+.combo{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px}
+.combo h3{font-size:14px;margin:0 0 8px}.combo strong{color:#3a6f8c}
 .combo p{margin:6px 0 0;color:var(--muted);font-size:12px}
 
 .method{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px}
 .method-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .method-item{border:1px solid #e6ebef;border-radius:9px;padding:11px;background:#fbfcfd}
 .method-item b{display:block;margin-bottom:4px}.method-item span{font-size:12px;color:var(--muted)}
+.legal-doc h3{margin:18px 0 8px;font-size:15px}.legal-doc h3:first-child{margin-top:0}
+.legal-doc ul{margin:0;padding-left:18px}.legal-doc li{margin:6px 0}
 
 .empty{padding:28px;text-align:center;color:var(--muted);background:#fff;border:1px dashed var(--line);border-radius:12px}
 
-.footer{margin-top:20px;padding:16px 4px;color:#83909a;font-size:12px;text-align:center}
+.footer{margin-top:20px;padding:16px 4px;color:#83909a;font-size:12px;text-align:center;line-height:1.8}
 .footer a{color:#3d708a;text-decoration:none}.footer a:hover{text-decoration:underline}
+
+.modal-mask{
+  position:fixed;inset:0;background:rgba(18,28,38,.55);z-index:100;
+  display:flex;align-items:center;justify-content:center;padding:20px;
+}
+.modal{
+  width:min(520px,100%);background:#fff;border-radius:16px;padding:22px;
+  box-shadow:0 20px 50px rgba(0,0,0,.22);border:1px solid #e4ebf0;
+}
+.modal h3{margin:0 0 10px;font-family:var(--display);font-size:22px}
+.modal p{margin:0 0 10px;color:#4a5a68;font-size:13px}
+.modal ul{margin:0 0 14px;padding-left:18px;color:#4a5a68;font-size:13px}
+.modal .btn.primary{width:100%;padding:11px}
 
 @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 
+@media(max-width:860px){.tabs{grid-template-columns:1fr 1fr}}
 @media(max-width:760px){
   .page{width:min(100% - 12px,1040px);margin-top:8px}
   .topbar{top:2px}.tabs{grid-template-columns:1fr}
@@ -204,10 +228,10 @@ button,input,select{font:inherit}
 }
 @media print{
   body{background:#fff}
-  .topbar{position:static;box-shadow:none}
-  .hero,.match-card,.combo,.method{box-shadow:none}
+  .topbar,.legal-banner,.modal-mask{position:static;box-shadow:none}
+  .modal-mask{display:none!important}
   .hero-actions,.filters,.analysis-toggle{display:none}
-  .details{max-height:none!important;opacity:1!important;padding:0 14px 14px!important;display:block!important}
+  .details{max-height:none!important;opacity:1!important;padding:0 14px 14px!important}
   .panel{display:block!important}.tab{display:none}
   .panel:not(.active){display:none!important}
   .match-card{break-inside:avoid}
@@ -216,26 +240,33 @@ button,input,select{font:inherit}
 </head>
 <body>
 <div class="page">
+  <div class="legal-banner" role="note">
+    <strong>免责声明：</strong>本站为足球赛果结构分析与复盘研究展示，内容可能含 <strong>AI 辅助生成</strong>，仅供学习讨论。
+    <strong>不构成投注、购彩或理财建议，不承诺任何收益。</strong>
+    请遵守当地法律法规。详见 <a href="/terms/">完整免责声明</a> 与 <a href="/about/">关于本站</a>。
+  </div>
+
   <div class="topbar">
     <div class="brand">
-      <div class="logo">AI</div>
+      <div class="logo">分析</div>
       <div>
-        <h1>竞彩足球预测与复盘中心</h1>
-        <small>赛果复盘 + 今日四场逐场分析｜2026-07-20</small>
+        <h1>足球竞赛分析</h1>
+        <small>赛果结构复盘 + 情景推演｜示例日期 2026-07-20 · AI 辅助 · 非投注意见</small>
       </div>
     </div>
     <div class="tabs">
-      <button class="tab active" data-panel="review" type="button"><b>07-19 周日</b><span>7场 · 方向覆盖 6中7</span></button>
-      <button class="tab" data-panel="today" type="button"><b>07-20 周一</b><span>4场 · 今日预测</span></button>
-      <button class="tab" data-panel="method" type="button"><b>模型说明</b><span>口径、命中定义与风险</span></button>
+      <button class="tab active" data-panel="review" type="button"><b>07-19 复盘</b><span>7场 · 方向覆盖评估</span></button>
+      <button class="tab" data-panel="today" type="button"><b>07-20 推演</b><span>4场 · 赛前情景</span></button>
+      <button class="tab" data-panel="method" type="button"><b>方法说明</b><span>口径与局限</span></button>
+      <button class="tab" data-panel="legal" type="button"><b>免责声明</b><span>AI / 法律提示</span></button>
     </div>
   </div>
 
   <div class="hero">
     <div class="hero-title">
       <div>
-        <h2 id="heroTitle">上一轮预测命中复盘</h2>
-        <p id="heroSub">按核心赛果方向、让球覆盖、总进球区间和七比分池分别统计，避免只用一个“命中/未命中”掩盖模型问题。</p>
+        <h2 id="heroTitle">上一轮情景命中复盘</h2>
+        <p id="heroSub">按赛果方向、让球覆盖、总进球区间和七比分池分别统计，用于检验模型结构，而非评价投注结果。</p>
       </div>
       <div class="hero-actions">
         <button class="btn" id="expandAll" type="button">全部展开</button>
@@ -244,7 +275,7 @@ button,input,select{font:inherit}
       </div>
     </div>
     <div class="summary review" id="summaryBox">
-      <div class="summary-title" id="summaryTitle">07-19 玩法命中概览</div>
+      <div class="summary-title" id="summaryTitle">07-19 结构覆盖概览</div>
       <div class="metrics" id="metrics"></div>
       <div class="cumulative" id="cumulative"></div>
     </div>
@@ -254,7 +285,7 @@ button,input,select{font:inherit}
     <div class="section-head">
       <div>
         <h2 id="sectionTitle">07-19 赛果复盘</h2>
-        <p id="sectionHint">“命中”按胜平负主方向或明确防守方向覆盖计算，详情中单列各玩法得失。</p>
+        <p id="sectionHint">“命中”仅表示模型主方向或明确防守情景被赛果覆盖，用于方法评估。</p>
       </div>
       <div class="filters" id="filters"></div>
     </div>
@@ -262,9 +293,9 @@ button,input,select{font:inherit}
     <div class="panel active" id="reviewPanel"><div class="match-list" id="reviewList"></div></div>
     <div class="panel" id="todayPanel">
       <div class="combos" style="margin-bottom:12px">
-        <div class="combo"><h3>普通胜负核心</h3><strong>202 拉赫蒂客胜 × 203 佐加顿斯客胜</strong><p>方向清晰，但两场均为热门，203需要防1-1。</p></div>
-        <div class="combo"><h3>让球容错核心</h3><strong>201 TPS +1让胜 × 204 卡尔马-1让负</strong><p>覆盖面明显大于普通胜负，适合优先关注。</p></div>
-        <div class="combo"><h3>总进球双选参考</h3><strong>201 2/3球 × 202 2/3球 × 204 2/3球</strong><p>精确球数三串仍为高方差玩法，应低投入。</p></div>
+        <div class="combo"><h3>赛果方向观察</h3><strong>202 拉赫蒂客胜 · 203 佐加顿斯客胜</strong><p>方向相对清晰，但均为市场热门；203 需保留 1-1 防守情景。仅供结构讨论。</p></div>
+        <div class="combo"><h3>让球覆盖观察</h3><strong>201 TPS +1让胜 · 204 卡尔马-1让负</strong><p>覆盖面通常宽于普通三项，适合观察净胜幅度，不构成操作建议。</p></div>
+        <div class="combo"><h3>进球区间观察</h3><strong>201 / 202 / 204 · 2/3球</strong><p>精确球数方差高，仅作情景对照；请勿当作确定性结论。</p></div>
       </div>
       <div class="match-list" id="todayList"></div>
     </div>
@@ -272,73 +303,120 @@ button,input,select{font:inherit}
       <div class="method">
         <h3 style="margin-top:0">评估框架</h3>
         <div class="method-grid">
-          <div class="method-item"><b>赔率与热度</b><span>先去水得到市场概率，再比较投注支持率，识别过热方向。</span></div>
+          <div class="method-item"><b>市场与热度</b><span>将公开赔率去水得到参考概率，并对照关注度，识别过热方向。</span></div>
           <div class="method-item"><b>球队状态</b><span>区分主客场、对手强度、比赛内容和短期进球转化率。</span></div>
-          <div class="method-item"><b>结构变化</b><span>单列换帅、阵型变化、转会、欧战轮换、伤停和停赛。</span></div>
-          <div class="method-item"><b>统一比分矩阵</b><span>胜平负、让球、总进球和七比分尽量由同一情景分布推导。</span></div>
+          <div class="method-item"><b>结构变化</b><span>换帅、阵型、转会、欧战轮换、伤停与停赛单独记录。</span></div>
+          <div class="method-item"><b>统一比分矩阵</b><span>赛果、让球、总进球与七比分尽量由同一情景分布推导。</span></div>
         </div>
-        <h3>命中定义</h3>
+        <h3>覆盖口径（研究用）</h3>
         <ul>
-          <li><b>第一选择：</b>胜、平、负中的首选结果。</li>
-          <li><b>含防守方向：</b>首选或明确标注的“防平/防负”命中。</li>
-          <li><b>让球范围：</b>推荐的首选或明确第二选择命中。</li>
-          <li><b>七比分：</b>实际90分钟比分进入七个比分池。</li>
+          <li><b>第一选择：</b>胜、平、负中的首选情景。</li>
+          <li><b>含防守方向：</b>首选或明确标注的“防平/防负”被赛果覆盖。</li>
+          <li><b>让球范围：</b>推荐的首选或明确第二情景被覆盖。</li>
+          <li><b>七比分：</b>实际常规时间比分落入七个比分池。</li>
         </ul>
         <h3>重要限制</h3>
         <ul>
-          <li>精确比分和精确总进球的单点概率通常很低，适合覆盖而非确定性判断。</li>
-          <li>换帅不是固定加分项：先扩大方差，再根据到任后的比赛内容决定方向。</li>
-          <li>临场首发、门将、中卫和前锋变化，可能使概率移动5—10个百分点。</li>
-          <li>网站内容用于概率研究和赛后复盘，不构成确定收益承诺。</li>
+          <li>精确比分与精确总进球单点概率通常很低，只适合情景覆盖讨论。</li>
+          <li>换帅不是固定加分：先扩大不确定性，再根据比赛内容调整。</li>
+          <li>临场首发与伤停变化，可能使概率移动约 5—10 个百分点。</li>
+          <li>本站用于概率结构研究与赛后复盘，<b>不构成收益承诺或投注意见</b>。</li>
         </ul>
+      </div>
+    </div>
+    <div class="panel" id="legalPanel">
+      <div class="method legal-doc">
+        <h3>1. 网站性质</h3>
+        <ul>
+          <li>本站展示足球竞赛的赛果结构分析与复盘方法，属于学习研究型信息展示。</li>
+          <li>本站不是博彩平台，不提供购彩代理、跟单、代购或资金往来服务。</li>
+        </ul>
+        <h3>2. AI 声明</h3>
+        <ul>
+          <li>页面文案、概率整理与复盘表述可能由人工智能（AI）辅助生成或改写。</li>
+          <li>AI 内容可能存在错误、幻觉、滞后或不完整，不能替代官方信息与独立判断。</li>
+        </ul>
+        <h3>3. 非投注意见</h3>
+        <ul>
+          <li>“方向 / 概率 / 比分池 / 优先级”等用语仅描述比赛情景结构，不构成投注、购彩或理财建议。</li>
+          <li>本站不承诺命中率、不承诺收益、不鼓动下注。</li>
+          <li>用户如自行参与任何博彩相关活动，须遵守当地法律并自行承担全部风险与责任。</li>
+        </ul>
+        <h3>4. 数据口径</h3>
+        <ul>
+          <li>默认按常规时间（90 分钟及伤停补时）理解赛果，通常不含加时与点球。</li>
+          <li>赔率、热度与伤停等信息可能来自公开渠道或示例数据，存在误差。</li>
+        </ul>
+        <p style="margin:14px 0 0;font-size:13px">完整条款：<a href="/terms/">免责声明与使用条款</a> · <a href="/about/">关于本站</a></p>
       </div>
     </div>
   </section>
 
   <div class="footer">
-    竞彩足球按90分钟及伤停补时计算，不包含加时与点球。数据口径基于用户提供赔率、公开赛前信息及此前预测记录。
-    <br><a href="/about/">学术主页</a>
+    分析默认按常规时间（90 分钟及伤停补时）。内容可能含 AI 辅助生成，仅供学习研究，不构成投注或收益建议。<br>
+    <a href="/terms/">免责声明</a> · <a href="/about/">关于本站</a> · 请遵守您所在地法律法规
   </div>
 </div>
+
+<div class="modal-mask" id="consentModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="consentTitle">
+    <h3 id="consentTitle">使用前请确认</h3>
+    <p>进入本站前，请确认您已知悉：</p>
+    <ul>
+      <li>本站为足球赛果<strong>分析与复盘研究</strong>展示，不是购彩或博彩服务；</li>
+      <li>内容可能含 <strong>AI 辅助生成</strong>，存在错误风险；</li>
+      <li><strong>不构成</strong>投注、购彩、理财建议，也不承诺任何收益；</li>
+      <li>您将遵守所在地法律法规，并对自身行为负责。</li>
+    </ul>
+    <button class="btn primary" id="consentBtn" type="button">我已阅读并同意，进入分析页</button>
+  </div>
+</div>
+
 <script>
 const reviewData=[
- {id:'104',league:'世界杯',time:'2026-07-20 03:00',home:'西班牙',away:'阿根廷',handicap:'西班牙 -1',score:'0:0',extra:'加时 1:0',overall:'hit',grade:'观察',pred:['胜，防平','-1让负','1/2球，防0球','1:0;0:0;1:1;0:1;2:0;2:1;0:2'],hits:['胜平负防平命中','让球让负命中','0球防守命中','七比分第2位命中'],misses:['第一选择“西班牙胜”未中'],note:'决赛90分钟低节奏判断有效，但应进一步提高平局为第一选择的条件。',reasons:['决赛的风险厌恶和低失误容忍度，使90分钟平局权重显著上升。','西班牙控球占优，但阿根廷的低位防守压缩了高质量机会。'],risks:['决赛不能使用普通强弱局的平局先验。','90分钟赛果与最终冠军结果必须分开统计。']},
- {id:'201',league:'韩职',time:'2026-07-19 18:30',home:'富川FC',away:'首尔FC',handicap:'富川 +1',score:'1:3',overall:'hit',grade:'观察',pred:['首尔FC客胜','+1让胜/让负','2球，防1/3球','0:1;0:2;1:1;1:2;0:0;0:3;1:0'],hits:['客胜第一选择命中','+1让负由第二选择覆盖'],misses:['总进球4球未覆盖','1:3未进入七比分'],note:'实力方向正确，但低估了首尔扩大比分和富川取得进球后的开放程度。',reasons:['首尔排名和阵容质量明显占优。','富川依靠低位防守，但落后后阵型被迫前压。'],risks:['强客队破局后可能形成连续进球。','总进球模型对3球以上尾部仍偏保守。']},
- {id:'202',league:'韩职',time:'2026-07-19 18:30',home:'安养FC',away:'光州FC',handicap:'安养 -1',score:'1:1',overall:'hit',grade:'观察',pred:['安养胜，防平','-1让负','1/2球','1:0;2:0;1:1;0:0;2:1;0:1;3:0'],hits:['防平命中','-1让负命中','2球命中','七比分第3位1:1命中'],misses:['主胜第一选择未中'],note:'热门风险提示兑现。低比分与平局权重判断较好。',reasons:['安养主场和排名占优，但80%主胜热度远高于模型。','光州休赛期调整提高了比赛不确定性。'],risks:['五成左右主胜不应包装成稳胆。','低比分结构下平局必须保留较高权重。']},
- {id:'203',league:'瑞超',time:'2026-07-19 22:30',home:'埃尔夫斯堡',away:'天狼星',handicap:'埃尔夫斯堡 +1',score:'1:3',overall:'hit',grade:'强势',pred:['天狼星胜，防平','+1让胜','2/3球','0:1;1:1;1:2;0:2;0:0;1:0;2:1'],hits:['客胜第一选择命中'],misses:['受让让胜未中','4球未覆盖','1:3未进入比分池'],note:'普通方向正确，但对客队大胜尾部和主队防守崩盘估计不足。',reasons:['天狼星整体状态与前场效率优于主队。','客胜虽然过热，但基本面仍支持第一方向。'],risks:['过热不等于必须反买。','当强客队率先进球，比赛状态会显著增加第二、第三球概率。']},
- {id:'204',league:'瑞超',time:'2026-07-19 22:30',home:'哈尔姆斯塔德',away:'赫根',handicap:'哈尔姆斯塔德 +1',score:'0:2',overall:'hit',grade:'平稳',pred:['赫根胜，防平','+1让胜','2/3球，防4球','1:2;1:1;0:1;0:2;2:2;1:3;2:1'],hits:['客胜第一选择命中','2球命中','七比分第4位0:2命中'],misses:['主队+1让胜未中'],note:'客胜热度风险没有导致方向反转，但让球判断过度保护主队。',reasons:['赫根排名和攻击质量优势最终兑现。','主队没有形成足够反击威胁。'],risks:['风险标签只是概率折价，不是反向结论。','让球应更重视强队净胜两球的真实频率。']},
- {id:'205',league:'瑞超',time:'2026-07-19 22:30',home:'哈马比',away:'代格福什',handicap:'哈马比 -2',score:'4:0',overall:'hit',grade:'强势',pred:['哈马比主胜','-2让胜/让负','3/4球，防5球','2:0;3:0;2:1;3:1;4:0;4:1;1:0'],hits:['主胜第一选择命中','-2让胜由范围覆盖','4球命中','七比分第5位4:0命中'],misses:['让球首选未形成明确单点'],note:'强弱结构判断充分兑现，且高比分尾部覆盖有效。',reasons:['哈马比主场进攻强，对手持续低迷。','领先后没有明显降速，继续扩大净胜优势。'],risks:['普通主胜与-2穿盘仍应分开评估。','正确结果排第5，比分排序仍需优化。']},
- {id:'206',league:'芬超',time:'2026-07-19 23:30',home:'雅罗',away:'国际图尔库',handicap:'雅罗 +1',score:'0:0',overall:'miss',grade:'平稳',pred:['国际图尔库客胜','+1让负，防让胜','2/3球，防4球','0:2;0:1;1:2;1:1;0:3;1:3;0:0'],hits:['+1让胜由防守方向覆盖','七比分第7位0:0命中'],misses:['客胜方向未中','0球未被总进球覆盖'],note:'强客队面对深度低位时的破局风险被低估，0:0虽进入比分池却排序过低。',reasons:['国际图尔库长期不败与排名优势支持客胜。','雅罗通过低位防守显著压缩空间。'],risks:['强客队不等于必然能够破密防。','七比分含0:0时，总进球模块不应排除0球。']}
+ {id:'104',league:'世界杯',time:'2026-07-20 03:00',home:'西班牙',away:'阿根廷',handicap:'西班牙 -1',score:'0:0',extra:'加时 1:0',overall:'hit',grade:'观察',pred:['胜，防平','-1让负','1/2球，防0球','1:0;0:0;1:1;0:1;2:0;2:1;0:2'],hits:['胜平负防平覆盖','让球让负覆盖','0球防守覆盖','七比分第2位覆盖'],misses:['第一选择“西班牙胜”未覆盖'],note:'决赛90分钟低节奏判断有效，但应提高平局作为第一选择的条件。',reasons:['决赛风险厌恶使90分钟平局权重上升。','西班牙控球占优，阿根廷低位防守压缩高质量机会。'],risks:['决赛不宜套用普通强弱局平局先验。','常规时间赛果与最终冠军结果应分开统计。']},
+ {id:'201',league:'韩职',time:'2026-07-19 18:30',home:'富川FC',away:'首尔FC',handicap:'富川 +1',score:'1:3',overall:'hit',grade:'观察',pred:['首尔FC客胜','+1让胜/让负','2球，防1/3球','0:1;0:2;1:1;1:2;0:0;0:3;1:0'],hits:['客胜第一选择覆盖','+1让负由第二情景覆盖'],misses:['总进球4球未覆盖','1:3未进入七比分'],note:'实力方向正确，但低估了首尔扩大比分与比赛开放度。',reasons:['首尔排名与阵容质量占优。','富川低位防守，落后后面前压导致空间放大。'],risks:['强客破局后可能连续进球。','总进球对3球以上尾部仍偏保守。']},
+ {id:'202',league:'韩职',time:'2026-07-19 18:30',home:'安养FC',away:'光州FC',handicap:'安养 -1',score:'1:1',overall:'hit',grade:'观察',pred:['安养胜，防平','-1让负','1/2球','1:0;2:0;1:1;0:0;2:1;0:1;3:0'],hits:['防平覆盖','-1让负覆盖','2球覆盖','七比分第3位1:1覆盖'],misses:['主胜第一选择未覆盖'],note:'热门风险提示兑现。低比分与平局权重判断较好。',reasons:['安养主场与排名占优，但约80%主胜热度远高于模型。','光州休赛期调整提高不确定性。'],risks:['约五成主胜不应包装成高确定性情景。','低比分结构下平局必须保留较高权重。']},
+ {id:'203',league:'瑞超',time:'2026-07-19 22:30',home:'埃尔夫斯堡',away:'天狼星',handicap:'埃尔夫斯堡 +1',score:'1:3',overall:'hit',grade:'强势',pred:['天狼星胜，防平','+1让胜','2/3球','0:1;1:1;1:2;0:2;0:0;1:0;2:1'],hits:['客胜第一选择覆盖'],misses:['受让让胜未覆盖','4球未覆盖','1:3未进入比分池'],note:'普通方向正确，但对客队大胜尾部估计不足。',reasons:['天狼星状态与前场效率优于主队。','客胜虽偏热，基本面仍支持第一方向。'],risks:['过热不等于必须反向。','强客率先破门后，后续进球概率上升。']},
+ {id:'204',league:'瑞超',time:'2026-07-19 22:30',home:'哈尔姆斯塔德',away:'赫根',handicap:'哈尔姆斯塔德 +1',score:'0:2',overall:'hit',grade:'平稳',pred:['赫根胜，防平','+1让胜','2/3球，防4球','1:2;1:1;0:1;0:2;2:2;1:3;2:1'],hits:['客胜第一选择覆盖','2球覆盖','七比分第4位0:2覆盖'],misses:['主队+1让胜未覆盖'],note:'热度风险未导致方向反转，但让球对主队保护偏多。',reasons:['赫根排名与攻击质量优势兑现。','主队反击威胁不足。'],risks:['风险标签是概率折价，不是反向结论。','让球应更重视强队净胜两球频率。']},
+ {id:'205',league:'瑞超',time:'2026-07-19 22:30',home:'哈马比',away:'代格福什',handicap:'哈马比 -2',score:'4:0',overall:'hit',grade:'强势',pred:['哈马比主胜','-2让胜/让负','3/4球，防5球','2:0;3:0;2:1;3:1;4:0;4:1;1:0'],hits:['主胜第一选择覆盖','-2让胜由范围覆盖','4球覆盖','七比分第5位4:0覆盖'],misses:['让球首选未形成明确单点'],note:'强弱结构判断充分兑现，高比分尾部覆盖有效。',reasons:['哈马比主场进攻强，对手持续低迷。','领先后未明显降速。'],risks:['普通主胜与-2净胜幅度应分开评估。','正确比分排序仍可优化。']},
+ {id:'206',league:'芬超',time:'2026-07-19 23:30',home:'雅罗',away:'国际图尔库',handicap:'雅罗 +1',score:'0:0',overall:'miss',grade:'平稳',pred:['国际图尔库客胜','+1让负，防让胜','2/3球，防4球','0:2;0:1;1:2;1:1;0:3;1:3;0:0'],hits:['+1让胜由防守情景覆盖','七比分第7位0:0覆盖'],misses:['客胜方向未覆盖','0球未被总进球覆盖'],note:'强客面对深度低位的破局风险被低估。',reasons:['国际图尔库长期不败与排名优势支持客胜。','雅罗低位防守显著压缩空间。'],risks:['强客不等于必然破密防。','比分池含0:0时，总进球模块不应排除0球。']}
 ];
 const todayData=[
- {id:'201',league:'芬超',time:'2026-07-20 23:00',home:'TPS图尔',away:'坦佩雷山猫',handicap:'TPS +1',grade:'平稳',confidence:'B-',odds:[[2.44,3.40,2.35],[1.45,4.25,4.90]],support:[[35,29,36],[49,31,20]],model:[47,25,28],pick:'TPS主胜，防平',handicapPick:'TPS +1让胜',goals:'2/3球，防4球；单选偏3球',scores:['1:1','2:1','1:0','2:0','1:2','2:2','3:1'],summary:'主客场反差显著，TPS受让一球的容错远高于普通主胜。',reasons:['TPS本赛季8个联赛主场6胜1平1负，主场场均进1.75球、失0.75球。','坦佩雷山猫8个客场0胜3平5负，客场丢21球且没有零封。','山猫7月初换帅后更强调积极进攻，但防守体系仍处于磨合期。','山猫刚经历欧战，存在体能消耗和轮换风险；比赛更倾向双方均有进球。'],risks:['山猫整体进攻能力高于当前排名，反击端仍有威胁。','新帅可能带来短期进攻反弹。','普通胜平负赔率仍轻微倾向客队，市场对TPS真实强度存在保留。','TPS若早早取得领先，比赛可能由3球中心转为2球。']},
- {id:'202',league:'芬超',time:'2026-07-21 00:00',home:'玛丽港',away:'拉赫蒂',handicap:'玛丽港 +1',grade:'强势',confidence:'B+',odds:[[5.35,4.20,1.42],[2.43,3.32,2.40]],support:[[11,18,71],[24,38,38]],model:[11,20,69],pick:'拉赫蒂客胜',handicapPick:'玛丽港 +1：让负，防让平',goals:'2/3球；单选偏2球',scores:['0:1','0:2','1:1','1:2','0:3','0:0','1:3'],summary:'玛丽港防守持续崩溃，换帅尚未产生稳定改善，客胜是四场最清晰普通方向。',reasons:['玛丽港排名垫底，近期连续大比分失利，近6场失球接近20个。','6月换帅后已获得数周时间，但防守结构和比赛结果仍未出现稳定改善。','拉赫蒂近期连续取胜并保持零封，4-3-3体系的中场紧凑度提高。','市场去水客胜约62%，模型修正至69%，基本面和赔率方向一致。'],risks:['拉赫蒂客场胜率并不突出，可能只以0:1小胜。','71%投注集中客胜，方向存在一定拥挤。','若拉赫蒂领先后主动降速，3球及以上概率下降。','玛丽港新帅仍可能首次打出完整的防守比赛。']},
- {id:'203',league:'瑞超',time:'2026-07-21 01:00',home:'厄格里特',away:'佐加顿斯',handicap:'厄格里特 +1',grade:'平稳',confidence:'B',odds:[[6.95,5.40,1.25],[3.08,3.82,1.84]],support:[[9,14,77],[15,32,53]],model:[15,20,65],pick:'佐加顿斯客胜，防平',handicapPick:'厄格里特 +1：让负略优，建议回避单选',goals:'3/4球，防2球；双方进球偏是',scores:['1:2','0:2','1:1','0:1','1:3','0:3','2:2'],summary:'客队状态和进攻占优，但中卫缺员与主队主场进攻使净胜幅度分散。',reasons:['厄格里特整体战绩较差，但上轮4:3取胜，主场比赛开放度较高。','佐加顿斯复赛后连续赢球，两场攻入7球，进攻状态明显占优。','厄格里特前场核心停赛或伤缺，降低主队爆冷上限。','佐加顿斯中卫位置人员紧张，客队零封概率需要下调。'],risks:['77%客胜支持率偏热，1:1必须纳入核心防守。','主队主场并不像联赛排名显示得那么弱。','客队防线缺员可能导致双方进球和4球以上。','让球三项概率分散，不适合作为让球串关核心。']},
- {id:'204',league:'瑞超',time:'2026-07-21 01:00',home:'卡尔马',away:'马尔默',handicap:'卡尔马 -1',grade:'观察',confidence:'C+',odds:[[2.55,3.50,2.22],[5.65,4.50,1.37]],support:[[25,33,42],[16,31,53]],model:[34,29,37],pick:'马尔默客胜，重点防平',handicapPick:'卡尔马 -1让负',goals:'2/3球；单选偏2球',scores:['1:1','0:1','1:2','1:0','2:1','0:0','0:2'],summary:'普通三项接近，不适合客胜单胆；卡尔马-1让负覆盖结构最清晰。',reasons:['卡尔马近期整体起伏，但近6个主场4胜1平1负，主场抵抗强。','马尔默7月初换帅后跑动、压迫和防守纪律明显改善，近期连续赢球。','马尔默近5场进球产量明显高于卡尔马，新帅红利具备比赛内容支撑。','但马尔默伤停人数较多，后场、中场和边路完整性受损。'],risks:['卡尔马主场连胜能力意味着普通客胜只有轻微优势。','马尔默新帅提升能否持续仍需观察。','大量伤停可能使马尔默压迫强度和后场出球下降。','平局支持率33%，1:1是高概率单一比分。']}
+ {id:'201',league:'芬超',time:'2026-07-20 23:00',home:'TPS图尔',away:'坦佩雷山猫',handicap:'TPS +1',grade:'平稳',confidence:'B-',odds:[[2.44,3.40,2.35],[1.45,4.25,4.90]],support:[[35,29,36],[49,31,20]],model:[47,25,28],pick:'TPS主胜，防平',handicapPick:'TPS +1让胜',goals:'2/3球，防4球；单选偏3球',scores:['1:1','2:1','1:0','2:0','1:2','2:2','3:1'],summary:'主客场反差显著，受让一球的情景覆盖通常宽于普通主胜。仅供结构讨论。',reasons:['TPS本赛季8个联赛主场6胜1平1负，主场场均进1.75球、失0.75球。','坦佩雷山猫8个客场0胜3平5负，客场丢21球且没有零封。','山猫7月初换帅后更强调积极进攻，防守仍在磨合。','山猫刚经历欧战，存在体能与轮换不确定性。'],risks:['山猫进攻能力可能高于排名显示。','新帅可能带来短期进攻反弹。','普通三项仍轻微倾向客队，市场对TPS强度有保留。','若早早领先，比赛中心可能由3球转为2球。']},
+ {id:'202',league:'芬超',time:'2026-07-21 00:00',home:'玛丽港',away:'拉赫蒂',handicap:'玛丽港 +1',grade:'强势',confidence:'B+',odds:[[5.35,4.20,1.42],[2.43,3.32,2.40]],support:[[11,18,71],[24,38,38]],model:[11,20,69],pick:'拉赫蒂客胜',handicapPick:'玛丽港 +1：让负，防让平',goals:'2/3球；单选偏2球',scores:['0:1','0:2','1:1','1:2','0:3','0:0','1:3'],summary:'玛丽港防守持续不稳，换帅尚未形成稳定改善；客胜是四场中方向较清晰的一场。',reasons:['玛丽港排名靠后，近期连续大比分失利。','换帅后数周，防守结构仍未稳定。','拉赫蒂近期连续取胜并保持零封，中场紧凑度提高。','市场去水客胜约62%，模型修正至69%，方向一致。'],risks:['客队也可能以0:1小胜收场。','约71%关注度集中客胜，存在拥挤。','若领先后降速，3球及以上概率下降。','主队仍可能打出完整防守比赛。']},
+ {id:'203',league:'瑞超',time:'2026-07-21 01:00',home:'厄格里特',away:'佐加顿斯',handicap:'厄格里特 +1',grade:'平稳',confidence:'B',odds:[[6.95,5.40,1.25],[3.08,3.82,1.84]],support:[[9,14,77],[15,32,53]],model:[15,20,65],pick:'佐加顿斯客胜，防平',handicapPick:'厄格里特 +1：让负略优，单项分散',goals:'3/4球，防2球；双方进球偏是',scores:['1:2','0:2','1:1','0:1','1:3','0:3','2:2'],summary:'客队状态与进攻占优，但中卫缺员与主队主场开放度使净胜幅度分散。',reasons:['厄格里特整体战绩一般，但上轮4:3取胜，主场开放度较高。','佐加顿斯复赛后连续赢球，进攻状态占优。','主队前场核心缺阵，降低爆冷上限。','客队中卫紧张，零封概率需下调。'],risks:['约77%客胜热度偏高，1:1应保留。','主场并不一定像排名那样弱。','客队防线缺员可能推高双方进球。','让球三项分散，不适合作为单一核心情景。']},
+ {id:'204',league:'瑞超',time:'2026-07-21 01:00',home:'卡尔马',away:'马尔默',handicap:'卡尔马 -1',grade:'观察',confidence:'C+',odds:[[2.55,3.50,2.22],[5.65,4.50,1.37]],support:[[25,33,42],[16,31,53]],model:[34,29,37],pick:'马尔默客胜，重点防平',handicapPick:'卡尔马 -1让负',goals:'2/3球；单选偏2球',scores:['1:1','0:1','1:2','1:0','2:1','0:0','0:2'],summary:'普通三项接近；卡尔马-1让负在覆盖结构上更清晰。仅供研究对照。',reasons:['卡尔马近6个主场4胜1平1负，主场抵抗力强。','马尔默换帅后压迫与防守纪律改善。','马尔默近5场进球产量高于卡尔马。','马尔默伤停较多，完整性受损。'],risks:['普通客胜仅有轻微优势。','新帅提升能否持续仍需观察。','伤停可能削弱压迫与出球。','平局热度约33%，1:1是高概率单一比分。']}
 ];
 
 const summaries={
   review:{
-    cls:'review',title:'07-19 玩法命中概览',
-    metrics:[['4/7','胜平负第一选择 · 57.1%'],['6/7','含防守方向 · 85.7%'],['5/7','让球范围 · 71.4%'],['4/7','总进球区间 · 57.1%'],['5/7','七比分池 · 71.4%']],
-    pills:['上一批22场：主选 <b>12/22</b>','含防守 <b>16/22</b>','让球范围 <b>13/22</b>','总进球 <b>14/22</b>','七比分 <b>15/22</b>']
+    cls:'review',title:'07-19 结构覆盖概览（研究口径）',
+    metrics:[['4/7','第一选择 · 57.1%'],['6/7','含防守方向 · 85.7%'],['5/7','让球范围 · 71.4%'],['4/7','总进球区间 · 57.1%'],['5/7','七比分池 · 71.4%']],
+    pills:['上一批22场：主选 <b>12/22</b>','含防守 <b>16/22</b>','让球范围 <b>13/22</b>','总进球 <b>14/22</b>','七比分 <b>15/22</b>','用途：<b>模型评估</b>']
   },
   today:{
-    cls:'today',title:'07-20 今日预测结构',
-    metrics:[['4','覆盖场次'],['1','强势方向'],['2','平稳可用'],['1','观察场次'],['B / B+','整体信心带']],
-    pills:['普通核心：<b>202×203 客胜</b>','让球核心：<b>201让胜 × 204让负</b>','总进球参考：<b>2/3球双选</b>','热门风险：<b>203 防1-1</b>']
+    cls:'today',title:'07-20 赛前情景结构（非投注意见）',
+    metrics:[['4','覆盖场次'],['1','强势方向'],['2','平稳观察'],['1','谨慎观察'],['研究','使用定位']],
+    pills:['方向观察：<b>202 / 203 客胜</b>','让球观察：<b>201让胜 · 204让负</b>','进球观察：<b>2/3球情景</b>','热度风险：<b>203 防1-1</b>']
   },
   method:{
-    cls:'method',title:'口径速览',
-    metrics:[['4','评估维度'],['2','命中层级'],['7','比分池容量'],['5–10%','临场波动'],['研究','使用定位']],
-    pills:['维度：赔率热度 / 球队状态 / 结构变化 / 统一比分矩阵','用途：排序、覆盖与风险识别，非收益承诺']
+    cls:'method',title:'方法口径速览',
+    metrics:[['4','评估维度'],['2','覆盖层级'],['7','比分池'],['5–10%','临场波动'],['研究','使用定位']],
+    pills:['维度：市场热度 / 球队状态 / 结构变化 / 统一比分矩阵','定位：排序、覆盖与风险识别，<b>非收益承诺</b>']
+  },
+  legal:{
+    cls:'legal',title:'合规要点',
+    metrics:[['分析','网站性质'],['AI','内容声明'],['非建议','投注边界'],['自担','用户责任'],['研究','使用目的']],
+    pills:['<b>AI 可能出错</b>','<b>非购彩服务</b>','<b>不承诺收益</b>','请遵守当地法律']
   }
 };
 
 const panels={
-  review:{panel:'reviewPanel',title:'上一轮预测命中复盘',sub:'按核心赛果方向、让球覆盖、总进球区间和七比分池分别统计，避免只用一个“命中/未命中”掩盖模型问题。',section:'07-19 赛果复盘',hint:'“命中”按胜平负主方向或明确防守方向覆盖计算，详情中单列各玩法得失。'},
-  today:{panel:'todayPanel',title:'07-20 四场赛前预测',sub:'赔率去水后，再纳入主客场状态、换帅与战术变化、欧战轮换、伤停停赛和热门拥挤度。',section:'今日逐场分析',hint:'强势表示方向和基本面一致；平稳表示可用但需保护；观察表示三项接近或结构冲突。'},
-  method:{panel:'methodPanel',title:'模型口径与复盘方法',sub:'把预测拆成赛果方向、净胜幅度、总进球和比分情景，分别评价，避免结论互相矛盾。',section:'方法说明',hint:'模型概率不是确定结果，主要用于排序、覆盖与风险识别。'}
+  review:{panel:'reviewPanel',title:'上一轮情景命中复盘',sub:'按赛果方向、让球覆盖、总进球区间和七比分池分别统计，用于检验模型结构，而非评价投注结果。',section:'07-19 赛果复盘',hint:'“命中”仅表示模型主方向或明确防守情景被赛果覆盖，用于方法评估。'},
+  today:{panel:'todayPanel',title:'07-20 四场赛前情景推演',sub:'结合公开赔率参考、主客场状态、换帅与伤停等因素，整理情景覆盖。内容可能含 AI 辅助，仅供研究。',section:'今日逐场分析',hint:'强势=方向与基本面较一致；平稳=可观察但需保护；观察=三项接近或结构冲突。'},
+  method:{panel:'methodPanel',title:'模型口径与复盘方法',sub:'把预测拆成赛果方向、净胜幅度、总进球和比分情景，分别评价，避免结论互相矛盾。',section:'方法说明',hint:'模型概率不是确定结果，主要用于排序、覆盖与风险识别。'},
+  legal:{panel:'legalPanel',title:'免责声明与 AI 说明',sub:'请完整阅读后再使用本站内容。详细条款见独立免责声明页面。',section:'法律与合规提示',hint:'继续使用即表示您理解本站性质、AI 风险与责任边界。'}
 };
 
 function initials(name){return name.replace(/FC|SK|图尔|现代|竞技|联/g,'').slice(0,2)}
@@ -347,11 +425,11 @@ function chips(items,cls=''){return items.map(x=>`<span class="chip ${cls}">${x}
 function reviewCard(m){
  return `<article class="match-card ${m.overall==='hit'?'hit':'miss'}" data-state="${m.overall}" data-search="${m.id}${m.home}${m.away}">
   <div class="card-main">
-   <div class="match-meta"><span>周日${m.id}</span><span>${m.time}</span><span class="dot"></span><b>${m.league}</b><span class="tag ${m.grade==='强势'?'strong':m.grade==='平稳'?'stable':'watch'}">${m.grade}</span><span class="status ${m.overall}">${m.overall==='hit'?'命中':'未命中'}</span></div>
+   <div class="match-meta"><span>周日${m.id}</span><span>${m.time}</span><span class="dot"></span><b>${m.league}</b><span class="tag ${m.grade==='强势'?'strong':m.grade==='平稳'?'stable':'watch'}">${m.grade}</span><span class="status ${m.overall}">${m.overall==='hit'?'覆盖':'未覆盖'}</span></div>
    <div class="teams"><span class="team"><i class="crest">${initials(m.home)}</i>${m.home}</span><span class="scoreline">${m.score}${m.extra?` <span class="subscore">(${m.extra})</span>`:''}</span><span class="team">${m.away}<i class="crest">${initials(m.away)}</i></span></div>
    <div class="pickline"><div class="chips">${chips(m.pred.slice(0,2),'key')}${chips(m.pred.slice(2,3))}<span class="chip">${m.pred[3]}</span><span class="analysis-toggle">分析</span></div><div class="short-note">${m.note}</div></div>
   </div>
-  <div class="details"><div class="detail-grid"><div class="box reviewbox"><h4>命中项</h4><ul>${m.hits.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="box riskbox"><h4>未命中与偏差</h4><ul>${m.misses.map(x=>`<li>${x}</li>`).join('')}</ul></div></div><div class="detail-grid"><div class="box"><h4>原判断依据</h4><ul>${m.reasons.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="box riskbox"><h4>模型需要修正</h4><ul>${m.risks.map(x=>`<li>${x}</li>`).join('')}</ul></div></div></div>
+  <div class="details"><div class="detail-grid"><div class="box reviewbox"><h4>覆盖项</h4><ul>${m.hits.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="box riskbox"><h4>未覆盖与偏差</h4><ul>${m.misses.map(x=>`<li>${x}</li>`).join('')}</ul></div></div><div class="detail-grid"><div class="box"><h4>原判断依据</h4><ul>${m.reasons.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="box riskbox"><h4>模型需要修正</h4><ul>${m.risks.map(x=>`<li>${x}</li>`).join('')}</ul></div></div></div>
  </article>`
 }
 
@@ -360,7 +438,7 @@ function probBars(m){
   return m.model.map((v,i)=>`<div class="prob-row"><span>${labels[i]}</span><div class="bar ${classes[i]}"><i style="width:${v}%"></i></div><b>${v}%</b></div>`).join('')
 }
 function oddsTable(title,odds,support){
-  return `<div><b style="font-size:12px">${title}</b><table><tr><th>胜</th><th>平</th><th>负</th></tr><tr>${odds.map(x=>`<td>${x}</td>`).join('')}</tr><tr>${support.map(x=>`<td>${x}%</td>`).join('')}</tr></table></div>`
+  return `<div><b style="font-size:12px">${title}</b><table><tr><th>胜</th><th>平</th><th>负</th></tr><tr>${odds.map(x=>`<td>${x}</td>`).join('')}</tr><tr>${support.map(x=>`<td>${x}%</td>`).join('')}</tr></table><div class="footnote">上行为参考赔率，下行为市场关注度（示意）</div></div>`
 }
 function todayCard(m){
   const gradeClass=m.grade==='强势'?'strong':m.grade==='平稳'?'stable':'watch';
@@ -368,9 +446,9 @@ function todayCard(m){
   <div class="card-main"><div class="match-meta"><span>周一${m.id}</span><span>${m.time}</span><span class="dot"></span><b>${m.league}</b><span class="tag ${gradeClass}">${m.grade}</span><span class="status pending">待赛 · ${m.confidence}</span></div>
   <div class="teams"><span class="team"><i class="crest">${initials(m.home)}</i>${m.home}</span><span class="scoreline">VS</span><span class="team">${m.away}<i class="crest">${initials(m.away)}</i></span></div>
   <div class="pickline"><div class="chips"><span class="chip key">${m.pick}</span><span class="chip key">${m.handicapPick}</span><span class="chip">${m.goals}</span><span class="analysis-toggle">分析</span></div><div class="short-note">${m.summary}</div></div></div>
-  <div class="details"><div class="detail-grid"><div class="box"><h4>模型胜平负概率</h4>${probBars(m)}</div><div class="box"><h4>七比分池</h4><div class="scores">${m.scores.map((x,i)=>`<span class="score ${i<3?'top':''}">${x}${i<3?' ★':''}</span>`).join('')}</div><div class="footnote">前三为核心情景，后四项负责相邻比分、平局与尾部覆盖。</div></div></div>
-  <div class="detail-grid"><div class="box"><h4>判断依据</h4><ul>${m.reasons.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="box riskbox"><h4>主要风险点</h4><ul>${m.risks.map(x=>`<li>${x}</li>`).join('')}</ul></div></div>
-  <div class="box odds"><h4 style="grid-column:1/-1">赔率与支持率</h4>${oddsTable('胜平负',m.odds[0],m.support[0])}${oddsTable(m.handicap,m.odds[1],m.support[1])}</div></div>
+  <div class="details"><div class="detail-grid"><div class="box"><h4>模型胜平负概率</h4>${probBars(m)}</div><div class="box"><h4>七比分池</h4><div class="scores">${m.scores.map((x,i)=>`<span class="score ${i<3?'top':''}">${x}${i<3?' ★':''}</span>`).join('')}</div><div class="footnote">前三为核心情景，后四项负责相邻比分、平局与尾部覆盖。仅供研究。</div></div></div>
+  <div class="detail-grid"><div class="box"><h4>判断依据</h4><ul>${m.reasons.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="box riskbox"><h4>主要不确定性</h4><ul>${m.risks.map(x=>`<li>${x}</li>`).join('')}</ul></div></div>
+  <div class="box odds"><h4 style="grid-column:1/-1">参考赔率与市场关注度</h4>${oddsTable('胜平负',m.odds[0],m.support[0])}${oddsTable(m.handicap,m.odds[1],m.support[1])}</div></div>
  </article>`
 }
 
@@ -391,16 +469,16 @@ function switchPanel(key){
   document.getElementById('heroSub').textContent=panels[key].sub;
   document.getElementById('sectionTitle').textContent=panels[key].section;
   document.getElementById('sectionHint').textContent=panels[key].hint;
-  document.getElementById('filters').style.display=key==='method'?'none':'flex';
+  document.getElementById('filters').style.display=(key==='method'||key==='legal')?'none':'flex';
   renderSummary(key);
   buildFilters(key);
 }
 
 function buildFilters(key){
   const wrap=document.getElementById('filters');
-  if(key==='method'){wrap.innerHTML='';return}
+  if(key==='method'||key==='legal'){wrap.innerHTML='';return}
   const isReview=key==='review';
-  wrap.innerHTML=`<button class="filter active" data-filter="all" type="button">全部 ${isReview?7:4}</button>${isReview?'<button class="filter" data-filter="hit" type="button">命中 6</button><button class="filter" data-filter="miss" type="button">未命中 1</button>':'<button class="filter" data-filter="强势" type="button">强势 1</button><button class="filter" data-filter="平稳" type="button">平稳 2</button><button class="filter" data-filter="观察" type="button">观察 1</button>'}<input class="search" id="search" placeholder="搜索球队或编号" aria-label="搜索球队或编号">`;
+  wrap.innerHTML=`<button class="filter active" data-filter="all" type="button">全部 ${isReview?7:4}</button>${isReview?'<button class="filter" data-filter="hit" type="button">已覆盖 6</button><button class="filter" data-filter="miss" type="button">未覆盖 1</button>':'<button class="filter" data-filter="强势" type="button">强势 1</button><button class="filter" data-filter="平稳" type="button">平稳 2</button><button class="filter" data-filter="观察" type="button">观察 1</button>'}<input class="search" id="search" placeholder="搜索球队或编号" aria-label="搜索球队或编号">`;
   wrap.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{
     wrap.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
@@ -437,6 +515,17 @@ document.getElementById('expandAll').onclick=()=>document.querySelectorAll('.pan
 document.getElementById('collapseAll').onclick=()=>document.querySelectorAll('.match-card').forEach(x=>x.classList.remove('open'));
 renderSummary('review');
 buildFilters('review');
+
+(function initConsent(){
+  const key='football_analysis_consent_v1';
+  const modal=document.getElementById('consentModal');
+  if(localStorage.getItem(key)==='1'){modal.hidden=true;return}
+  modal.hidden=false;
+  document.getElementById('consentBtn').onclick=()=>{
+    localStorage.setItem(key,'1');
+    modal.hidden=true;
+  };
+})();
 </script>
 </body>
 </html>
