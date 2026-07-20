@@ -9,10 +9,10 @@
 # Basic Site Settings
 locale                   : "zh-CN"
 site_theme               : "default"
-title                    : "Dong Kaizhi"  # 网站主标题，可写成“Dong Kaizhi | Personal Website”
+title                    : "竞彩足球预测与复盘中心"
 title_separator          : "-"
 name                     : &name "Dong Kaizhi"
-description              : &description "中国海洋大学计算机科学与技术专业在读."  # 简要介绍
+description              : &description "赛果复盘 + 逐场分析：胜平负、让球、总进球与七比分统一评估。"
 
 url                      : "https://KaiFengLikeWritingCode.github.io"  # 网址，注意用户名拼写一致
 baseurl                  : ""  # 保持空即可

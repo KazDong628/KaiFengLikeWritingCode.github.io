@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="竞彩足球预测与复盘中心：按胜平负、让球、总进球与七比分分别评估，覆盖赛前分析与赛后复盘。">
+<title>竞彩足球预测与复盘中心｜2026-07-20</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#e8f0f4;--paper:#ffffff;--ink:#1a2834;--muted:#6b7a88;
+  --line:#d5e0e8;--green:#2a8a66;--green-soft:#e8f6ef;--blue:#3a6f8c;--blue-soft:#e8f2f7;
+  --red:#b8544c;--red-soft:#fff1ee;--orange:#b87a28;--orange-soft:#fff6e6;
+  --shadow:0 10px 32px rgba(26,50,70,.08);--radius:14px;
+  --display:"Fraunces",Georgia,"Songti SC",serif;
+  --sans:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;color:var(--ink);font:14px/1.7 var(--sans);
+  background:
+    radial-gradient(1200px 480px at 12% -10%,rgba(74,150,120,.18),transparent 55%),
+    radial-gradient(900px 420px at 92% 8%,rgba(70,130,160,.14),transparent 50%),
+    linear-gradient(180deg,#e6eef3 0%,#f3f7fa 40%,#e9f0f4 100%);
+  min-height:100vh;
+}
+button,input,select{font:inherit}
+.page{width:min(1040px,calc(100% - 24px));margin:20px auto 64px}
+
+.topbar{
+  background:rgba(255,255,255,.88);border:1px solid rgba(213,224,232,.9);
+  border-radius:16px;box-shadow:var(--shadow);padding:14px;
+  position:sticky;top:8px;z-index:20;backdrop-filter:blur(14px);
+  animation:rise .45s ease both;
+}
+.brand{display:flex;align-items:center;gap:12px;padding:4px 6px 14px}
+.logo{
+  width:42px;height:42px;border-radius:12px;flex-shrink:0;
+  background:linear-gradient(145deg,#247a5c,#4fa888);color:#fff;
+  display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:15px;
+  box-shadow:0 6px 16px rgba(36,122,92,.28);
+}
+.brand h1{font-family:var(--display);font-size:22px;margin:0;letter-spacing:.01em;font-weight:700}
+.brand small{display:block;color:var(--muted);margin-top:2px;font-size:12px}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tab{
+  border:1px solid var(--line);background:#fff;border-radius:10px;
+  padding:11px 12px;text-align:left;cursor:pointer;
+  transition:border-color .18s,background .18s,transform .18s,box-shadow .18s;
+}
+.tab:hover{border-color:#9fc7b5;transform:translateY(-1px)}
+.tab.active{
+  background:linear-gradient(180deg,#edf9f2,#e4f4eb);border-color:#8fc9ae;
+  color:#1f684c;box-shadow:0 4px 14px rgba(42,138,102,.12);
+}
+.tab b{display:block;font-size:14px}.tab span{font-size:12px;color:var(--muted)}.tab.active span{color:#3f7d64}
+
+.hero{
+  margin-top:14px;background:var(--paper);border:1px solid var(--line);
+  border-radius:16px;padding:20px;box-shadow:var(--shadow);
+  animation:rise .5s .06s ease both;
+}
+.hero-title{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}
+.hero h2{margin:0 0 6px;font-family:var(--display);font-size:26px;font-weight:700;letter-spacing:.01em}
+.hero p{margin:0;color:var(--muted);max-width:62ch}
+.hero-actions{display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0}
+.btn{
+  border:1px solid var(--line);background:#fff;border-radius:9px;
+  padding:8px 12px;cursor:pointer;color:#425160;transition:.15s;
+}
+.btn:hover{border-color:#9fc7b5;color:#1f684c}
+.btn.primary{background:#3d708a;color:#fff;border-color:#3d708a}
+.btn.primary:hover{background:#335f75}
+
+.summary{margin-top:14px;border-radius:12px;padding:14px;transition:background .25s,border-color .25s}
+.summary.review{background:#fff7f5;border:1px solid #ead2ce}
+.summary.today{background:#f3f9f6;border:1px solid #c9e2d5}
+.summary.method{background:#f4f8fb;border:1px solid #d0dde8}
+.summary-title{font-weight:700;margin-bottom:8px}
+.summary.review .summary-title{color:#76524e}
+.summary.today .summary-title{color:#2d6b52}
+.summary.method .summary-title{color:#3a5f74}
+.metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.metric{background:rgba(255,255,255,.78);border:1px solid rgba(0,0,0,.06);border-radius:9px;padding:10px}
+.metric b{font-size:20px;display:block;font-family:var(--display);font-weight:700}
+.summary.review .metric b{color:#a04f49}
+.summary.today .metric b{color:#2a7a58}
+.summary.method .metric b{color:#3a6f8c}
+.metric span{color:#7a6e6b;font-size:12px}
+.summary.today .metric span,.summary.method .metric span{color:#5f726c}
+.cumulative{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+.pill{
+  display:inline-flex;gap:5px;align-items:center;border:1px solid var(--line);
+  background:#fff;border-radius:999px;padding:5px 10px;color:#596673;font-size:12px;
+}
+.pill b{color:#34424e}
+
+.section{margin-top:16px;animation:rise .55s .1s ease both}
+.section-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px}
+.section-head h2{font-family:var(--display);font-size:20px;margin:0;font-weight:700}
+.section-head p{margin:0;color:var(--muted);font-size:12px}
+.filters{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.filter{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 12px;cursor:pointer;transition:.15s}
+.filter:hover{border-color:#9fc7b5}
+.filter.active{background:#3d708a;color:#fff;border-color:#3d708a}
+.search{margin-left:auto;border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 10px;min-width:210px}
+
+.panel{display:none}.panel.active{display:block}
+.match-list{display:grid;gap:12px}
+.match-card{
+  background:var(--paper);border:1px solid var(--line);border-left:4px solid #98b6a8;
+  border-radius:12px;box-shadow:0 5px 18px rgba(40,62,78,.06);overflow:hidden;
+  transition:transform .2s,box-shadow .2s;
+}
+.match-card:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(40,62,78,.1)}
+.match-card.hit{border-color:#df9f98;border-left-color:#d47a70}
+.match-card.miss{border-left-color:#77ae8e}
+.match-card.strong{border-left-color:#d17363}
+.match-card.stable{border-left-color:#4e9778}
+.match-card.watch{border-left-color:#ce9a4a}
+
+.card-main{padding:14px}
+.match-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:#54715f;font-size:12px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:#268bb5}
+.tag{display:inline-flex;align-items:center;border-radius:6px;padding:2px 7px;font-size:11px;font-weight:700}
+.tag.strong{background:var(--red-soft);color:#b45047}
+.tag.stable{background:var(--green-soft);color:#2e7c5e}
+.tag.watch{background:var(--orange-soft);color:#9b6c25}
+.status{margin-left:auto;font-weight:700}
+.status.hit{color:#b35a52}.status.miss{color:#607969}.status.pending{color:#557f94}
+
+.teams{display:flex;align-items:center;gap:10px;margin-top:9px;font-size:16px;font-weight:700}
+.team{display:flex;align-items:center;gap:7px}
+.crest{
+  width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+  color:#fff;font-size:10px;font-weight:900;background:linear-gradient(145deg,#516b7f,#7891a4);
+}
+.scoreline{padding:2px 8px;border-radius:6px;background:#f1f5f7;font-weight:800}
+.subscore{font-weight:500;color:var(--muted);font-size:12px}
+
+.pickline{margin-top:12px;border:1px solid #e7ecef;border-radius:8px;background:#fcfdfd;padding:10px}
+.chips{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.chip{border:1px solid #e1e6ea;background:#fff;border-radius:6px;padding:3px 7px;font-size:12px}
+.chip.key{border-color:#e3b8b3;background:#fff5f3;color:#a74e47;font-weight:700}
+.short-note{color:#6f7c86;margin-top:7px;font-size:12px}
+.analysis-toggle{margin-left:auto;color:#317b61;font-weight:700;cursor:pointer;user-select:none;transition:color .15s}
+.analysis-toggle:hover{color:#1f684c}
+.analysis-toggle:after{content:'›';margin-left:6px;display:inline-block;transition:transform .2s}
+.match-card.open .analysis-toggle:after{transform:rotate(90deg)}
+
+.details{border-top:1px solid #edf0f2;background:#fbfcfd;padding:0 14px;max-height:0;overflow:hidden;opacity:0;transition:max-height .35s ease,padding .35s ease,opacity .25s ease}
+.match-card.open .details{max-height:1200px;padding:0 14px 14px;opacity:1}
+.detail-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:12px;margin-top:12px}
+.box{background:#fff;border:1px solid #e4eaee;border-radius:9px;padding:12px}
+.box h4{margin:0 0 7px;font-size:13px}
+.box ul{margin:0;padding-left:18px}.box li{margin:4px 0}
+.riskbox{background:#fff8f0;border-color:#ecd8bd}
+.reviewbox{background:#f2faf6;border-color:#cfe5d8}
+.prob-row{display:grid;grid-template-columns:66px 1fr 45px;gap:8px;align-items:center;margin:6px 0;font-size:12px}
+.bar{height:8px;border-radius:999px;background:#e7edf1;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:999px;transition:width .6s ease}
+.bar.home i{background:#4c9c7d}.bar.draw i{background:#d2a553}.bar.away i{background:#5d91ab}
+.scores{display:flex;gap:6px;flex-wrap:wrap}
+.score{border:1px solid #e3e8ec;border-radius:6px;padding:3px 7px;background:#fff}
+.score.top{border-color:#deb2ad;background:#fff3f1;color:#a84e46;font-weight:700}
+.odds{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.odds table{width:100%;border-collapse:collapse;font-size:12px}
+.odds th,.odds td{padding:4px 5px;text-align:center;border-bottom:1px solid #edf1f3}
+.odds th{color:var(--muted);font-weight:600}
+.footnote{margin-top:10px;color:#8b969f;font-size:11px}
+
+.combos{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.combo{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;transition:transform .2s,box-shadow .2s}
+.combo:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(40,62,78,.08)}
+.combo h3{font-size:14px;margin:0 0 8px}.combo strong{color:#a95049}
+.combo p{margin:6px 0 0;color:var(--muted);font-size:12px}
+
+.method{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px}
+.method-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.method-item{border:1px solid #e6ebef;border-radius:9px;padding:11px;background:#fbfcfd}
+.method-item b{display:block;margin-bottom:4px}.method-item span{font-size:12px;color:var(--muted)}
+
+.empty{padding:28px;text-align:center;color:var(--muted);background:#fff;border:1px dashed var(--line);border-radius:12px}
+
+.footer{margin-top:20px;padding:16px 4px;color:#83909a;font-size:12px;text-align:center}
+.footer a{color:#3d708a;text-decoration:none}.footer a:hover{text-decoration:underline}
+
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+@media(max-width:760px){
+  .page{width:min(100% - 12px,1040px);margin-top:8px}
+  .topbar{top:2px}.tabs{grid-template-columns:1fr}
+  .hero-title,.section-head{align-items:stretch;flex-direction:column}
+  .metrics{grid-template-columns:repeat(2,1fr)}
+  .detail-grid,.odds,.combos,.method-grid{grid-template-columns:1fr}
+  .search{margin-left:0;width:100%}
+  .teams{font-size:14px;flex-wrap:wrap}
+  .hero h2{font-size:22px}
+  .brand h1{font-size:18px}
+  .analysis-toggle{margin-left:0;width:100%;text-align:right;margin-top:4px}
+}
+@media print{
+  body{background:#fff}
+  .topbar{position:static;box-shadow:none}
+  .hero,.match-card,.combo,.method{box-shadow:none}
+  .hero-actions,.filters,.analysis-toggle{display:none}
+  .details{max-height:none!important;opacity:1!important;padding:0 14px 14px!important;display:block!important}
+  .panel{display:block!important}.tab{display:none}
+  .panel:not(.active){display:none!important}
+  .match-card{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">AI</div>
+      <div>
+        <h1>竞彩足球预测与复盘中心</h1>
+        <small>赛果复盘 + 今日四场逐场分析｜2026-07-20</small>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" data-panel="review" type="button"><b>07-19 周日</b><span>7场 · 方向覆盖 6中7</span></button>
+      <button class="tab" data-panel="today" type="button"><b>07-20 周一</b><span>4场 · 今日预测</span></button>
+      <button class="tab" data-panel="method" type="button"><b>模型说明</b><span>口径、命中定义与风险</span></button>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-title">
+      <div>
+        <h2 id="heroTitle">上一轮预测命中复盘</h2>
+        <p id="heroSub">按核心赛果方向、让球覆盖、总进球区间和七比分池分别统计，避免只用一个“命中/未命中”掩盖模型问题。</p>
+      </div>
+      <div class="hero-actions">
+        <button class="btn" id="expandAll" type="button">全部展开</button>
+        <button class="btn" id="collapseAll" type="button">全部收起</button>
+        <button class="btn primary" type="button" onclick="window.print()">打印 / 导出 PDF</button>
+      </div>
+    </div>
+    <div class="summary review" id="summaryBox">
+      <div class="summary-title" id="summaryTitle">07-19 玩法命中概览</div>
+      <div class="metrics" id="metrics"></div>
+      <div class="cumulative" id="cumulative"></div>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <h2 id="sectionTitle">07-19 赛果复盘</h2>
+        <p id="sectionHint">“命中”按胜平负主方向或明确防守方向覆盖计算，详情中单列各玩法得失。</p>
+      </div>
+      <div class="filters" id="filters"></div>
+    </div>
+
+    <div class="panel active" id="reviewPanel"><div class="match-list" id="reviewList"></div></div>
+    <div class="panel" id="todayPanel">
+      <div class="combos" style="margin-bottom:12px">
+        <div class="combo"><h3>普通胜负核心</h3><strong>202 拉赫蒂客胜 × 203 佐加顿斯客胜</strong><p>方向清晰，但两场均为热门，203需要防1-1。</p></div>
+        <div class="combo"><h3>让球容错核心</h3><strong>201 TPS +1让胜 × 204 卡尔马-1让负</strong><p>覆盖面明显大于普通胜负，适合优先关注。</p></div>
+        <div class="combo"><h3>总进球双选参考</h3><strong>201 2/3球 × 202 2/3球 × 204 2/3球</strong><p>精确球数三串仍为高方差玩法，应低投入。</p></div>
+      </div>
+      <div class="match-list" id="todayList"></div>
+    </div>
+    <div class="panel" id="methodPanel">
+      <div class="method">
+        <h3 style="margin-top:0">评估框架</h3>
+        <div class="method-grid">
+          <div class="method-item"><b>赔率与热度</b><span>先去水得到市场概率，再比较投注支持率，识别过热方向。</span></div>
+          <div class="method-item"><b>球队状态</b><span>区分主客场、对手强度、比赛内容和短期进球转化率。</span></div>
+          <div class="method-item"><b>结构变化</b><span>单列换帅、阵型变化、转会、欧战轮换、伤停和停赛。</span></div>
+          <div class="method-item"><b>统一比分矩阵</b><span>胜平负、让球、总进球和七比分尽量由同一情景分布推导。</span></div>
+        </div>
+        <h3>命中定义</h3>
+        <ul>
+          <li><b>第一选择：</b>胜、平、负中的首选结果。</li>
+          <li><b>含防守方向：</b>首选或明确标注的“防平/防负”命中。</li>
+          <li><b>让球范围：</b>推荐的首选或明确第二选择命中。</li>
+          <li><b>七比分：</b>实际90分钟比分进入七个比分池。</li>
+        </ul>
+        <h3>重要限制</h3>
+        <ul>
+          <li>精确比分和精确总进球的单点概率通常很低，适合覆盖而非确定性判断。</li>
+          <li>换帅不是固定加分项：先扩大方差，再根据到任后的比赛内容决定方向。</li>
+          <li>临场首发、门将、中卫和前锋变化，可能使概率移动5—10个百分点。</li>
+          <li>网站内容用于概率研究和赛后复盘，不构成确定收益承诺。</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer">
+    竞彩足球按90分钟及伤停补时计算，不包含加时与点球。数据口径基于用户提供赔率、公开赛前信息及此前预测记录。
+    <br><a href="/about/">学术主页</a>
+  </div>
+</div>
+<script>
+const reviewData=[
+ {id:'104',league:'世界杯',time:'2026-07-20 03:00',home:'西班牙',away:'阿根廷',handicap:'西班牙 -1',score:'0:0',extra:'加时 1:0',overall:'hit',grade:'观察',pred:['胜，防平','-1让负','1/2球，防0球','1:0;0:0;1:1;0:1;2:0;2:1;0:2'],hits:['胜平负防平命中','让球让负命中','0球防守命中','七比分第2位命中'],misses:['第一选择“西班牙胜”未中'],note:'决赛90分钟低节奏判断有效，但应进一步提高平局为第一选择的条件。',reasons:['决赛的风险厌恶和低失误容忍度，使90分钟平局权重显著上升。','西班牙控球占优，但阿根廷的低位防守压缩了高质量机会。'],risks:['决赛不能使用普通强弱局的平局先验。','90分钟赛果与最终冠军结果必须分开统计。']},
+ {id:'201',league:'韩职',time:'2026-07-19 18:30',home:'富川FC',away:'首尔FC',handicap:'富川 +1',score:'1:3',overall:'hit',grade:'观察',pred:['首尔FC客胜','+1让胜/让负','2球，防1/3球','0:1;0:2;1:1;1:2;0:0;0:3;1:0'],hits:['客胜第一选择命中','+1让负由第二选择覆盖'],misses:['总进球4球未覆盖','1:3未进入七比分'],note:'实力方向正确，但低估了首尔扩大比分和富川取得进球后的开放程度。',reasons:['首尔排名和阵容质量明显占优。','富川依靠低位防守，但落后后阵型被迫前压。'],risks:['强客队破局后可能形成连续进球。','总进球模型对3球以上尾部仍偏保守。']},
+ {id:'202',league:'韩职',time:'2026-07-19 18:30',home:'安养FC',away:'光州FC',handicap:'安养 -1',score:'1:1',overall:'hit',grade:'观察',pred:['安养胜，防平','-1让负','1/2球','1:0;2:0;1:1;0:0;2:1;0:1;3:0'],hits:['防平命中','-1让负命中','2球命中','七比分第3位1:1命中'],misses:['主胜第一选择未中'],note:'热门风险提示兑现。低比分与平局权重判断较好。',reasons:['安养主场和排名占优，但80%主胜热度远高于模型。','光州休赛期调整提高了比赛不确定性。'],risks:['五成左右主胜不应包装成稳胆。','低比分结构下平局必须保留较高权重。']},
+ {id:'203',league:'瑞超',time:'2026-07-19 22:30',home:'埃尔夫斯堡',away:'天狼星',handicap:'埃尔夫斯堡 +1',score:'1:3',overall:'hit',grade:'强势',pred:['天狼星胜，防平','+1让胜','2/3球','0:1;1:1;1:2;0:2;0:0;1:0;2:1'],hits:['客胜第一选择命中'],misses:['受让让胜未中','4球未覆盖','1:3未进入比分池'],note:'普通方向正确，但对客队大胜尾部和主队防守崩盘估计不足。',reasons:['天狼星整体状态与前场效率优于主队。','客胜虽然过热，但基本面仍支持第一方向。'],risks:['过热不等于必须反买。','当强客队率先进球，比赛状态会显著增加第二、第三球概率。']},
+ {id:'204',league:'瑞超',time:'2026-07-19 22:30',home:'哈尔姆斯塔德',away:'赫根',handicap:'哈尔姆斯塔德 +1',score:'0:2',overall:'hit',grade:'平稳',pred:['赫根胜，防平','+1让胜','2/3球，防4球','1:2;1:1;0:1;0:2;2:2;1:3;2:1'],hits:['客胜第一选择命中','2球命中','七比分第4位0:2命中'],misses:['主队+1让胜未中'],note:'客胜热度风险没有导致方向反转，但让球判断过度保护主队。',reasons:['赫根排名和攻击质量优势最终兑现。','主队没有形成足够反击威胁。'],risks:['风险标签只是概率折价，不是反向结论。','让球应更重视强队净胜两球的真实频率。']},
+ {id:'205',league:'瑞超',time:'2026-07-19 22:30',home:'哈马比',away:'代格福什',handicap:'哈马比 -2',score:'4:0',overall:'hit',grade:'强势',pred:['哈马比主胜','-2让胜/让负','3/4球，防5球','2:0;3:0;2:1;3:1;4:0;4:1;1:0'],hits:['主胜第一选择命中','-2让胜由范围覆盖','4球命中','七比分第5位4:0命中'],misses:['让球首选未形成明确单点'],note:'强弱结构判断充分兑现，且高比分尾部覆盖有效。',reasons:['哈马比主场进攻强，对手持续低迷。','领先后没有明显降速，继续扩大净胜优势。'],risks:['普通主胜与-2穿盘仍应分开评估。','正确结果排第5，比分排序仍需优化。']},
+ {id:'206',league:'芬超',time:'2026-07-19 23:30',home:'雅罗',away:'国际图尔库',handicap:'雅罗 +1',score:'0:0',overall:'miss',grade:'平稳',pred:['国际图尔库客胜','+1让负，防让胜','2/3球，防4球','0:2;0:1;1:2;1:1;0:3;1:3;0:0'],hits:['+1让胜由防守方向覆盖','七比分第7位0:0命中'],misses:['客胜方向未中','0球未被总进球覆盖'],note:'强客队面对深度低位时的破局风险被低估，0:0虽进入比分池却排序过低。',reasons:['国际图尔库长期不败与排名优势支持客胜。','雅罗通过低位防守显著压缩空间。'],risks:['强客队不等于必然能够破密防。','七比分含0:0时，总进球模块不应排除0球。']}
+];
+const todayData=[
+ {id:'201',league:'芬超',time:'2026-07-20 23:00',home:'TPS图尔',away:'坦佩雷山猫',handicap:'TPS +1',grade:'平稳',confidence:'B-',odds:[[2.44,3.40,2.35],[1.45,4.25,4.90]],support:[[35,29,36],[49,31,20]],model:[47,25,28],pick:'TPS主胜，防平',handicapPick:'TPS +1让胜',goals:'2/3球，防4球；单选偏3球',scores:['1:1','2:1','1:0','2:0','1:2','2:2','3:1'],summary:'主客场反差显著，TPS受让一球的容错远高于普通主胜。',reasons:['TPS本赛季8个联赛主场6胜1平1负，主场场均进1.75球、失0.75球。','坦佩雷山猫8个客场0胜3平5负，客场丢21球且没有零封。','山猫7月初换帅后更强调积极进攻，但防守体系仍处于磨合期。','山猫刚经历欧战，存在体能消耗和轮换风险；比赛更倾向双方均有进球。'],risks:['山猫整体进攻能力高于当前排名，反击端仍有威胁。','新帅可能带来短期进攻反弹。','普通胜平负赔率仍轻微倾向客队，市场对TPS真实强度存在保留。','TPS若早早取得领先，比赛可能由3球中心转为2球。']},
+ {id:'202',league:'芬超',time:'2026-07-21 00:00',home:'玛丽港',away:'拉赫蒂',handicap:'玛丽港 +1',grade:'强势',confidence:'B+',odds:[[5.35,4.20,1.42],[2.43,3.32,2.40]],support:[[11,18,71],[24,38,38]],model:[11,20,69],pick:'拉赫蒂客胜',handicapPick:'玛丽港 +1：让负，防让平',goals:'2/3球；单选偏2球',scores:['0:1','0:2','1:1','1:2','0:3','0:0','1:3'],summary:'玛丽港防守持续崩溃，换帅尚未产生稳定改善，客胜是四场最清晰普通方向。',reasons:['玛丽港排名垫底，近期连续大比分失利，近6场失球接近20个。','6月换帅后已获得数周时间，但防守结构和比赛结果仍未出现稳定改善。','拉赫蒂近期连续取胜并保持零封，4-3-3体系的中场紧凑度提高。','市场去水客胜约62%，模型修正至69%，基本面和赔率方向一致。'],risks:['拉赫蒂客场胜率并不突出，可能只以0:1小胜。','71%投注集中客胜，方向存在一定拥挤。','若拉赫蒂领先后主动降速，3球及以上概率下降。','玛丽港新帅仍可能首次打出完整的防守比赛。']},
+ {id:'203',league:'瑞超',time:'2026-07-21 01:00',home:'厄格里特',away:'佐加顿斯',handicap:'厄格里特 +1',grade:'平稳',confidence:'B',odds:[[6.95,5.40,1.25],[3.08,3.82,1.84]],support:[[9,14,77],[15,32,53]],model:[15,20,65],pick:'佐加顿斯客胜，防平',handicapPick:'厄格里特 +1：让负略优，建议回避单选',goals:'3/4球，防2球；双方进球偏是',scores:['1:2','0:2','1:1','0:1','1:3','0:3','2:2'],summary:'客队状态和进攻占优，但中卫缺员与主队主场进攻使净胜幅度分散。',reasons:['厄格里特整体战绩较差，但上轮4:3取胜，主场比赛开放度较高。','佐加顿斯复赛后连续赢球，两场攻入7球，进攻状态明显占优。','厄格里特前场核心停赛或伤缺，降低主队爆冷上限。','佐加顿斯中卫位置人员紧张，客队零封概率需要下调。'],risks:['77%客胜支持率偏热，1:1必须纳入核心防守。','主队主场并不像联赛排名显示得那么弱。','客队防线缺员可能导致双方进球和4球以上。','让球三项概率分散，不适合作为让球串关核心。']},
+ {id:'204',league:'瑞超',time:'2026-07-21 01:00',home:'卡尔马',away:'马尔默',handicap:'卡尔马 -1',grade:'观察',confidence:'C+',odds:[[2.55,3.50,2.22],[5.65,4.50,1.37]],support:[[25,33,42],[16,31,53]],model:[34,29,37],pick:'马尔默客胜，重点防平',handicapPick:'卡尔马 -1让负',goals:'2/3球；单选偏2球',scores:['1:1','0:1','1:2','1:0','2:1','0:0','0:2'],summary:'普通三项接近，不适合客胜单胆；卡尔马-1让负覆盖结构最清晰。',reasons:['卡尔马近期整体起伏，但近6个主场4胜1平1负，主场抵抗强。','马尔默7月初换帅后跑动、压迫和防守纪律明显改善，近期连续赢球。','马尔默近5场进球产量明显高于卡尔马，新帅红利具备比赛内容支撑。','但马尔默伤停人数较多，后场、中场和边路完整性受损。'],risks:['卡尔马主场连胜能力意味着普通客胜只有轻微优势。','马尔默新帅提升能否持续仍需观察。','大量伤停可能使马尔默压迫强度和后场出球下降。','平局支持率33%，1:1是高概率单一比分。']}
+];
+
+const summaries={
+  review:{
+    cls:'review',title:'07-19 玩法命中概览',
+    metrics:[['4/7','胜平负第一选择 · 57.1%'],['6/7','含防守方向 · 85.7%'],['5/7','让球范围 · 71.4%'],['4/7','总进球区间 · 57.1%'],['5/7','七比分池 · 71.4%']],
+    pills:['上一批22场：主选 <b>12/22</b>','含防守 <b>16/22</b>','让球范围 <b>13/22</b>','总进球 <b>14/22</b>','七比分 <b>15/22</b>']
+  },
+  today:{
+    cls:'today',title:'07-20 今日预测结构',
+    metrics:[['4','覆盖场次'],['1','强势方向'],['2','平稳可用'],['1','观察场次'],['B / B+','整体信心带']],
+    pills:['普通核心：<b>202×203 客胜</b>','让球核心：<b>201让胜 × 204让负</b>','总进球参考：<b>2/3球双选</b>','热门风险：<b>203 防1-1</b>']
+  },
+  method:{
+    cls:'method',title:'口径速览',
+    metrics:[['4','评估维度'],['2','命中层级'],['7','比分池容量'],['5–10%','临场波动'],['研究','使用定位']],
+    pills:['维度：赔率热度 / 球队状态 / 结构变化 / 统一比分矩阵','用途：排序、覆盖与风险识别，非收益承诺']
+  }
+};
+
+const panels={
+  review:{panel:'reviewPanel',title:'上一轮预测命中复盘',sub:'按核心赛果方向、让球覆盖、总进球区间和七比分池分别统计，避免只用一个“命中/未命中”掩盖模型问题。',section:'07-19 赛果复盘',hint:'“命中”按胜平负主方向或明确防守方向覆盖计算，详情中单列各玩法得失。'},
+  today:{panel:'todayPanel',title:'07-20 四场赛前预测',sub:'赔率去水后，再纳入主客场状态、换帅与战术变化、欧战轮换、伤停停赛和热门拥挤度。',section:'今日逐场分析',hint:'强势表示方向和基本面一致；平稳表示可用但需保护；观察表示三项接近或结构冲突。'},
+  method:{panel:'methodPanel',title:'模型口径与复盘方法',sub:'把预测拆成赛果方向、净胜幅度、总进球和比分情景，分别评价，避免结论互相矛盾。',section:'方法说明',hint:'模型概率不是确定结果，主要用于排序、覆盖与风险识别。'}
+};
+
+function initials(name){return name.replace(/FC|SK|图尔|现代|竞技|联/g,'').slice(0,2)}
+function chips(items,cls=''){return items.map(x=>`<span class="chip ${cls}">${x}</span>`).join('')}
+
+function reviewCard(m){
+ return `<article class="match-card ${m.overall==='hit'?'hit':'miss'}" data-state="${m.overall}" data-search="${m.id}${m.home}${m.away}">
+  <div class="card-main">
+   <div class="match-meta"><span>周日${m.id}</span><span>${m.time}</span><span class="dot"></span><b>${m.league}</b><span class="tag ${m.grade==='强势'?'strong':m.grade==='平稳'?'stable':'watch'}">${m.grade}</span><span class="status ${m.overall}">${m.overall==='hit'?'命中':'未命中'}</span></div>
+   <div class="teams"><span class="team"><i class="crest">${initials(m.home)}</i>${m.home}</span><span class="scoreline">${m.score}${m.extra?` <span class="subscore">(${m.extra})</span>`:''}</span><span class="team">${m.away}<i class="crest">${initials(m.away)}</i></span></div>
+   <div class="pickline"><div class="chips">${chips(m.pred.slice(0,2),'key')}${chips(m.pred.slice(2,3))}<span class="chip">${m.pred[3]}</span><span class="analysis-toggle">分析</span></div><div class="short-note">${m.note}</div></div>
+  </div>
+  <div class="details"><div class="detail-grid"><div class="box reviewbox"><h4>命中项</h4><ul>${m.hits.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="box riskbox"><h4>未命中与偏差</h4><ul>${m.misses.map(x=>`<li>${x}</li>`).join('')}</ul></div></div><div class="detail-grid"><div class="box"><h4>原判断依据</h4><ul>${m.reasons.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="box riskbox"><h4>模型需要修正</h4><ul>${m.risks.map(x=>`<li>${x}</li>`).join('')}</ul></div></div></div>
+ </article>`
+}
+
+function probBars(m){
+  const labels=['主胜','平局','客胜'],classes=['home','draw','away'];
+  return m.model.map((v,i)=>`<div class="prob-row"><span>${labels[i]}</span><div class="bar ${classes[i]}"><i style="width:${v}%"></i></div><b>${v}%</b></div>`).join('')
+}
+function oddsTable(title,odds,support){
+  return `<div><b style="font-size:12px">${title}</b><table><tr><th>胜</th><th>平</th><th>负</th></tr><tr>${odds.map(x=>`<td>${x}</td>`).join('')}</tr><tr>${support.map(x=>`<td>${x}%</td>`).join('')}</tr></table></div>`
+}
+function todayCard(m){
+  const gradeClass=m.grade==='强势'?'strong':m.grade==='平稳'?'stable':'watch';
+  return `<article class="match-card ${gradeClass}" data-state="${m.grade}" data-search="${m.id}${m.home}${m.away}">
+  <div class="card-main"><div class="match-meta"><span>周一${m.id}</span><span>${m.time}</span><span class="dot"></span><b>${m.league}</b><span class="tag ${gradeClass}">${m.grade}</span><span class="status pending">待赛 · ${m.confidence}</span></div>
+  <div class="teams"><span class="team"><i class="crest">${initials(m.home)}</i>${m.home}</span><span class="scoreline">VS</span><span class="team">${m.away}<i class="crest">${initials(m.away)}</i></span></div>
+  <div class="pickline"><div class="chips"><span class="chip key">${m.pick}</span><span class="chip key">${m.handicapPick}</span><span class="chip">${m.goals}</span><span class="analysis-toggle">分析</span></div><div class="short-note">${m.summary}</div></div></div>
+  <div class="details"><div class="detail-grid"><div class="box"><h4>模型胜平负概率</h4>${probBars(m)}</div><div class="box"><h4>七比分池</h4><div class="scores">${m.scores.map((x,i)=>`<span class="score ${i<3?'top':''}">${x}${i<3?' ★':''}</span>`).join('')}</div><div class="footnote">前三为核心情景，后四项负责相邻比分、平局与尾部覆盖。</div></div></div>
+  <div class="detail-grid"><div class="box"><h4>判断依据</h4><ul>${m.reasons.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="box riskbox"><h4>主要风险点</h4><ul>${m.risks.map(x=>`<li>${x}</li>`).join('')}</ul></div></div>
+  <div class="box odds"><h4 style="grid-column:1/-1">赔率与支持率</h4>${oddsTable('胜平负',m.odds[0],m.support[0])}${oddsTable(m.handicap,m.odds[1],m.support[1])}</div></div>
+ </article>`
+}
+
+function renderSummary(key){
+  const s=summaries[key];
+  const box=document.getElementById('summaryBox');
+  box.className='summary '+s.cls;
+  document.getElementById('summaryTitle').textContent=s.title;
+  document.getElementById('metrics').innerHTML=s.metrics.map(([a,b])=>`<div class="metric"><b>${a}</b><span>${b}</span></div>`).join('');
+  document.getElementById('cumulative').innerHTML=s.pills.map(x=>`<span class="pill">${x}</span>`).join('');
+}
+
+function switchPanel(key){
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  document.getElementById(panels[key].panel).classList.add('active');
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.panel===key));
+  document.getElementById('heroTitle').textContent=panels[key].title;
+  document.getElementById('heroSub').textContent=panels[key].sub;
+  document.getElementById('sectionTitle').textContent=panels[key].section;
+  document.getElementById('sectionHint').textContent=panels[key].hint;
+  document.getElementById('filters').style.display=key==='method'?'none':'flex';
+  renderSummary(key);
+  buildFilters(key);
+}
+
+function buildFilters(key){
+  const wrap=document.getElementById('filters');
+  if(key==='method'){wrap.innerHTML='';return}
+  const isReview=key==='review';
+  wrap.innerHTML=`<button class="filter active" data-filter="all" type="button">全部 ${isReview?7:4}</button>${isReview?'<button class="filter" data-filter="hit" type="button">命中 6</button><button class="filter" data-filter="miss" type="button">未命中 1</button>':'<button class="filter" data-filter="强势" type="button">强势 1</button><button class="filter" data-filter="平稳" type="button">平稳 2</button><button class="filter" data-filter="观察" type="button">观察 1</button>'}<input class="search" id="search" placeholder="搜索球队或编号" aria-label="搜索球队或编号">`;
+  wrap.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{
+    wrap.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    applyFilter(key,b.dataset.filter,wrap.querySelector('#search').value);
+  });
+  wrap.querySelector('#search').oninput=e=>applyFilter(key,wrap.querySelector('.filter.active').dataset.filter,e.target.value);
+}
+
+function applyFilter(key,filter,q){
+  const list=document.getElementById(key==='review'?'reviewList':'todayList');
+  let shown=0;
+  [...list.querySelectorAll('.match-card')].forEach(card=>{
+    const okFilter=filter==='all'||card.dataset.state===filter;
+    const okSearch=card.dataset.search.toLowerCase().includes((q||'').toLowerCase());
+    const show=okFilter&&okSearch;
+    card.style.display=show?'':'none';
+    if(show) shown++;
+  });
+  let empty=list.querySelector('.empty');
+  if(!shown){
+    if(!empty){empty=document.createElement('div');empty.className='empty';empty.textContent='没有符合条件的比赛';list.appendChild(empty)}
+    empty.style.display='';
+  }else if(empty){empty.style.display='none'}
+}
+
+document.getElementById('reviewList').innerHTML=reviewData.map(reviewCard).join('');
+document.getElementById('todayList').innerHTML=todayData.map(todayCard).join('');
+document.addEventListener('click',e=>{
+  const t=e.target.closest('.analysis-toggle');
+  if(t) t.closest('.match-card').classList.toggle('open');
+});
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>switchPanel(t.dataset.panel));
+document.getElementById('expandAll').onclick=()=>document.querySelectorAll('.panel.active .match-card').forEach(x=>x.classList.add('open'));
+document.getElementById('collapseAll').onclick=()=>document.querySelectorAll('.match-card').forEach(x=>x.classList.remove('open'));
+renderSummary('review');
+buildFilters('review');
+</script>
+</body>
+</html>

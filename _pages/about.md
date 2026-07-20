@@ -1,9 +1,8 @@
 ---
-permalink: /
+permalink: /about/
 title: "董凯志的学术主页"
 author_profile: true
-redirect_from: 
-  - /about/
+redirect_from:
   - /about.html
 ---
 

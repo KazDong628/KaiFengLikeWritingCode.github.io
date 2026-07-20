@@ -8,6 +8,12 @@
 #      Markdown formatted page while the second is generated using JSON.
 
 main:
+  - title: "预测复盘"
+    url: /
+
+  - title: "学术主页"
+    url: /about/
+
   - title: "Publications"
     url: /publications/
 
