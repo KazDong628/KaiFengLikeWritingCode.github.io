@@ -228,6 +228,24 @@ button,input{font:inherit}a{color:#0b6b5f}
 }
 .comp b{display:block;font-size:14px;font-weight:800}
 .comp span{display:block;margin-top:3px;font-size:11px;opacity:.8}
+.type-overview{
+  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:12px 0 14px;
+}
+.type-ov{
+  border:1px solid var(--line);border-radius:14px;padding:12px;background:linear-gradient(160deg,#fff,#f7fafc);
+  cursor:pointer;transition:.18s;text-align:left;font:inherit;width:100%;
+}
+.type-ov:hover{transform:translateY(-1px);border-color:#9ec9c1}
+.type-ov.active{border-color:#0b7a6c;box-shadow:0 0 0 2px rgba(11,122,108,.15)}
+.type-ov .lab{font-size:12px;font-weight:800;color:#0b5c52}
+.type-ov .big{font-size:22px;font-weight:900;margin:4px 0;color:#123040}
+.type-ov .mini{font-size:11px;color:#667;line-height:1.45}
+.board-sec{
+  margin:14px 0 8px;padding:8px 0 4px;font-size:13px;font-weight:800;color:#0b5c52;
+  border-bottom:1px solid #e5ecf0;
+}
+@media(max-width:1100px){.type-overview{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){.type-overview{grid-template-columns:1fr}}
 .legend-hits .l-core{background:#1f9a62}
 .legend-hits .l-pool{background:#2a8fad}
 .legend-hits .l-dir{background:#c4923a}
@@ -324,7 +342,7 @@ button,input{font:inherit}a{color:#0b6b5f}
         <div class="logo">MS</div>
         <div>
           <h1>MatchStruct 赛理 · 足球研究台</h1>
-          <p>按赛事复盘看板 · 2026世界杯 / 韩职 / 挪超 / 芬超 / 瑞超 · 今日推演</p>
+          <p>按赛事复盘：本轮世界杯 / 韩职 / 挪超 / 芬超 / 瑞超 · 今日推演</p>
         </div>
       </div>
       <div class="pills">
@@ -350,8 +368,9 @@ button,input{font:inherit}a{color:#0b6b5f}
 
   <section class="panel active" id="dash">
     <div class="card">
-      <h2>复盘看板 · 按赛事切换</h2>
-      <p class="sub">顶部仅竞彩足球研究台；下方按「本轮汇总 / 2026世界杯 / 各联赛」分别生成命中看板与逐场明细。</p>
+      <h2>复盘看板 · 按赛事分类</h2>
+      <p class="sub">分为<strong>本轮世界杯</strong>（含七比分 86 场档案 + 本轮三四名/决赛 2 场）、<strong>韩职 / 挪超 / 芬超 / 瑞超</strong>。点击类型查看该类型命中看板与逐场明细。</p>
+      <div class="type-overview" id="typeOverview"></div>
       <div class="comp-switch" id="compSwitch"></div>
     </div>
 
