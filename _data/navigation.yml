@@ -1,6 +1,12 @@
 main:
-  - title: "研究台"
+  - title: "足球研究台"
     url: /
+
+  - title: "七星彩实验室"
+    url: /qixingcai.html
+
+  - title: "大乐透实验室"
+    url: /dlt.html
 
   - title: "关于产品"
     url: /about/

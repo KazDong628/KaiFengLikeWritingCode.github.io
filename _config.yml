@@ -12,7 +12,7 @@ site_theme               : "default"
 title                    : "MatchStruct 赛理"
 title_separator          : "-"
 name                     : &name "MatchStruct"
-description              : &description "MatchStruct（赛理）足球赛果结构研究平台。分层复盘、情景推演与合规披露；AI 辅助整理，仅供学习研究，不构成投注或收益建议。不采集个人投注/支付信息。"
+description              : &description "MatchStruct（赛理）：足球复盘研究台 + 七星彩/大乐透实验室（待验证）。研究演示，不构成投注或购彩建议。"
 
 url                      : "https://kazdong628.github.io"
 baseurl                  : "/KaiFengLikeWritingCode.github.io"

@@ -1,0 +1,52 @@
+/* MatchStruct shared shell — product switcher */
+.ms-switch{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;
+}
+.ms-switch a{
+  text-decoration:none;color:inherit;border-radius:14px;padding:12px 14px;
+  border:1px solid var(--line,#d3dee7);background:#fff;
+  box-shadow:0 6px 18px rgba(10,30,45,.05);transition:.18s;display:block;
+}
+.ms-switch a:hover{transform:translateY(-2px);border-color:#9ec9c1}
+.ms-switch a.active{
+  background:linear-gradient(145deg,#0b7a6c,#12a38f);color:#fff;border-color:transparent;
+  box-shadow:0 10px 26px rgba(11,122,108,.28);
+}
+.ms-switch .k{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.75;margin-bottom:2px}
+.ms-switch .t{font-size:15px;font-weight:800}
+.ms-switch .s{font-size:12px;margin-top:2px;opacity:.85}
+.ms-switch a.active .s{opacity:.92}
+.ms-badge{
+  display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;
+  font-size:11px;font-weight:800;border:1px solid transparent;
+}
+.ms-badge.dev{background:#fff6e5;color:#9a6b1a;border-color:#ebd4a4}
+.ms-badge.live{background:#e8f7ef;color:#2f9a6a;border-color:#b7e0cb}
+.ms-badge.wait{background:#eef3f8;color:#3f6f84;border-color:#c9d8e4}
+.roadmap{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.road{
+  border:1px solid var(--line,#d3dee7);border-radius:14px;padding:14px;background:#fff;
+  position:relative;overflow:hidden;
+}
+.road:before{
+  content:attr(data-step);position:absolute;right:10px;top:6px;font-size:28px;font-weight:800;
+  color:rgba(11,122,108,.12);
+}
+.road b{display:block;margin-bottom:6px}
+.road span{font-size:12px;color:#617486}
+.fake-ui{
+  border:1px dashed #c9d6e0;border-radius:16px;padding:16px;background:
+    linear-gradient(180deg,#f7fafc,#fff);min-height:220px;
+}
+.fake-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.fake-chip{height:28px;min-width:64px;border-radius:8px;background:#e8eef2}
+.fake-bars{display:grid;gap:8px;margin-top:12px}
+.fake-bar{height:12px;border-radius:99px;background:#e8eef2;overflow:hidden}
+.fake-bar i{display:block;height:100%;background:linear-gradient(90deg,#0b7a6c,#7dffd6);opacity:.45}
+.lock{
+  margin-top:14px;padding:12px 14px;border-radius:12px;background:#fff8ef;border:1px solid #ead7a8;
+  color:#7a5314;font-size:12px;line-height:1.65;
+}
+@media(max-width:860px){
+  .ms-switch,.roadmap{grid-template-columns:1fr}
+}

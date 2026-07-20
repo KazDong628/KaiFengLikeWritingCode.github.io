@@ -3,13 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="MatchStruct 赛理：22场分层复盘 + 逐场分析 + 今日推演可视化。研究演示，非投注意见。">
+<meta name="description" content="MatchStruct 赛理：足球复盘研究台，七星彩/大乐透实验室（待开发）。研究演示，非投注/购彩建议。">
 <meta name="theme-color" content="#07131a">
-<title>MatchStruct 赛理｜可视化复盘与逐场研究台</title>
+<title>MatchStruct 赛理｜足球 · 七星彩 · 大乐透</title>
 <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/ms-shell.css">
 <style>
 :root{
   --ink:#0b1720;--muted:#617486;--line:#d3dee7;--paper:#fff;--bg0:#08131a;
@@ -226,24 +227,27 @@ button,input{font:inherit}a{color:#0b6b5f}
 </head>
 <body>
 <div class="page">
+  <div class="ms-switch" id="productSwitch"></div>
+
   <header class="tophero">
     <div class="brandrow">
       <div class="brand">
         <div class="logo">MS</div>
         <div>
-          <h1>MatchStruct 赛理 · 可视化研究台</h1>
-          <p>22场分层复盘 · 逐场分析档案 · 今日四场情景推演 · 图表化命中审计</p>
+          <h1>MatchStruct 赛理 · 足球研究台</h1>
+          <p>22场分层复盘 · 逐场分析 · 今日推演 · 可切换至七星彩 / 大乐透实验室</p>
         </div>
       </div>
       <div class="pills">
         <span class="pill">快照 <b id="snap">—</b></span>
         <span class="pill">口径 <b>90′ 竞彩</b></span>
-        <span class="pill">定位 <b>研究非投注</b></span>
-        <span class="pill">AI <b>辅助披露</b></span>
+        <span class="pill">足球 <b>演示中</b></span>
+        <span class="pill">彩票实验室 <b>待验证</b></span>
       </div>
     </div>
     <div class="legal" role="note">
-      <strong>合规：</strong>本页为足球赛果结构研究演示。赔率去水后结合状态/换帅/伤停/冷热修正；投注比例只用于热度判断，不直接作为胜率。
+      <strong>合规：</strong>本页为足球赛果结构研究演示；七星彩与超级大乐透模块仍为<strong>待开发/待验证</strong>。
+      赔率去水后结合状态/换帅/伤停/冷热修正；投注比例只用于热度判断。
       内容可能含 AI 辅助生成，<strong>不构成投注、购彩或收益建议</strong>。
       <a id="aTerms" href="terms/">免责声明</a> · <a id="aPrivacy" href="privacy/">隐私说明</a> · <a id="aAbout" href="about/">关于产品</a>
     </div>
@@ -365,8 +369,9 @@ button,input{font:inherit}a{color:#0b6b5f}
   </section>
 
   <footer class="footer">
-    MatchStruct Research Desk · 研究演示 · AI 辅助披露 · 不构成投注或收益建议 · 不采集个人投注/支付信息<br>
+    MatchStruct Research Desk · 足球演示 · 七星彩/大乐透待验证 · 不构成投注或购彩建议<br>
     <a id="fTerms" href="terms/">免责声明</a> · <a id="fPrivacy" href="privacy/">隐私说明</a> · <a id="fAbout" href="about/">关于产品</a>
+    · <a href="qixingcai.html" id="fQx">七星彩实验室</a> · <a href="dlt.html" id="fDlt">大乐透实验室</a>
   </footer>
 </div>
 
@@ -385,6 +390,7 @@ button,input{font:inherit}a{color:#0b6b5f}
   </div>
 </div>
 
+<script src="assets/js/ms-nav.js"></script>
 <script>
 /* 必须最先执行：即使后面 Chart/数据脚本失败，关闭按钮也要可用 */
 (function () {
@@ -436,6 +442,8 @@ const abs=p=>BASE+'/'+p.replace(/^\//,'');
 ['aTerms','fTerms'].forEach(id=>{const el=document.getElementById(id); if(el) el.href=abs('terms/');});
 ['aPrivacy','fPrivacy'].forEach(id=>{const el=document.getElementById(id); if(el) el.href=abs('privacy/');});
 ['aAbout','fAbout'].forEach(id=>{const el=document.getElementById(id); if(el) el.href=abs('about/');});
+const fQx=document.getElementById('fQx'); if(fQx) fQx.href=abs('qixingcai.html');
+const fDlt=document.getElementById('fDlt'); if(fDlt) fDlt.href=abs('dlt.html');
 
 const D=window.MS_DATA;
 if(!D){ console.error('MS_DATA missing'); return; }

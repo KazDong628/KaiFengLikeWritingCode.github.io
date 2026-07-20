@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="MatchStruct 超级大乐透结构实验室：模型待开发与验证中，仅供研究演示，不构成购彩建议。">
+<title>MatchStruct｜超级大乐透实验室（待开发）</title>
+<link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/ms-shell.css">
+<style>
+:root{--ink:#0b1720;--muted:#617486;--line:#d3dee7;--teal:#0b7a6c;--sans:"IBM Plex Sans","Noto Sans SC",system-ui,sans-serif}
+*{box-sizing:border-box}body{margin:0;font:14px/1.65 var(--sans);color:var(--ink);background:linear-gradient(165deg,#1a1208 0%,#3a2810 26%,#eef2f5 26.1%,#f5f7fa 100%);min-height:100vh}
+a{color:#0b6b5f}.page{width:min(1100px,calc(100% - 20px));margin:0 auto 64px;padding-top:18px}
+.hero{color:#fff4e4;padding:22px;border-radius:22px;border:1px solid rgba(255,255,255,.12);background:linear-gradient(135deg,rgba(180,110,30,.42),rgba(40,24,8,.28));box-shadow:0 18px 50px rgba(4,20,30,.18);position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;right:-30px;top:-30px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,180,80,.35),transparent 70%)}
+.brand{display:flex;gap:14px;align-items:center;position:relative;z-index:1}
+.logo{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-weight:800;color:#fff;background:linear-gradient(145deg,#a45e12,#e0a03a);font-size:13px}
+.brand h1{margin:0;font-size:26px}.brand p{margin:4px 0 0;color:#f0d7b0;font-size:13px}
+.legal{margin-top:14px;padding:11px 13px;border-radius:12px;font-size:12px;background:rgba(255,214,150,.12);border:1px solid rgba(255,200,120,.28);color:#ffe2b0;position:relative;z-index:1}
+.legal strong{color:#fff}.legal a{color:#ffd59a}
+.card{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:18px;padding:16px 18px;margin-top:14px;box-shadow:0 10px 34px rgba(10,30,45,.08)}
+.card h2{margin:0 0 6px;font-size:20px}.sub{margin:0 0 14px;color:var(--muted);font-size:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.kpi{border:1px solid var(--line);border-radius:14px;padding:14px;background:linear-gradient(160deg,#fff,#fbf7f0)}
+.kpi b{display:block;font-size:22px;font-weight:800}.kpi span{font-size:12px;color:var(--muted)}
+.balls{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.ball{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff;opacity:.35}
+.ball.red{background:linear-gradient(145deg,#b8473f,#e07068)}
+.ball.blue{background:linear-gradient(145deg,#2f6f9a,#5aa0d0)}
+.matrix{width:100%;border-collapse:collapse;font-size:13px}
+.matrix th,.matrix td{border:1px solid var(--line);padding:10px;text-align:left}
+.matrix th{background:#fbf6ee}
+.footer{margin-top:14px;text-align:center;color:var(--muted);font-size:12px;line-height:1.8}
+@media(max-width:800px){.grid3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="ms-switch" id="productSwitch"></div>
+
+  <header class="hero">
+    <div class="brand">
+      <div class="logo">DLT</div>
+      <div>
+        <h1>超级大乐透结构实验室</h1>
+        <p>前区/后区结构 · 组合覆盖研究 · <span class="ms-badge wait">待开发</span> <span class="ms-badge dev">待验证</span></p>
+      </div>
+    </div>
+    <div class="legal">
+      <strong>合规：</strong>本模块为<strong>研究演示占位页</strong>，模型尚未完成开发与验证。内容<strong>不构成购彩建议、不承诺中奖或收益</strong>。请遵守当地法律法规；理性对待彩票，未满法定年龄请勿购彩。
+      <a data-link="terms/">免责声明</a> · <a data-link="privacy/">隐私说明</a>
+    </div>
+  </header>
+
+  <section class="card">
+    <h2>当前状态</h2>
+    <p class="sub">超级大乐透模型处于立项与方案设计阶段。前区 5 + 后区 2 的结构研究框架待实现，页面仅作产品切换与路线图展示。</p>
+    <div class="grid3">
+      <div class="kpi"><b>Phase 0</b><span>方案设计 / 区隔建模</span></div>
+      <div class="kpi"><b>0%</b><span>回测验证完成度（待启动）</span></div>
+      <div class="kpi"><b>研究</b><span>输出定位：结构研究，非购彩意见</span></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>规划中的研究模块</h2>
+    <p class="sub">前后区拆分建模，避免把不同随机源混为一个“稳号”叙事。</p>
+    <div class="roadmap">
+      <div class="road" data-step="01"><b>前区结构审计</b><span>号码分布、区间、连号与和值等特征的分层统计。</span></div>
+      <div class="road" data-step="02"><b>后区结构审计</b><span>后区两码组合空间更小，单独评估覆盖与过拟合风险。</span></div>
+      <div class="road" data-step="03"><b>组合覆盖池</b><span>输出多情景覆盖集合，强调概率区间而非单注必中。</span></div>
+      <div class="road" data-step="04"><b>独立验证门禁</b><span>样本外回测与偏差报告通过后，才允许展示研究输出。</span></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>界面预览（不可用）</h2>
+    <p class="sub">示意开奖结构球位，当前为锁定占位，不提供任何推荐号码。</p>
+    <div class="fake-ui" aria-hidden="true">
+      <div style="font-size:12px;color:#617486;margin-bottom:6px">前区（示意）</div>
+      <div class="balls">
+        <div class="ball red">--</div><div class="ball red">--</div><div class="ball red">--</div><div class="ball red">--</div><div class="ball red">--</div>
+      </div>
+      <div style="font-size:12px;color:#617486;margin:10px 0 6px">后区（示意）</div>
+      <div class="balls">
+        <div class="ball blue">--</div><div class="ball blue">--</div>
+      </div>
+      <div class="fake-bars" style="margin-top:8px">
+        <div class="fake-bar"><i style="width:58%"></i></div>
+        <div class="fake-bar"><i style="width:41%"></i></div>
+        <div class="fake-bar"><i style="width:66%"></i></div>
+      </div>
+      <div class="lock"><strong>功能锁定：</strong>超级大乐透模型待开发与独立验证。验证报告发布前，本页不提供任何号码推荐、复式过滤或购彩导向输出。</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>上线门槛（内部验收）</h2>
+    <table class="matrix">
+      <thead><tr><th>门槛</th><th>说明</th><th>状态</th></tr></thead>
+      <tbody>
+        <tr><td>区隔建模说明</td><td>前区/后区概率空间与规则文档</td><td>待启动</td></tr>
+        <tr><td>回测与偏差报告</td><td>滚动验证、过拟合监控、空窗期处理</td><td>待启动</td></tr>
+        <tr><td>合规与年龄提示</td><td>购彩风险、理性购彩、非建议声明</td><td>草案已有</td></tr>
+        <tr><td>发布评审</td><td>通过后方可从“待验证”切换为“研究演示”</td><td>未开始</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="footer">
+    MatchStruct Lab · 超级大乐透模块 · 待开发/待验证 · 不构成购彩或收益建议<br>
+    <a data-link="./">足球研究台</a> · <a data-link="qixingcai.html">七星彩实验室</a> · <a data-link="terms/">免责声明</a>
+  </div>
+</div>
+<script src="assets/js/ms-nav.js"></script>
+</body>
+</html>
