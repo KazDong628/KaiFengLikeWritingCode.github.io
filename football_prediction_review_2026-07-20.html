@@ -64,7 +64,7 @@ button,input{font:inherit}a{color:#0b6b5f}
 .legal strong{color:#fff}
 
 .nav{
-  margin-top:14px;display:grid;grid-template-columns:repeat(6,1fr);gap:8px;position:relative;z-index:1;
+  margin-top:14px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;position:relative;z-index:1;
 }
 .tab{
   border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.22);color:#d7efe9;
@@ -214,6 +214,20 @@ button,input{font:inherit}a{color:#0b6b5f}
 .legend-hits .l-hit{background:#1f9a62}
 .legend-hits .l-partial{background:#e0a01e}
 .legend-hits .l-miss{background:#d4544c}
+.comp-switch{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-top:12px;
+}
+.comp{
+  border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px 12px;cursor:pointer;text-align:left;
+  transition:.18s;font:inherit;
+}
+.comp:hover{transform:translateY(-1px);border-color:#9ec9c1}
+.comp.active{
+  background:linear-gradient(145deg,#0b7a6c,#12a38f);color:#fff;border-color:transparent;
+  box-shadow:0 10px 24px rgba(11,122,108,.25);
+}
+.comp b{display:block;font-size:14px;font-weight:800}
+.comp span{display:block;margin-top:3px;font-size:11px;opacity:.8}
 .legend-hits .l-core{background:#1f9a62}
 .legend-hits .l-pool{background:#2a8fad}
 .legend-hits .l-dir{background:#c4923a}
@@ -238,6 +252,13 @@ button,input{font:inherit}a{color:#0b6b5f}
 .stamp.wc-pool{background:#2a8fad;color:#fff;border-color:#1f6f88}
 .stamp.wc-dir{background:#c4923a;color:#fff;border-color:#9a7124}
 .stamp.wc-miss{background:#d4544c;color:#fff;border-color:#b33d37}
+.tag{
+  display:inline-flex;align-items:center;padding:4px 9px;border-radius:999px;font-size:11px;font-weight:800;
+  border:1px solid transparent;
+}
+.tag.hit{background:#e8f7ef;color:#1f9a62;border-color:#b7e0cb}
+.tag.partial{background:#fff6e5;color:#9a6b1a;border-color:#ebd4a4}
+.tag.miss{background:#fff1f0;color:#b33d37;border-color:#efc4c0}
 .notice-box{
   margin-top:12px;padding:12px 14px;border-radius:12px;font-size:13px;line-height:1.7;color:#6a5318;
   background:#fff8ef;border:1px solid #ead7a8;
@@ -303,7 +324,7 @@ button,input{font:inherit}a{color:#0b6b5f}
         <div class="logo">MS</div>
         <div>
           <h1>MatchStruct 赛理 · 足球研究台</h1>
-          <p>22场分层复盘 · 世界杯86场档案 · 今日推演 · 可切换实验室</p>
+          <p>按赛事复盘看板 · 2026世界杯 / 韩职 / 挪超 / 芬超 / 瑞超 · 今日推演</p>
         </div>
       </div>
       <div class="pills">
@@ -320,9 +341,7 @@ button,input{font:inherit}a{color:#0b6b5f}
       <a id="aTerms" href="terms/">免责声明</a> · <a id="aPrivacy" href="privacy/">隐私说明</a> · <a id="aAbout" href="about/">关于产品</a>
     </div>
     <div class="nav" role="tablist">
-      <button class="tab active" data-panel="dash" type="button"><b>复盘看板</b><span>命中率 · 图表 · 结论</span></button>
-      <button class="tab" data-panel="review" type="button"><b>22场明细</b><span>逐场分析 · 命中高亮</span></button>
-      <button class="tab" data-panel="wc86" type="button"><b>世界杯86场</b><span>七比分官方复盘档案</span></button>
+      <button class="tab active" data-panel="dash" type="button"><b>复盘看板</b><span>按赛事分类 · 明细一体</span></button>
       <button class="tab" data-panel="today" type="button"><b>今日推演</b><span>4场深度情景</span></button>
       <button class="tab" data-panel="rank" type="button"><b>优先级</b><span>串关观察 · 热度风险</span></button>
       <button class="tab" data-panel="method" type="button"><b>方法迭代</b><span>问题 · 下一步</span></button>
@@ -331,89 +350,46 @@ button,input{font:inherit}a{color:#0b6b5f}
 
   <section class="panel active" id="dash">
     <div class="card">
-      <h2>整体命中审计</h2>
+      <h2>复盘看板 · 按赛事切换</h2>
+      <p class="sub">顶部仅竞彩足球研究台；下方按「本轮汇总 / 2026世界杯 / 各联赛」分别生成命中看板与逐场明细。</p>
+      <div class="comp-switch" id="compSwitch"></div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h2 id="boardTitle">命中审计</h2>
       <p class="sub" id="ruleLine"></p>
       <div class="kpi-grid" id="kpis"></div>
+      <div class="notice-box" id="boardNotice" hidden></div>
+      <div class="wc-stages" id="wcStages" hidden></div>
     </div>
-    <div class="charts">
+
+    <div class="charts" id="boardCharts">
       <div class="chart-box"><h3>分层命中率对比</h3><canvas id="chartRates" height="220"></canvas></div>
       <div class="chart-box"><h3>联赛覆盖结构</h3><canvas id="chartLeague" height="220"></canvas></div>
     </div>
+
     <div class="card" style="margin-top:14px">
-      <h2>核心结论</h2>
-      <p class="sub">胜负方向具备一定有效性；防守双选明显提升覆盖；总进球较上轮进步；七比分池覆盖不错但排序较差；让球净胜幅度仍是最薄弱环节。正确比分平均排在约第 4.6 位。</p>
+      <h2 id="conclTitle">核心结论</h2>
+      <p class="sub" id="conclSub"></p>
       <div class="split">
-        <div class="box">
-          <h4>做得好的部分</h4>
-          <ul>
-            <li>瑞超普通胜平负 4/4 全中</li>
-            <li>韩职让球范围 5/6，容错判断较好</li>
-            <li>总进球区间 14/22（63.6%）</li>
-            <li>莫尔德过热、安养防平、维京-2 风险预警有效</li>
-          </ul>
-        </div>
-        <div class="box">
-          <h4>主要问题</h4>
-          <ul>
-            <li>第一比分精确 0/22，排序机制不足</li>
-            <li>平局从未作为第一选择（5场平局）</li>
-            <li>韩职主客方向偏差偏大（主选 2/6）</li>
-            <li>高低比分尾部（0球 / 4球+）仍被低估</li>
-          </ul>
-        </div>
+        <div class="box"><h4>做得好的部分</h4><ul id="conclGood"></ul></div>
+        <div class="box"><h4>主要问题</h4><ul id="conclBad"></ul></div>
       </div>
     </div>
-    <div class="card" style="margin-top:14px">
-      <h2>历史档案 · 世界杯86场</h2>
-      <p class="sub">2026世界杯七比分模型官方赛果复盘：核心3命中36/86（41.9%），完整比分池覆盖57/86（66.3%），方向或比分覆盖78/86（90.7%）。完整明细已并入本页「世界杯86场」标签。</p>
-      <p style="margin:0"><button type="button" class="bulk expand" id="goWc86" style="padding:10px 16px">查看世界杯86场复盘 →</button></p>
-    </div>
-  </section>
 
-  <section class="panel" id="review">
-    <div class="card">
-      <h2>22 场逐场复盘 + 原预测档案</h2>
-      <p class="sub">未展开也能直接看四项复盘结果：绿=命中，黄=防守/第二选择命中，红=未覆盖。</p>
-      <div class="legend-hits">
-        <span><i class="l-hit"></i>主选命中</span>
-        <span><i class="l-partial"></i>防守命中</span>
-        <span><i class="l-miss"></i>未覆盖</span>
-      </div>
-      <div class="filters" id="revFilters"></div>
-      <div id="reviewList"></div>
+    <div class="card" style="margin-top:14px">
+      <h2 id="detailTitle">逐场明细</h2>
+      <p class="sub">未展开也可看命中高亮；可筛选、搜索，并一键展开/收起。</p>
+      <div class="legend-hits" id="boardLegend"></div>
+      <div class="filters" id="boardFilters"></div>
+      <div id="boardList"></div>
     </div>
-  </section>
 
-
-  <section class="panel" id="wc86">
-    <div class="card">
-      <h2>世界杯86场 · 官方赛果复盘</h2>
-      <p class="sub">七比分模型按开赛顺序核验；淘汰赛比分按90分钟常规时间判定。绿=核心3，蓝=比分池，黄=方向，红=未中。</p>
-      <div class="legend-hits">
-        <span><i class="l-core"></i>核心3命中</span>
-        <span><i class="l-pool"></i>比分池命中</span>
-        <span><i class="l-dir"></i>方向命中</span>
-        <span><i class="l-miss"></i>未覆盖</span>
-      </div>
-      <div class="kpi-grid" id="wcKpis"></div>
-      <div class="notice-box" id="wcNotice"></div>
-      <div class="wc-stages" id="wcStages"></div>
-    </div>
-    <div class="card" style="margin-top:14px">
-      <h2>逐场复盘</h2>
-      <p class="sub">可按阶段 / 命中层级筛选；淘汰赛可展开查看候选池与方向明细。</p>
-      <div class="filters" id="wcFilters"></div>
-      <div id="wcList"></div>
-    </div>
-    <div class="card" style="margin-top:14px">
-      <h2>8场完全未中</h2>
-      <p class="sub">比分与方向均未覆盖的场次，优先用于迭代。</p>
-      <div class="list" id="wcMisses"></div>
-    </div>
-    <div class="card" style="margin-top:14px">
-      <h2>模型规律与下一版迭代</h2>
+    <div class="card" style="margin-top:14px" id="wcExtra" hidden>
+      <h2>世界杯补充：未中场次与迭代</h2>
       <p class="sub" id="wcSummary"></p>
-      <div class="split" id="wcLessons" style="grid-template-columns:1fr 1fr"></div>
+      <div class="list" id="wcMisses"></div>
+      <div class="split" id="wcLessons" style="grid-template-columns:1fr 1fr;margin-top:12px"></div>
     </div>
   </section>
 
@@ -546,7 +522,7 @@ button,input{font:inherit}a{color:#0b6b5f}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
 <script src="assets/js/matchstruct-data.js"></script>
 <script src="assets/js/worldcup86-data.js"></script>
-<script src="assets/js/worldcup86-ui.js"></script>
+<script src="assets/js/review-boards.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 function boot(){
@@ -562,50 +538,14 @@ const fDlt=document.getElementById('fDlt'); if(fDlt) fDlt.href=abs('dlt.html');
 const D=window.MS_DATA;
 if(!D){ console.error('MS_DATA missing'); return; }
 document.getElementById('snap').textContent=D.meta.snapshot;
-document.getElementById('ruleLine').textContent=D.meta.rule;
 
 function initials(n){return n.replace(/FC|SK|市民|现代|制铁|联/g,'').slice(0,2)}
-function resClass(x){return x==='hit'?'hit':x==='partial'?'partial':'miss'}
-function resMark(x){return x==='hit'?'✓':x==='partial'?'◐':'✕'}
-function resText(x){return x==='hit'?'主选命中':x==='partial'?'防守命中':'未覆盖'}
-function cleanLabel(s){
-  const t=String(s||'').replace(/^[✅◐❌✓✕]\s*/,'').trim();
-  return t||(s&&String(s).includes('◐')?'第二选择':s&&/^[✅✓]/.test(String(s))?'命中':'未覆盖');
-}
-function verdictCell(state, title, label){
-  const st=resClass(state);
-  return `<div class="verdict ${st}" title="${title}"><span class="v-ico">${resMark(state)}</span><div><small>${title}</small><b>${cleanLabel(label)}</b></div></div>`;
-}
-document.getElementById('kpis').innerHTML=D.reviewKpis.map(k=>`
-  <div class="kpi"><b>${k.hit}</b><span>${k.label} · ${k.pct}%</span>
-  <div class="bar"><i style="width:${k.pct}%;background:linear-gradient(90deg,${k.color},#7dffd6)"></i></div></div>`).join('');
-
 function safeChart(fn){
   try {
     if (typeof Chart === 'undefined') { console.warn('Chart.js not loaded'); return; }
     fn();
   } catch (err) { console.warn(err); }
 }
-
-safeChart(function(){
-  new Chart(document.getElementById('chartRates'),{type:'bar',data:{
-    labels:D.reviewKpis.map(k=>k.label),
-    datasets:[{label:'命中率 %',data:D.reviewKpis.map(k=>k.pct),
-      backgroundColor:D.reviewKpis.map(k=>k.color),borderRadius:8,maxBarThickness:36}]
-  },options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,max:100,ticks:{callback:v=>v+'%'}}}}});
-});
-
-safeChart(function(){
-  new Chart(document.getElementById('chartLeague'),{type:'radar',data:{
-    labels:D.leagueStats.map(l=>l.league),
-    datasets:[
-      {label:'胜平负主选',data:D.leagueStats.map(l=>+(100*l.r1/l.n).toFixed(1)),borderColor:'#0b7a6c',backgroundColor:'rgba(11,122,108,.2)'},
-      {label:'让球范围',data:D.leagueStats.map(l=>+(100*l.hc/l.n).toFixed(1)),borderColor:'#b8862b',backgroundColor:'rgba(184,134,43,.15)'},
-      {label:'七比分池',data:D.leagueStats.map(l=>+(100*l.pool/l.n).toFixed(1)),borderColor:'#3f7fa0',backgroundColor:'rgba(63,127,160,.12)'}
-    ]
-  },options:{responsive:true,scales:{r:{beginAtZero:true,max:100}}}});
-});
-
 function probBars(m, key='model'){
   const v=m[key]||m.model;
   return `<div class="prob">
@@ -614,46 +554,6 @@ function probBars(m, key='model'){
     <div class="prob-row"><span>客胜</span><div class="pbar"><i class="a" style="width:${v[2]}%"></i></div><b>${v[2]}%</b></div>
   </div>`;
 }
-function reviewCard(m){
-  const rc=resClass(m.res.r);
-  return `<article class="match ${rc}" data-state="${m.res.r}" data-day="${m.day}" data-league="${m.league}" data-search="${m.day}${m.id}${m.home}${m.away}">
-    <div class="match-head">
-      <div class="meta">
-        <span>${m.day}${m.id}</span><span class="dot"></span><b>${m.league}</b>
-        <span class="chip">置信 ${m.conf}</span>
-        <span class="stamp ${rc}"><span class="ico">${resMark(m.res.r)}</span>${resText(m.res.r)}</span>
-      </div>
-      <div class="teams-row">
-        <div class="teams"><span class="crest">${initials(m.home)}</span>${m.home}
-          <span class="score">${m.score}${m.extra?`<small>${m.extra}</small>`:''}</span>
-          ${m.away}<span class="crest">${initials(m.away)}</span></div>
-      </div>
-      <div class="section-label">赛前预测</div>
-      <div class="predline">
-        <span class="chip key">${m.pick}</span><span class="chip key">${m.hc}</span><span class="chip">${m.goals}</span>
-      </div>
-      <div class="section-label">复盘结果 · 绿命中 / 黄防守 / 红未中</div>
-      <div class="verdicts">
-        ${verdictCell(m.res.r,'胜平负',m.res.rl)}
-        ${verdictCell(m.res.h,'让球',m.res.hl)}
-        ${verdictCell(m.res.g,'总进球',m.res.gl)}
-        ${verdictCell(m.res.s,'七比分',m.res.sl)}
-      </div>
-      <span class="toggle"></span>
-    </div>
-    <div class="detail">
-      <div class="grid2">
-        <div class="box"><h4>模型胜平负</h4>${probBars(m)}<p style="margin:8px 0 0;font-size:12px;color:#667">${m.summary}</p></div>
-        <div class="box"><h4>七比分池</h4><div class="scores">${m.scores.map((s,i)=>`<span class="sc ${i<3?'top':''}">${s}</span>`).join('')}</div></div>
-      </div>
-      <div class="grid2">
-        <div class="box"><h4>逐场分析要点</h4><ul>${m.analysis.map(x=>`<li>${x}</li>`).join('')}</ul></div>
-        <div class="box"><h4>风险与修正</h4><ul>${m.risks.map(x=>`<li>${x}</li>`).join('')}</ul></div>
-      </div>
-    </div>
-  </article>`;
-}
-document.getElementById('reviewList').innerHTML=D.matches.map(reviewCard).join('');
 
 function setCardsOpen(listId, open){
   document.querySelectorAll(`#${listId} .match`).forEach(card=>{
@@ -664,35 +564,22 @@ function setCardsOpen(listId, open){
 }
 function buildFilters(wrapId,listId,mode){
   const wrap=document.getElementById(wrapId);
+  if(!wrap) return;
   const bulk=`<span class="bulk-sep" aria-hidden="true"></span>
     <button class="bulk expand" type="button" data-bulk="open">一键展开</button>
     <button class="bulk collapse" type="button" data-bulk="close">一键收起</button>`;
-  if(mode==='review'){
-    wrap.innerHTML=`<button class="filter active" data-f="all" type="button">全部 22</button>
-      <button class="filter" data-f="hit" type="button">主选命中</button>
-      <button class="filter" data-f="partial" type="button">防守命中</button>
-      <button class="filter" data-f="miss" type="button">未覆盖</button>
-      <button class="filter" data-f="周六" type="button">周六</button>
-      <button class="filter" data-f="周日" type="button">周日</button>
-      ${bulk}
-      <input class="search" placeholder="搜索球队/编号">`;
-  }else{
-    wrap.innerHTML=`<button class="filter active" data-f="all" type="button">全部 4</button>
+  wrap.innerHTML=`<button class="filter active" data-f="all" type="button">全部 4</button>
       <button class="filter" data-f="强势" type="button">强势</button>
       <button class="filter" data-f="平稳" type="button">平稳</button>
       <button class="filter" data-f="观察" type="button">观察</button>
       ${bulk}
       <input class="search" placeholder="搜索球队/编号">`;
-  }
   const apply=()=>{
     const f=wrap.querySelector('.filter.active').dataset.f;
     const q=(wrap.querySelector('.search').value||'').toLowerCase();
     document.querySelectorAll(`#${listId} .match`).forEach(card=>{
       let ok=true;
-      if(mode==='review'){
-        if(f==='hit'||f==='partial'||f==='miss') ok=card.dataset.state===f;
-        else if(f==='周六'||f==='周日') ok=card.dataset.day===f;
-      }else if(f!=='all') ok=card.dataset.grade===f;
+      if(f!=='all') ok=card.dataset.grade===f;
       if(q && !card.dataset.search.toLowerCase().includes(q)) ok=false;
       card.style.display=ok?'':'none';
     });
@@ -701,7 +588,8 @@ function buildFilters(wrapId,listId,mode){
   wrap.querySelector('.search').oninput=apply;
   wrap.querySelectorAll('[data-bulk]').forEach(b=>b.onclick=()=>setCardsOpen(listId, b.dataset.bulk==='open'));
 }
-buildFilters('revFilters','reviewList','review');
+
+if(window.MS_ReviewBoards) window.MS_ReviewBoards.init();
 
 document.getElementById('todayHero').innerHTML=D.today.map(t=>`
   <div class="th"><b>${t.id} ${t.home}</b><span>${t.pick}</span><div style="margin-top:6px;font-size:16px;font-weight:800">${t.conf}</div></div>`).join('');
@@ -785,8 +673,7 @@ function activatePanel(id){
   if(id==='today') paintTodayCharts();
 }
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>activatePanel(t.dataset.panel));
-const goWc=document.getElementById('goWc86');
-if(goWc) goWc.onclick=()=>{activatePanel('wc86'); window.scrollTo({top:0,behavior:'smooth'});};
+
 
 } catch (err) {
   console.error('MatchStruct init failed:', err);
