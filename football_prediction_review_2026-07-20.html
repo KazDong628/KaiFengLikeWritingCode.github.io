@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
@@ -197,7 +197,8 @@ button,input{font:inherit}a{color:#0b6b5f}
   border:1px solid var(--line);color:var(--muted);font-size:12px;line-height:1.8;text-align:center;
 }
 
-.modal-mask{position:fixed;inset:0;background:rgba(4,14,20,.62);backdrop-filter:blur(5px);z-index:50;display:flex;align-items:center;justify-content:center;padding:18px}
+.modal-mask{position:fixed;inset:0;background:rgba(4,14,20,.62);backdrop-filter:blur(5px);z-index:9999;display:none;align-items:center;justify-content:center;padding:18px}
+.modal-mask.is-open{display:flex}
 .modal{width:min(520px,100%);background:#fff;border-radius:18px;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,.3)}
 .modal h3{margin:0 0 8px;font-size:22px}.modal p,.modal li{font-size:13px;color:#4a5c68}
 .modal ul{padding-left:18px}.btn{border:0;border-radius:12px;padding:12px;width:100%;background:linear-gradient(135deg,#0b7a6c,#12a38f);color:#fff;font-weight:800;cursor:pointer}
@@ -361,29 +362,75 @@ button,input{font:inherit}a{color:#0b6b5f}
   </footer>
 </div>
 
-<div class="modal-mask" id="consentModal" hidden>
-  <div class="modal" role="dialog" aria-modal="true">
-    <h3>合规确认</h3>
-    <p>进入可视化研究台前请确认：</p>
+<div class="modal-mask is-open" id="consentModal" role="presentation">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="consentTitle">
+    <h3 id="consentTitle">合规确认</h3>
+    <p>进入 MatchStruct 研究台前，请确认您已知悉：</p>
     <ul>
-      <li>本站为赛果结构<strong>研究演示</strong>，不是购彩/博彩服务；</li>
-      <li>内容可能含 <strong>AI 辅助</strong>，存在错误；</li>
-      <li><strong>不构成</strong>投注或收益建议；</li>
-      <li>不收集姓名、电话、投注账户或支付信息。</li>
+      <li>本平台为足球赛果<strong>分析与复盘研究</strong>展示，不是购彩或博彩服务；</li>
+      <li>内容可能含 <strong>AI 辅助生成</strong>，存在错误风险；</li>
+      <li><strong>不构成</strong>投注、购彩、理财建议，也不承诺任何收益；</li>
+      <li>您将遵守所在地法律法规，并对自身行为负责；</li>
+      <li>本平台不收集您的姓名、电话、投注账户或支付信息。</li>
     </ul>
-    <button class="btn" id="consentBtn" type="button">我已阅读并同意</button>
+    <button class="btn" id="consentBtn" type="button">我已阅读并同意，进入研究台</button>
   </div>
 </div>
 
+<script>
+/* 合规弹窗必须最先绑定，避免后续图表脚本报错导致按钮无响应 */
+(function () {
+  var KEY = 'matchstruct_viz_consent_v1';
+  var modal = document.getElementById('consentModal');
+  var btn = document.getElementById('consentBtn');
+  function closeModal() {
+    try { localStorage.setItem(KEY, '1'); } catch (e) {}
+    if (modal) {
+      modal.classList.remove('is-open');
+      modal.setAttribute('hidden', '');
+      modal.style.display = 'none';
+    }
+  }
+  function openModal() {
+    if (!modal) return;
+    modal.classList.add('is-open');
+    modal.removeAttribute('hidden');
+    modal.style.display = 'flex';
+  }
+  try {
+    if (localStorage.getItem(KEY) === '1') closeModal();
+    else openModal();
+  } catch (e) { openModal(); }
+  if (btn) {
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      closeModal();
+    });
+  }
+  // 事件委托兜底
+  document.addEventListener('click', function (e) {
+    var t = e.target;
+    if (t && (t.id === 'consentBtn' || (t.closest && t.closest('#consentBtn')))) {
+      e.preventDefault();
+      closeModal();
+    }
+  });
+})();
+</script>
+
 <script src="assets/js/matchstruct-data.js"></script>
 <script>
+(function () {
+try {
 const BASE=(location.pathname.split('/').filter(Boolean)[0]==='KaiFengLikeWritingCode.github.io')?'/KaiFengLikeWritingCode.github.io':'';
 const abs=p=>BASE+'/'+p.replace(/^\//,'');
-['aTerms','fTerms'].forEach(id=>document.getElementById(id).href=abs('terms/'));
-['aPrivacy','fPrivacy'].forEach(id=>document.getElementById(id).href=abs('privacy/'));
-['aAbout','fAbout'].forEach(id=>document.getElementById(id).href=abs('about/'));
+['aTerms','fTerms'].forEach(id=>{const el=document.getElementById(id); if(el) el.href=abs('terms/');});
+['aPrivacy','fPrivacy'].forEach(id=>{const el=document.getElementById(id); if(el) el.href=abs('privacy/');});
+['aAbout','fAbout'].forEach(id=>{const el=document.getElementById(id); if(el) el.href=abs('about/');});
 
 const D=window.MS_DATA;
+if(!D){ console.error('MS_DATA missing'); return; }
 document.getElementById('snap').textContent=D.meta.snapshot;
 document.getElementById('ruleLine').textContent=D.meta.rule;
 
@@ -391,31 +438,33 @@ function initials(n){return n.replace(/FC|SK|市民|现代|制铁|联/g,'').slic
 function resClass(x){return x==='hit'?'hit':x==='partial'?'partial':'miss'}
 function resMark(x){return x==='hit'?'✅':x==='partial'?'◐':'❌'}
 
-/* KPIs */
 document.getElementById('kpis').innerHTML=D.reviewKpis.map(k=>`
   <div class="kpi"><b>${k.hit}</b><span>${k.label} · ${k.pct}%</span>
   <div class="bar"><i style="width:${k.pct}%;background:linear-gradient(90deg,${k.color},#7dffd6)"></i></div></div>`).join('');
 
-/* Charts */
-const rateCtx=document.getElementById('chartRates');
-new Chart(rateCtx,{type:'bar',data:{
-  labels:D.reviewKpis.map(k=>k.label),
-  datasets:[{label:'命中率 %',data:D.reviewKpis.map(k=>k.pct),
-    backgroundColor:D.reviewKpis.map(k=>k.color),borderRadius:8,maxBarThickness:36}]
-},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,max:100,ticks:{callback:v=>v+'%'}}}}});
+if (window.Chart) {
+  try {
+    new Chart(document.getElementById('chartRates'),{type:'bar',data:{
+      labels:D.reviewKpis.map(k=>k.label),
+      datasets:[{label:'命中率 %',data:D.reviewKpis.map(k=>k.pct),
+        backgroundColor:D.reviewKpis.map(k=>k.color),borderRadius:8,maxBarThickness:36}]
+    },options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,max:100,ticks:{callback:v=>v+'%'}}}}});
 
-new Chart(document.getElementById('chartLeague'),{type:'radar',data:{
-  labels:D.leagueStats.map(l=>l.league),
-  datasets:[
-    {label:'胜平负主选',data:D.leagueStats.map(l=>+(100*l.r1/l.n).toFixed(1)),borderColor:'#0b7a6c',backgroundColor:'rgba(11,122,108,.2)'},
-    {label:'让球范围',data:D.leagueStats.map(l=>+(100*l.hc/l.n).toFixed(1)),borderColor:'#b8862b',backgroundColor:'rgba(184,134,43,.15)'},
-    {label:'七比分池',data:D.leagueStats.map(l=>+(100*l.pool/l.n).toFixed(1)),borderColor:'#3f7fa0',backgroundColor:'rgba(63,127,160,.12)'}
-  ]
-},options:{responsive:true,scales:{r:{beginAtZero:true,max:100}}}});
+    new Chart(document.getElementById('chartLeague'),{type:'radar',data:{
+      labels:D.leagueStats.map(l=>l.league),
+      datasets:[
+        {label:'胜平负主选',data:D.leagueStats.map(l=>+(100*l.r1/l.n).toFixed(1)),borderColor:'#0b7a6c',backgroundColor:'rgba(11,122,108,.2)'},
+        {label:'让球范围',data:D.leagueStats.map(l=>+(100*l.hc/l.n).toFixed(1)),borderColor:'#b8862b',backgroundColor:'rgba(184,134,43,.15)'},
+        {label:'七比分池',data:D.leagueStats.map(l=>+(100*l.pool/l.n).toFixed(1)),borderColor:'#3f7fa0',backgroundColor:'rgba(63,127,160,.12)'}
+      ]
+    },options:{responsive:true,scales:{r:{beginAtZero:true,max:100}}}});
+  } catch (err) { console.warn('Chart init failed', err); }
+} else {
+  console.warn('Chart.js not loaded');
+}
 
-/* Review cards */
 function probBars(m, key='model'){
-  const v=m[key]||m.model; const sum=v[0]+v[1]+v[2];
+  const v=m[key]||m.model;
   return `<div class="prob">
     <div class="prob-row"><span>主胜</span><div class="pbar"><i class="h" style="width:${v[0]}%"></i></div><b>${v[0]}%</b></div>
     <div class="prob-row"><span>平局</span><div class="pbar"><i class="d" style="width:${v[1]}%"></i></div><b>${v[1]}%</b></div>
@@ -496,7 +545,6 @@ function buildFilters(wrapId,listId,mode){
 }
 buildFilters('revFilters','reviewList','review');
 
-/* Today */
 document.getElementById('todayHero').innerHTML=D.today.map(t=>`
   <div class="th"><b>${t.id} ${t.home}</b><span>${t.pick}</span><div style="margin-top:6px;font-size:16px;font-weight:800">${t.conf}</div></div>`).join('');
 
@@ -540,19 +588,21 @@ document.getElementById('todayList').innerHTML=D.today.map(todayCard).join('');
 buildFilters('todayFilters','todayList','today');
 
 function paintTodayCharts(){
+  if(!window.Chart) return;
   document.querySelectorAll('.todayChart').forEach(cv=>{
     if(cv.dataset.drawn) return;
     const market=cv.dataset.market.split(',').map(Number);
     const model=cv.dataset.model.split(',').map(Number);
-    new Chart(cv,{type:'bar',data:{labels:['主胜','平局','客胜'],datasets:[
-      {label:'市场',data:market,backgroundColor:'#9db5c4',borderRadius:6},
-      {label:'模型',data:model,backgroundColor:'#0b7a6c',borderRadius:6}
-    ]},options:{responsive:true,plugins:{legend:{position:'bottom'}},scales:{y:{beginAtZero:true,max:80}}}});
-    cv.dataset.drawn='1';
+    try {
+      new Chart(cv,{type:'bar',data:{labels:['主胜','平局','客胜'],datasets:[
+        {label:'市场',data:market,backgroundColor:'#9db5c4',borderRadius:6},
+        {label:'模型',data:model,backgroundColor:'#0b7a6c',borderRadius:6}
+      ]},options:{responsive:true,plugins:{legend:{position:'bottom'}},scales:{y:{beginAtZero:true,max:80}}}});
+      cv.dataset.drawn='1';
+    } catch (e) { console.warn(e); }
   });
 }
 
-/* ranks */
 document.getElementById('rankResult').innerHTML=D.priorities.result.map((t,i)=>`<div class="rank"><div class="n">${i+1}</div><div>${t}</div></div>`).join('');
 document.getElementById('rankHc').innerHTML=D.priorities.handicap.map((t,i)=>`<div class="rank"><div class="n">${i+1}</div><div>${t}</div></div>`).join('');
 document.getElementById('hotList').innerHTML=D.priorities.hotRisks.map(h=>`
@@ -560,7 +610,6 @@ document.getElementById('hotList').innerHTML=D.priorities.hotRisks.map(h=>`
 document.getElementById('core3').innerHTML=`推荐观察：<b>${D.priorities.core3.picks.join(' × ')}</b><br>结果 <b>${D.priorities.core3.score}</b> — ${D.priorities.core3.note}`;
 document.getElementById('core4').innerHTML=`四场核心命中 <b>${D.priorities.core4.score}</b>（${D.priorities.core4.picks.join(' / ')}）<br>让球优先级前10命中 <b>${D.priorities.hcTop10}</b>`;
 
-/* interactions */
 document.addEventListener('click',e=>{
   const head=e.target.closest('.match-head');
   if(head){
@@ -576,13 +625,9 @@ document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
   document.getElementById(t.dataset.panel).classList.add('active');
   if(t.dataset.panel==='today') paintTodayCharts();
 });
-
-(function(){
-  const key='matchstruct_viz_consent_v1';
-  const modal=document.getElementById('consentModal');
-  if(localStorage.getItem(key)==='1'){modal.hidden=true;return}
-  modal.hidden=false;
-  document.getElementById('consentBtn').onclick=()=>{localStorage.setItem(key,'1');modal.hidden=true};
+} catch (err) {
+  console.error('MatchStruct init error:', err);
+}
 })();
 </script>
 </body>
