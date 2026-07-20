@@ -119,11 +119,17 @@ button,input{font:inherit}a{color:#0b6b5f}
 .hot.ok .res{color:var(--ok)}.hot.bad .res{color:var(--rose)}
 
 .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
-.filter,.search{
+.filter,.search,.bulk{
   border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:600;
 }
 .filter.active{background:#123040;color:#fff;border-color:#123040}
-.search{cursor:text;min-width:200px;margin-left:auto}
+.bulk{
+  background:#eef6f4;border-color:#b7d8cf;color:#0b5c52;
+}
+.bulk:hover{background:#dceee9}
+.bulk.collapse{background:#f5f7f9;border-color:#cfd8df;color:#456}
+.bulk-sep{width:1px;height:22px;background:#d5dee6;margin:0 2px}
+.search{cursor:text;min-width:180px;margin-left:auto}
 
 .match{
   border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff;margin-bottom:14px;
@@ -267,7 +273,7 @@ button,input{font:inherit}a{color:#0b6b5f}
         <div class="logo">MS</div>
         <div>
           <h1>MatchStruct 赛理 · 足球研究台</h1>
-          <p>22场分层复盘 · 逐场分析 · 今日推演 · 可切换至七星彩 / 大乐透实验室</p>
+          <p>22场分层复盘 · 世界杯86场档案 · 今日推演 · 可切换实验室</p>
         </div>
       </div>
       <div class="pills">
@@ -325,6 +331,11 @@ button,input{font:inherit}a{color:#0b6b5f}
           </ul>
         </div>
       </div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <h2>历史档案 · 世界杯86场</h2>
+      <p class="sub">2026世界杯七比分模型官方赛果复盘：核心3命中36/86（41.9%），完整比分池覆盖57/86（66.3%），方向或比分覆盖78/86（90.7%）。</p>
+      <p style="margin:0"><a id="wcArchive" href="worldcup86.html" style="display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:12px;background:linear-gradient(145deg,#123040,#1a5a7a);color:#fff;text-decoration:none;font-weight:800">打开世界杯86场复盘 →</a></p>
     </div>
   </section>
 
@@ -406,9 +417,9 @@ button,input{font:inherit}a{color:#0b6b5f}
   </section>
 
   <footer class="footer">
-    MatchStruct Research Desk · 足球演示 · 七星彩/大乐透待验证 · 不构成投注或购彩建议<br>
+    MatchStruct Research Desk · 足球演示 · 世界杯86场档案 · 七星彩/大乐透待验证 · 不构成投注或购彩建议<br>
     <a id="fTerms" href="terms/">免责声明</a> · <a id="fPrivacy" href="privacy/">隐私说明</a> · <a id="fAbout" href="about/">关于产品</a>
-    · <a href="qixingcai.html" id="fQx">七星彩实验室</a> · <a href="dlt.html" id="fDlt">大乐透实验室</a>
+    · <a href="worldcup86.html" id="fWc">世界杯86场</a> · <a href="qixingcai.html" id="fQx">七星彩实验室</a> · <a href="dlt.html" id="fDlt">大乐透实验室</a>
   </footer>
 </div>
 
@@ -479,6 +490,8 @@ const abs=p=>BASE+'/'+p.replace(/^\//,'');
 ['aTerms','fTerms'].forEach(id=>{const el=document.getElementById(id); if(el) el.href=abs('terms/');});
 ['aPrivacy','fPrivacy'].forEach(id=>{const el=document.getElementById(id); if(el) el.href=abs('privacy/');});
 ['aAbout','fAbout'].forEach(id=>{const el=document.getElementById(id); if(el) el.href=abs('about/');});
+const fWc=document.getElementById('fWc'); if(fWc) fWc.href=abs('worldcup86.html');
+const wcArchive=document.getElementById('wcArchive'); if(wcArchive) wcArchive.href=abs('worldcup86.html');
 const fQx=document.getElementById('fQx'); if(fQx) fQx.href=abs('qixingcai.html');
 const fDlt=document.getElementById('fDlt'); if(fDlt) fDlt.href=abs('dlt.html');
 
@@ -578,8 +591,18 @@ function reviewCard(m){
 }
 document.getElementById('reviewList').innerHTML=D.matches.map(reviewCard).join('');
 
+function setCardsOpen(listId, open){
+  document.querySelectorAll(`#${listId} .match`).forEach(card=>{
+    if(card.style.display==='none') return;
+    card.classList.toggle('open', !!open);
+  });
+  if(open && listId==='todayList') paintTodayCharts();
+}
 function buildFilters(wrapId,listId,mode){
   const wrap=document.getElementById(wrapId);
+  const bulk=`<span class="bulk-sep" aria-hidden="true"></span>
+    <button class="bulk expand" type="button" data-bulk="open">一键展开</button>
+    <button class="bulk collapse" type="button" data-bulk="close">一键收起</button>`;
   if(mode==='review'){
     wrap.innerHTML=`<button class="filter active" data-f="all" type="button">全部 22</button>
       <button class="filter" data-f="hit" type="button">主选命中</button>
@@ -587,12 +610,14 @@ function buildFilters(wrapId,listId,mode){
       <button class="filter" data-f="miss" type="button">未覆盖</button>
       <button class="filter" data-f="周六" type="button">周六</button>
       <button class="filter" data-f="周日" type="button">周日</button>
+      ${bulk}
       <input class="search" placeholder="搜索球队/编号">`;
   }else{
     wrap.innerHTML=`<button class="filter active" data-f="all" type="button">全部 4</button>
       <button class="filter" data-f="强势" type="button">强势</button>
       <button class="filter" data-f="平稳" type="button">平稳</button>
       <button class="filter" data-f="观察" type="button">观察</button>
+      ${bulk}
       <input class="search" placeholder="搜索球队/编号">`;
   }
   const apply=()=>{
@@ -610,6 +635,7 @@ function buildFilters(wrapId,listId,mode){
   };
   wrap.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{wrap.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');apply()});
   wrap.querySelector('.search').oninput=apply;
+  wrap.querySelectorAll('[data-bulk]').forEach(b=>b.onclick=()=>setCardsOpen(listId, b.dataset.bulk==='open'));
 }
 buildFilters('revFilters','reviewList','review');
 

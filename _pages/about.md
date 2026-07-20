@@ -17,6 +17,7 @@ redirect_from:
 | 模块 | 状态 | 入口 |
 | --- | --- | --- |
 | 竞彩足球研究台 | 研究演示（已上线） | [首页]({{ "/" | relative_url }}) |
+| 世界杯86场复盘 | 研究档案（已上线） | [世界杯复盘]({{ "/worldcup86.html" | relative_url }}) |
 | 七星彩实验室 | 待开发 / 待验证 | [七星彩]({{ "/qixingcai.html" | relative_url }}) |
 | 超级大乐透实验室 | 待开发 / 待验证 | [大乐透]({{ "/dlt.html" | relative_url }}) |
 

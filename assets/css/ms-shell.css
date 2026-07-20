@@ -1,6 +1,6 @@
 /* MatchStruct shared shell — product switcher */
 .ms-switch{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:12px;
 }
 .ms-switch a{
   text-decoration:none;color:inherit;border-radius:14px;padding:12px 14px;
@@ -46,6 +46,9 @@
 .lock{
   margin-top:14px;padding:12px 14px;border-radius:12px;background:#fff8ef;border:1px solid #ead7a8;
   color:#7a5314;font-size:12px;line-height:1.65;
+}
+@media(max-width:1100px){
+  .ms-switch{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(max-width:860px){
   .ms-switch,.roadmap{grid-template-columns:1fr}
