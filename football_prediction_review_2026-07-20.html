@@ -10,7 +10,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
 :root{
   --ink:#0b1720;--muted:#617486;--line:#d3dee7;--paper:#fff;--bg0:#08131a;
@@ -197,11 +196,20 @@ button,input{font:inherit}a{color:#0b6b5f}
   border:1px solid var(--line);color:var(--muted);font-size:12px;line-height:1.8;text-align:center;
 }
 
-.modal-mask{position:fixed;inset:0;background:rgba(4,14,20,.62);backdrop-filter:blur(5px);z-index:9999;display:none;align-items:center;justify-content:center;padding:18px}
-.modal-mask.is-open{display:flex}
-.modal{width:min(520px,100%);background:#fff;border-radius:18px;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,.3)}
+.modal-mask{
+  position:fixed;inset:0;background:rgba(4,14,20,.62);backdrop-filter:blur(5px);
+  z-index:99999;display:none;align-items:center;justify-content:center;padding:18px;
+}
+.modal-mask.is-open{display:flex !important}
+.modal{width:min(520px,100%);background:#fff;border-radius:18px;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,.3);pointer-events:auto}
 .modal h3{margin:0 0 8px;font-size:22px}.modal p,.modal li{font-size:13px;color:#4a5c68}
-.modal ul{padding-left:18px}.btn{border:0;border-radius:12px;padding:12px;width:100%;background:linear-gradient(135deg,#0b7a6c,#12a38f);color:#fff;font-weight:800;cursor:pointer}
+.modal ul{padding-left:18px}
+.btn{
+  border:0;border-radius:12px;padding:12px;width:100%;
+  background:linear-gradient(135deg,#0b7a6c,#12a38f);color:#fff;font-weight:800;cursor:pointer;
+  position:relative;z-index:1;
+}
+.btn:active{transform:scale(.99)}
 
 @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 @media(max-width:960px){
@@ -362,7 +370,7 @@ button,input{font:inherit}a{color:#0b6b5f}
   </footer>
 </div>
 
-<div class="modal-mask is-open" id="consentModal" role="presentation">
+<div class="modal-mask is-open" id="consentModal" role="presentation" style="display:flex">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="consentTitle">
     <h3 id="consentTitle">合规确认</h3>
     <p>进入 MatchStruct 研究台前，请确认您已知悉：</p>
@@ -378,50 +386,50 @@ button,input{font:inherit}a{color:#0b6b5f}
 </div>
 
 <script>
-/* 合规弹窗必须最先绑定，避免后续图表脚本报错导致按钮无响应 */
+/* 必须最先执行：即使后面 Chart/数据脚本失败，关闭按钮也要可用 */
 (function () {
   var KEY = 'matchstruct_viz_consent_v1';
   var modal = document.getElementById('consentModal');
   var btn = document.getElementById('consentBtn');
   function closeModal() {
-    try { localStorage.setItem(KEY, '1'); } catch (e) {}
-    if (modal) {
-      modal.classList.remove('is-open');
-      modal.setAttribute('hidden', '');
-      modal.style.display = 'none';
-    }
+    try { localStorage.setItem(KEY, '1'); } catch (err) {}
+    if (!modal) return;
+    modal.classList.remove('is-open');
+    modal.setAttribute('hidden', 'hidden');
+    modal.style.setProperty('display', 'none', 'important');
   }
   function openModal() {
     if (!modal) return;
     modal.classList.add('is-open');
     modal.removeAttribute('hidden');
-    modal.style.display = 'flex';
+    modal.style.setProperty('display', 'flex', 'important');
   }
   try {
     if (localStorage.getItem(KEY) === '1') closeModal();
     else openModal();
-  } catch (e) { openModal(); }
-  if (btn) {
-    btn.addEventListener('click', function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-      closeModal();
-    });
+  } catch (err) { openModal(); }
+
+  function onAgree(e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    closeModal();
   }
-  // 事件委托兜底
+  if (btn) {
+    btn.onclick = onAgree;
+    btn.addEventListener('click', onAgree, true);
+  }
   document.addEventListener('click', function (e) {
     var t = e.target;
-    if (t && (t.id === 'consentBtn' || (t.closest && t.closest('#consentBtn')))) {
-      e.preventDefault();
-      closeModal();
-    }
-  });
+    if (!t) return;
+    if (t.id === 'consentBtn' || (t.closest && t.closest('#consentBtn'))) onAgree(e);
+  }, true);
 })();
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
 <script src="assets/js/matchstruct-data.js"></script>
 <script>
-(function () {
+document.addEventListener('DOMContentLoaded', function () {
+function boot(){
 try {
 const BASE=(location.pathname.split('/').filter(Boolean)[0]==='KaiFengLikeWritingCode.github.io')?'/KaiFengLikeWritingCode.github.io':'';
 const abs=p=>BASE+'/'+p.replace(/^\//,'');
@@ -442,26 +450,31 @@ document.getElementById('kpis').innerHTML=D.reviewKpis.map(k=>`
   <div class="kpi"><b>${k.hit}</b><span>${k.label} · ${k.pct}%</span>
   <div class="bar"><i style="width:${k.pct}%;background:linear-gradient(90deg,${k.color},#7dffd6)"></i></div></div>`).join('');
 
-if (window.Chart) {
+function safeChart(fn){
   try {
-    new Chart(document.getElementById('chartRates'),{type:'bar',data:{
-      labels:D.reviewKpis.map(k=>k.label),
-      datasets:[{label:'命中率 %',data:D.reviewKpis.map(k=>k.pct),
-        backgroundColor:D.reviewKpis.map(k=>k.color),borderRadius:8,maxBarThickness:36}]
-    },options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,max:100,ticks:{callback:v=>v+'%'}}}}});
-
-    new Chart(document.getElementById('chartLeague'),{type:'radar',data:{
-      labels:D.leagueStats.map(l=>l.league),
-      datasets:[
-        {label:'胜平负主选',data:D.leagueStats.map(l=>+(100*l.r1/l.n).toFixed(1)),borderColor:'#0b7a6c',backgroundColor:'rgba(11,122,108,.2)'},
-        {label:'让球范围',data:D.leagueStats.map(l=>+(100*l.hc/l.n).toFixed(1)),borderColor:'#b8862b',backgroundColor:'rgba(184,134,43,.15)'},
-        {label:'七比分池',data:D.leagueStats.map(l=>+(100*l.pool/l.n).toFixed(1)),borderColor:'#3f7fa0',backgroundColor:'rgba(63,127,160,.12)'}
-      ]
-    },options:{responsive:true,scales:{r:{beginAtZero:true,max:100}}}});
-  } catch (err) { console.warn('Chart init failed', err); }
-} else {
-  console.warn('Chart.js not loaded');
+    if (typeof Chart === 'undefined') { console.warn('Chart.js not loaded'); return; }
+    fn();
+  } catch (err) { console.warn(err); }
 }
+
+safeChart(function(){
+  new Chart(document.getElementById('chartRates'),{type:'bar',data:{
+    labels:D.reviewKpis.map(k=>k.label),
+    datasets:[{label:'命中率 %',data:D.reviewKpis.map(k=>k.pct),
+      backgroundColor:D.reviewKpis.map(k=>k.color),borderRadius:8,maxBarThickness:36}]
+  },options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,max:100,ticks:{callback:v=>v+'%'}}}}});
+});
+
+safeChart(function(){
+  new Chart(document.getElementById('chartLeague'),{type:'radar',data:{
+    labels:D.leagueStats.map(l=>l.league),
+    datasets:[
+      {label:'胜平负主选',data:D.leagueStats.map(l=>+(100*l.r1/l.n).toFixed(1)),borderColor:'#0b7a6c',backgroundColor:'rgba(11,122,108,.2)'},
+      {label:'让球范围',data:D.leagueStats.map(l=>+(100*l.hc/l.n).toFixed(1)),borderColor:'#b8862b',backgroundColor:'rgba(184,134,43,.15)'},
+      {label:'七比分池',data:D.leagueStats.map(l=>+(100*l.pool/l.n).toFixed(1)),borderColor:'#3f7fa0',backgroundColor:'rgba(63,127,160,.12)'}
+    ]
+  },options:{responsive:true,scales:{r:{beginAtZero:true,max:100}}}});
+});
 
 function probBars(m, key='model'){
   const v=m[key]||m.model;
@@ -588,18 +601,17 @@ document.getElementById('todayList').innerHTML=D.today.map(todayCard).join('');
 buildFilters('todayFilters','todayList','today');
 
 function paintTodayCharts(){
-  if(!window.Chart) return;
   document.querySelectorAll('.todayChart').forEach(cv=>{
     if(cv.dataset.drawn) return;
-    const market=cv.dataset.market.split(',').map(Number);
-    const model=cv.dataset.model.split(',').map(Number);
-    try {
+    safeChart(function(){
+      const market=cv.dataset.market.split(',').map(Number);
+      const model=cv.dataset.model.split(',').map(Number);
       new Chart(cv,{type:'bar',data:{labels:['主胜','平局','客胜'],datasets:[
         {label:'市场',data:market,backgroundColor:'#9db5c4',borderRadius:6},
         {label:'模型',data:model,backgroundColor:'#0b7a6c',borderRadius:6}
       ]},options:{responsive:true,plugins:{legend:{position:'bottom'}},scales:{y:{beginAtZero:true,max:80}}}});
       cv.dataset.drawn='1';
-    } catch (e) { console.warn(e); }
+    });
   });
 }
 
@@ -625,10 +637,21 @@ document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
   document.getElementById(t.dataset.panel).classList.add('active');
   if(t.dataset.panel==='today') paintTodayCharts();
 });
+
 } catch (err) {
-  console.error('MatchStruct init error:', err);
+  console.error('MatchStruct init failed:', err);
 }
-})();
+}
+if (typeof Chart === 'undefined') {
+  var n = 0;
+  var timer = setInterval(function () {
+    n++;
+    if (typeof Chart !== 'undefined' || n > 40) { clearInterval(timer); boot(); }
+  }, 50);
+} else {
+  boot();
+}
+});
 </script>
 </body>
 </html>
