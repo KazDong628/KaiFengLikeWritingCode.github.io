@@ -219,7 +219,7 @@
     el.hidden = false;
     stages.hidden = false;
     notice.hidden = false;
-    notice.textContent = (W.meta.correction || '').replace(/\s+/g, ' ').trim();
+    notice.textContent = ((W.meta.correction || '') + ' 三四名决赛与决赛已并入本「2026世界杯」全程复盘。').replace(/\s+/g, ' ').trim();
     stages.innerHTML = W.stages.map(function (s) {
       var st = s.stats || {};
       function line(key) {
@@ -244,9 +244,58 @@
     return D.matches.filter(function (m) { return m.league === '世界杯'; });
   }
 
+  /** Convert round WC matches into the same World Cup detail stream (三四名/决赛). */
+  function finalStageCards(D) {
+    var round = roundWcMatches(D);
+    return round.map(function (m, i) {
+      var stage = (m.home === '法国' || m.away === '英格兰' || (m.home === '法国' && m.away === '英格兰'))
+        ? '三四名决赛' : '决赛';
+      // Prefer explicit mapping by known fixtures
+      if (m.home === '法国' && m.away === '英格兰') stage = '三四名决赛';
+      if (m.home === '西班牙' && m.away === '阿根廷') stage = '决赛';
+      var st = m.res.r === 'hit' ? 'core' : m.res.r === 'partial' ? 'dir' : 'miss';
+      if (m.res.s === 'hit' && st === 'miss') st = 'pool';
+      if (m.res.s === 'hit' && st === 'dir') { /* keep dir or upgrade */ }
+      // Better: if score in top3 of pool → core; if in pool → pool; else if direction partial/hit
+      if (m.res.s === 'hit' && /第[123]位/.test(m.res.sl || '')) st = 'core';
+      else if (m.res.s === 'hit') st = 'pool';
+      else if (m.res.r === 'hit') st = 'dir';
+      else if (m.res.r === 'partial') st = 'dir';
+      else st = 'miss';
+
+      var score = String(m.score || '').replace(':', '-');
+      return {
+        n: 86 + i + 1,
+        date: m.day === '周六' ? '07-18' : '07-19',
+        stage: stage,
+        home: m.home,
+        away: m.away,
+        score: score,
+        status: st,
+        statusLabel: st === 'core' ? '核心3命中' : st === 'pool' ? '比分池命中' : st === 'dir' ? '方向命中' : '未命中',
+        analysis: m.summary || '',
+        tags: [m.pick, m.hc, m.goals].filter(Boolean),
+        detail: {
+          pred: (m.scores || []).slice(0, 3).join(' / '),
+          pool: (m.scores || []).join(' · '),
+          direction: m.res.rl || m.pick,
+          goals: m.res.gl || m.goals,
+          strictDir: m.res.rl,
+          goalsCover: m.res.gl
+        },
+        _fromRound: true,
+        _raw: m
+      };
+    });
+  }
+
+  function allWorldCupMatches(D, W) {
+    return W.matches.concat(finalStageCards(D));
+  }
+
   function overviewStats(D, W) {
     var types = [
-      { id: '世界杯', label: '本轮世界杯' },
+      { id: '世界杯', label: '2026世界杯' },
       { id: '韩职', label: '韩职' },
       { id: '挪超', label: '挪超' },
       { id: '芬超', label: '芬超' },
@@ -254,14 +303,13 @@
     ];
     return types.map(function (t) {
       if (t.id === '世界杯') {
-        var round = roundWcMatches(D);
-        var cover = countRes(round, 'r', 'cover');
+        var total = 86 + roundWcMatches(D).length;
         return {
           id: t.id,
           label: t.label,
           big: W.meta.poolPct + '%',
-          line1: '档案完整池 ' + W.meta.pool + '/86',
-          line2: '本轮收官覆盖 ' + cover + '/' + round.length + ' · 共 ' + (86 + round.length) + ' 场明细'
+          line1: '完整池覆盖 ' + W.meta.pool + '/86',
+          line2: '核心3 ' + W.meta.corePct + '% · 明细 ' + total + ' 场'
         };
       }
       var ms = D.matches.filter(function (m) { return m.league === t.id; });
@@ -305,42 +353,31 @@
     var chartH3a = document.querySelector('#boardCharts .chart-box:nth-child(1) h3');
     var chartH3b = document.querySelector('#boardCharts .chart-box:nth-child(2) h3');
 
-    // —— 本轮世界杯：86 场档案 + 本轮三四名/决赛 ——
+    // —— 2026世界杯（全程：86 场 + 三四名/决赛）——
     if (id === '世界杯') {
-      var roundWc = roundWcMatches(D);
-      document.getElementById('boardTitle').textContent = '本轮世界杯 · 命中审计（86 场档案 + ' + roundWc.length + ' 场收官）';
+      var allWc = allWorldCupMatches(D, W);
+      document.getElementById('boardTitle').textContent = '2026世界杯 · 命中审计（' + allWc.length + ' 场）';
       document.getElementById('ruleLine').textContent =
-        '七比分档案按开赛顺序核验（90′）；本轮收官（三四名/决赛）沿用竞彩口径复盘，已并入本看板明细。';
-      var roundK = leagueKpis(roundWc);
-      document.getElementById('kpis').innerHTML =
-        W.meta.kpis.map(function (k) {
-          return '<div class="kpi"><b>' + k.value + '</b><span>档案 · ' + k.label + '</span></div>';
-        }).join('') +
-        roundK.slice(0, 4).map(function (k) {
-          return '<div class="kpi"><b>' + k.hit + '</b><span>本轮收官 · ' + k.label + ' · ' + k.pct + '%</span>' +
-            '<div class="bar"><i style="width:' + k.pct + '%;background:linear-gradient(90deg,' + k.color + ',#7dffd6)"></i></div></div>';
-        }).join('');
+        '2026世界杯全程复盘：七比分模型按开赛顺序核验；三四名决赛与决赛一并纳入。口径为 90 分钟常规时间（不含加时/点球进比分）。';
+      document.getElementById('kpis').innerHTML = W.meta.kpis.map(function (k) {
+        return '<div class="kpi"><b>' + k.value + '</b><span>' + k.label + '</span></div>';
+      }).join('');
 
-      document.getElementById('detailTitle').textContent = '世界杯逐场明细（本轮收官 + 86 场档案）';
+      document.getElementById('detailTitle').textContent = '2026世界杯逐场明细（' + allWc.length + '）';
       document.getElementById('boardLegend').innerHTML =
-        '<span><i class="l-hit"></i>本轮：主选/防守</span>' +
-        '<span><i class="l-core"></i>档案：核心3</span><span><i class="l-pool"></i>比分池</span>' +
+        '<span><i class="l-core"></i>核心3</span><span><i class="l-pool"></i>比分池</span>' +
         '<span><i class="l-dir"></i>方向</span><span><i class="l-miss"></i>未覆盖</span>';
 
-      document.getElementById('boardList').innerHTML =
-        '<div class="board-sec">一、本轮收官（竞彩口径 · 原 22 场中的世界杯）</div>' +
-        roundWc.map(reviewCard).join('') +
-        '<div class="board-sec">二、七比分官方档案（86 场 · 按开赛顺序）</div>' +
-        W.matches.map(wcCard).join('');
+      document.getElementById('boardList').innerHTML = allWc.map(wcCard).join('');
 
-      buildBoardFilters('wc-mixed');
+      buildBoardFilters('wc');
       showWcExtra(W, true);
       var note = LEAGUE_NOTES['世界杯'];
-      setConclusions('世界杯结论（档案 + 本轮收官）',
-        ['完整比分池覆盖 57/86（66.3%）', '方向或比分覆盖 78/86（90.7%）', note.good[0], note.good[1]],
-        ['核心3排序偏弱（41.9%）', '大比分尾部压缩', note.bad[0], note.bad[1]],
-        '档案未原含三四名/决赛；现已把本轮 2 场收官复盘并入本看板。');
-      if (chartH3a) chartH3a.textContent = '世界杯档案分层命中';
+      setConclusions('2026世界杯结论',
+        ['完整比分池覆盖 57/86（66.3%）', '方向或比分覆盖 78/86（90.7%）', '32强 / 1/4 阶段比分覆盖强', note.good[0]],
+        ['核心3排序偏弱（41.9%）', '大比分尾部压缩', '小组末轮战意与晋级子模型不足', note.bad[0]],
+        '三四名决赛与决赛已并入同一「2026世界杯」看板，与小组赛至半决赛连续展示。');
+      if (chartH3a) chartH3a.textContent = '2026世界杯分层命中';
       if (chartH3b) chartH3b.textContent = '分阶段核心3 / 完整池';
       paintBar(['核心3', '完整池', '方向覆盖', '未中'], [W.meta.corePct, W.meta.poolPct, W.meta.coverPct, W.meta.missPct], [COLORS[0], COLORS[5], COLORS[2], COLORS[7]]);
       paintStageBars(W);
@@ -390,19 +427,18 @@
     if (mode === 'wc' || mode === 'wc-mixed') {
       wrap.innerHTML =
         '<button class="filter active" data-f="all" type="button">全部</button>' +
-        (mode === 'wc-mixed' ? '<button class="filter" data-f="round" type="button">仅本轮收官</button><button class="filter" data-f="archive" type="button">仅86档案</button>' : '') +
         '<button class="filter" data-f="小组赛" type="button">小组赛</button>' +
         '<button class="filter" data-f="32强" type="button">32强</button>' +
         '<button class="filter" data-f="16强" type="button">16强</button>' +
         '<button class="filter" data-f="1/4决赛" type="button">1/4</button>' +
         '<button class="filter" data-f="半决赛" type="button">半决赛</button>' +
+        '<button class="filter" data-f="三四名决赛" type="button">三四名</button>' +
+        '<button class="filter" data-f="决赛" type="button">决赛</button>' +
         '<span class="bulk-sep"></span>' +
         '<button class="filter" data-f="core" type="button">核心3</button>' +
         '<button class="filter" data-f="pool" type="button">比分池</button>' +
         '<button class="filter" data-f="dir" type="button">方向</button>' +
-        '<button class="filter" data-f="miss" type="button">未中</button>' +
-        '<button class="filter" data-f="hit" type="button">本轮主选</button>' +
-        '<button class="filter" data-f="partial" type="button">本轮防守</button>' + bulk;
+        '<button class="filter" data-f="miss" type="button">未中</button>' + bulk;
     } else {
       wrap.innerHTML =
         '<button class="filter active" data-f="all" type="button">全部</button>' +
@@ -415,27 +451,17 @@
     function apply() {
       var f = wrap.querySelector('.filter.active').dataset.f;
       var q = (wrap.querySelector('.search').value || '').toLowerCase();
-      var list = document.getElementById('boardList');
-      var inArchive = false;
-      list.childNodes.forEach(function (node) {
-        if (node.nodeType !== 1) return;
-        if (node.classList && node.classList.contains('board-sec')) {
-          inArchive = (node.textContent || '').indexOf('86') >= 0;
-          node.style.display = '';
-          return;
-        }
-        if (!node.classList || !node.classList.contains('match')) return;
+      document.querySelectorAll('#boardList .match').forEach(function (card) {
         var ok = true;
-        var isRound = !node.className.includes('wc-');
-        if (f === 'round') ok = isRound;
-        else if (f === 'archive') ok = !isRound;
-        else if (f === 'core' || f === 'pool' || f === 'dir') ok = !isRound && node.dataset.status === f;
-        else if (f === 'miss') ok = isRound ? node.dataset.state === 'miss' : node.dataset.status === 'miss';
-        else if (f === 'hit' || f === 'partial') ok = isRound && node.dataset.state === f;
-        else if (f === '周六' || f === '周日') ok = isRound && node.dataset.day === f;
-        else if (f !== 'all') ok = !isRound && node.dataset.stage === f;
-        if (q && !(node.dataset.search || '').includes(q)) ok = false;
-        node.style.display = ok ? '' : 'none';
+        if (mode === 'wc' || mode === 'wc-mixed') {
+          if (f === 'core' || f === 'pool' || f === 'dir' || f === 'miss') ok = card.dataset.status === f;
+          else if (f !== 'all') ok = card.dataset.stage === f;
+        } else {
+          if (f === 'hit' || f === 'partial' || f === 'miss') ok = card.dataset.state === f;
+          else if (f === '周六' || f === '周日') ok = card.dataset.day === f;
+        }
+        if (q && !(card.dataset.search || '').includes(q)) ok = false;
+        card.style.display = ok ? '' : 'none';
       });
     }
     wrap.querySelectorAll('.filter').forEach(function (b) {
@@ -464,7 +490,7 @@
     if (!D || !W) return;
 
     var chips = [
-      { id: '世界杯', label: '本轮世界杯', sub: (86 + roundWcMatches(D).length) + '场' },
+      { id: '世界杯', label: '2026世界杯', sub: (86 + roundWcMatches(D).length) + '场' },
       { id: '韩职', label: '韩职', sub: D.matches.filter(function (m) { return m.league === '韩职'; }).length + '场' },
       { id: '挪超', label: '挪超', sub: D.matches.filter(function (m) { return m.league === '挪超'; }).length + '场' },
       { id: '芬超', label: '芬超', sub: D.matches.filter(function (m) { return m.league === '芬超'; }).length + '场' },
