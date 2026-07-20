@@ -317,6 +317,69 @@ button,input{font:inherit}a{color:#0b6b5f}
 }
 .btn:active{transform:scale(.99)}
 
+
+.desk-pulse{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;
+}
+.pulse{
+  border-radius:16px;padding:14px 16px;color:#fff;position:relative;overflow:hidden;
+  box-shadow:0 12px 28px rgba(10,40,50,.14);
+}
+.pulse:nth-child(1){background:linear-gradient(145deg,#0b5c52,#12a38f)}
+.pulse:nth-child(2){background:linear-gradient(145deg,#1a4f6d,#2f7fa3)}
+.pulse:nth-child(3){background:linear-gradient(145deg,#6a4a16,#b8862b)}
+.pulse:nth-child(4){background:linear-gradient(145deg,#3a3058,#6b5a9a)}
+.pulse b{display:block;font-size:26px;font-weight:900;letter-spacing:-.02em}
+.pulse span{display:block;margin-top:4px;font-size:12px;opacity:.9;line-height:1.45}
+.pulse:after{content:"";position:absolute;right:-20px;top:-20px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.12)}
+.spotlight-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.spot{
+  border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:#fff;
+  min-height:110px;
+}
+.spot .k{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#7a8b99}
+.spot .t{margin-top:6px;font-size:14px;font-weight:800;color:#123040}
+.spot .d{margin-top:6px;font-size:12px;color:#556;line-height:1.55}
+.spot.ok{border-color:#b7e0cb;background:linear-gradient(180deg,#f1fbf5,#fff)}
+.spot.warn{border-color:#ead7a8;background:linear-gradient(180deg,#fff8ef,#fff)}
+.spot.bad{border-color:#efc4c0;background:linear-gradient(180deg,#fff6f5,#fff)}
+.matrix{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
+.matrix th,.matrix td{border:1px solid #e5ecf0;padding:8px 10px;text-align:left}
+.matrix th{background:#f3f7f9;font-weight:800}
+.matrix td.num{font-weight:800;font-variant-numeric:tabular-nums}
+.matrix .good{color:#1f9a62}.matrix .mid{color:#b07a22}.matrix .bad{color:#d4544c}
+.insight-ribbon{
+  margin-top:12px;padding:12px 14px;border-radius:12px;font-size:13px;line-height:1.65;
+  background:linear-gradient(90deg,rgba(11,122,108,.08),rgba(47,134,212,.06));
+  border:1px solid #cfe3dd;color:#355a52;
+}
+.timeline{display:grid;gap:10px;margin-top:8px}
+.tl{
+  display:grid;grid-template-columns:72px 1fr;gap:12px;padding:12px;border-radius:12px;
+  border:1px solid var(--line);background:#f8fbfc;
+}
+.tl .when{font-size:12px;font-weight:800;color:#0b7a6c}
+.tl b{display:block;margin-bottom:4px}
+.tl span{font-size:12px;color:#556;line-height:1.55}
+.gloss{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gloss div{padding:12px;border-radius:12px;border:1px solid var(--line);background:#fff}
+.gloss b{display:block;margin-bottom:4px;font-size:13px}
+.gloss span{font-size:12px;color:#556;line-height:1.55}
+.rank-intro{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;
+}
+.rank-intro .kpi{margin:0}
+.today-brief{
+  margin-bottom:12px;padding:14px 16px;border-radius:16px;
+  background:linear-gradient(135deg,#123040,#1a5a7a);color:#e8f4ff;
+}
+.today-brief b{color:#fff}.today-brief p{margin:6px 0 0;font-size:13px;line-height:1.65;opacity:.92}
+.comp-switch{position:sticky;top:8px;z-index:12;padding:8px;border-radius:16px;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border:1px solid #e5ecf0;box-shadow:0 8px 24px rgba(10,30,45,.06)}
+.count-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:#eef6f4;color:#0b5c52;font-size:12px;font-weight:800;margin-left:8px}
+@media(max-width:960px){
+  .desk-pulse,.spotlight-grid,.rank-intro,.gloss{grid-template-columns:1fr}
+}
+
 @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 @media(max-width:960px){
   .nav,.kpi-grid,.charts,.split,.today-hero,.grid2,.compare{grid-template-columns:1fr}
@@ -342,7 +405,7 @@ button,input{font:inherit}a{color:#0b6b5f}
         <div class="logo">MS</div>
         <div>
           <h1>MatchStruct 赛理 · 足球研究台</h1>
-          <p>按赛事复盘：2026世界杯 / 韩职 / 挪超 / 芬超 / 瑞超 · 今日推演</p>
+          <p>多赛事分层复盘 · 命中审计 · 逐场档案 · 今日情景推演</p>
         </div>
       </div>
       <div class="pills">
@@ -367,9 +430,10 @@ button,input{font:inherit}a{color:#0b6b5f}
   </header>
 
   <section class="panel active" id="dash">
+    <div class="desk-pulse" id="deskPulse"></div>
     <div class="card">
       <h2>复盘看板 · 按赛事分类</h2>
-      <p class="sub">分为<strong>2026世界杯</strong>、<strong>韩职 / 挪超 / 芬超 / 瑞超</strong>。点击类型查看该类型命中看板与逐场明细（世界杯含全程复盘，含三四名与决赛）。</p>
+      <p class="sub">研究台覆盖 <strong>2026世界杯</strong> 与本轮 <strong>韩职 / 挪超 / 芬超 / 瑞超</strong>。先看全局脉冲与类型命中一览，再切入单一赛事的 KPI、亮点场次与逐场明细。</p>
       <div class="type-overview" id="typeOverview"></div>
       <div class="comp-switch" id="compSwitch"></div>
     </div>
@@ -378,6 +442,9 @@ button,input{font:inherit}a{color:#0b6b5f}
       <h2 id="boardTitle">命中审计</h2>
       <p class="sub" id="ruleLine"></p>
       <div class="kpi-grid" id="kpis"></div>
+      <div class="insight-ribbon" id="boardRibbon"></div>
+      <div class="spotlight-grid" id="boardSpots"></div>
+      <div id="boardMatrixWrap"></div>
       <div class="notice-box" id="boardNotice" hidden></div>
       <div class="wc-stages" id="wcStages" hidden></div>
     </div>
@@ -413,16 +480,22 @@ button,input{font:inherit}a{color:#0b6b5f}
   </section>
 
   <section class="panel" id="today">
+    <div class="today-brief" id="todayBrief"></div>
     <div class="today-hero" id="todayHero"></div>
     <div class="card">
       <h2>今日四场深度推演</h2>
-      <p class="sub">市场去水概率 vs 模型修正概率可视化；让球与总进球情景仅供结构研究。</p>
+      <p class="sub">市场去水概率 vs 模型修正概率；让球 / 总进球 / 七比分情景仅供结构研究，不构成投注意见。</p>
       <div class="filters" id="todayFilters"></div>
       <div id="todayList"></div>
     </div>
   </section>
 
   <section class="panel" id="rank">
+    <div class="card">
+      <h2>赛前优先级与风险台</h2>
+      <p class="sub">基于赛前排序的研究观察清单；热门风险标签表示热度可能高于真实胜率，不等于应反向操作。</p>
+      <div class="rank-intro" id="rankIntro"></div>
+    </div>
     <div class="split">
       <div class="card">
         <h2>普通胜平负优先级 Top10</h2>
@@ -455,7 +528,7 @@ button,input{font:inherit}a{color:#0b6b5f}
   <section class="panel" id="method">
     <div class="card">
       <h2>模型迭代结论</h2>
-      <p class="sub">下一版四项核心修改（研究路线图）</p>
+      <p class="sub">下一版四项核心修改（研究路线图）——先修排序与尾部，再扩池。</p>
       <div class="kpi-grid">
         <div class="kpi"><b>01</b><span>平局第一选择机制：平局与最高项差&lt;5pt 且预期进球低时可排第一</span></div>
         <div class="kpi"><b>02</b><span>单独净胜球模型：±1 / ±2 / 3+ 与平局分列，不由胜率硬推</span></div>
@@ -463,15 +536,36 @@ button,input{font:inherit}a{color:#0b6b5f}
         <div class="kpi"><b>04</b><span>特殊比赛放大方差：季军赛、长休首轮、轮换、德比、密防局</span></div>
       </div>
     </div>
-    <div class="card">
-      <h2>口径说明</h2>
-      <ul>
-        <li>胜平负主选：只统计第一推荐；覆盖含明确防平/双选。</li>
-        <li>让球主选 / 范围：第一推荐或明确第二防守方向。</li>
-        <li>总进球：核心区间及明确防守球数。</li>
-        <li>七比分：90分钟准确比分是否进入七比分池。</li>
-        <li>世界杯决赛西班牙—阿根廷按 90 分钟 0-0 统计（加时另计）。</li>
-      </ul>
+    <div class="card" style="margin-top:14px">
+      <h2>研究节奏</h2>
+      <p class="sub">从样本建设到公开口径的迭代顺序（演示）。</p>
+      <div class="timeline">
+        <div class="tl"><div class="when">Phase A</div><div><b>口径冻结</b><span>统一 90′ 竞彩口径；淘汰赛晋级与比分拆分记账。</span></div></div>
+        <div class="tl"><div class="when">Phase B</div><div><b>分层复盘</b><span>按赛事类型输出 KPI + 亮点/失误场 + 逐场明细。</span></div></div>
+        <div class="tl"><div class="when">Phase C</div><div><b>排序器</b><span>在七比分候选生成后增加二阶段排序，压低“池内但非前三”。</span></div></div>
+        <div class="tl"><div class="when">Phase D</div><div><b>公开验收</b><span>同时披露核心3 / 完整池 / 方向 / 球数，避免多选覆盖被误读为单点命中。</span></div></div>
+      </div>
+    </div>
+    <div class="split" style="margin-top:14px">
+      <div class="card">
+        <h2>口径说明</h2>
+        <ul>
+          <li>胜平负主选：只统计第一推荐；覆盖含明确防平/双选。</li>
+          <li>让球主选 / 范围：第一推荐或明确第二防守方向。</li>
+          <li>总进球：核心区间及明确防守球数。</li>
+          <li>七比分：90分钟准确比分是否进入七比分池。</li>
+          <li>世界杯决赛西班牙—阿根廷按 90 分钟 0-0 统计（加时另计）。</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>术语速查</h2>
+        <div class="gloss">
+          <div><b>核心3</b><span>真实比分落在前三个候选比分。</span></div>
+          <div><b>比分池</b><span>落在完整七比分候选，但不在前三。</span></div>
+          <div><b>方向命中</b><span>精确比分未中，但胜平负方向正确。</span></div>
+          <div><b>防守命中</b><span>第一选择未中，明确第二/防平方向兑现。</span></div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -610,8 +704,13 @@ function buildFilters(wrapId,listId,mode){
 
 if(window.MS_ReviewBoards) window.MS_ReviewBoards.init();
 
+document.getElementById('todayBrief').innerHTML =
+  '<b>今日研究焦点</b><p>四场覆盖芬超与瑞超：优先看「市场去水 vs 模型修正」分歧、让球情景分散度，以及过热标签。推演用于结构对照，不输出购彩指令。</p>';
+
 document.getElementById('todayHero').innerHTML=D.today.map(t=>`
-  <div class="th"><b>${t.id} ${t.home}</b><span>${t.pick}</span><div style="margin-top:6px;font-size:16px;font-weight:800">${t.conf}</div></div>`).join('');
+  <div class="th"><b>${t.id} ${t.home}</b><span>${t.pick}</span><div style="margin-top:6px;font-size:16px;font-weight:800">${t.conf}</div>
+  <div style="margin-top:8px;font-size:11px;opacity:.85">${t.league} · ${t.grade}</div></div>`).join('');
+
 
 function todayCard(m){
   return `<article class="match ${m.grade==='强势'?'hit':m.grade==='平稳'?'partial':'miss'}" data-grade="${m.grade}" data-search="${m.id}${m.home}${m.away}">
@@ -669,6 +768,10 @@ function paintTodayCharts(){
 
 document.getElementById('rankResult').innerHTML=D.priorities.result.map((t,i)=>`<div class="rank"><div class="n">${i+1}</div><div>${t}</div></div>`).join('');
 document.getElementById('rankHc').innerHTML=D.priorities.handicap.map((t,i)=>`<div class="rank"><div class="n">${i+1}</div><div>${t}</div></div>`).join('');
+document.getElementById('rankIntro').innerHTML=`
+  <div class="kpi"><b>${D.priorities.core3.score}</b><span>核心三串观察 · ${D.priorities.core3.note}</span></div>
+  <div class="kpi"><b>${D.priorities.core4.score}</b><span>四场核心命中</span></div>
+  <div class="kpi"><b>${D.priorities.hcTop10}</b><span>让球优先级前10命中</span></div>`;
 document.getElementById('hotList').innerHTML=D.priorities.hotRisks.map(h=>`
   <div class="hot ${h.ok?'ok':'bad'}"><b>${h.m}</b><div class="tip">${h.tip}</div><div class="res">${h.ok?'预警有效 · ':'未完全兑现 · '}${h.result}</div></div>`).join('');
 document.getElementById('core3').innerHTML=`推荐观察：<b>${D.priorities.core3.picks.join(' × ')}</b><br>结果 <b>${D.priorities.core3.score}</b> — ${D.priorities.core3.note}`;

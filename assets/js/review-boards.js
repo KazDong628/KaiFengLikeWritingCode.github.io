@@ -325,6 +325,104 @@
     });
   }
 
+  function renderDeskPulse() {
+    var D = window.MS_DATA;
+    var W = window.WC86_DATA;
+    var el = document.getElementById('deskPulse');
+    if (!el || !D || !W) return;
+    var leagueN = D.matches.filter(function (m) { return m.league !== '世界杯'; }).length;
+    var wcN = 86 + roundWcMatches(D).length;
+    var cover22 = countRes(D.matches, 'r', 'cover');
+    el.innerHTML =
+      '<div class="pulse"><b>' + (leagueN + wcN) + '</b><span>可浏览复盘场次<br>世界杯 ' + wcN + ' + 联赛 ' + leagueN + '</span></div>' +
+      '<div class="pulse"><b>5</b><span>赛事类型看板<br>世界杯 / 韩职 / 挪超 / 芬超 / 瑞超</span></div>' +
+      '<div class="pulse"><b>' + W.meta.poolPct + '%</b><span>世界杯完整池覆盖<br>核心3 ' + W.meta.corePct + '% · 方向覆盖 ' + W.meta.coverPct + '%</span></div>' +
+      '<div class="pulse"><b>' + pct(cover22, D.matches.length) + '%</b><span>本轮 22 场胜平负覆盖<br>主选命中 ' + countRes(D.matches, 'r', 'hit') + '/' + D.matches.length + '</span></div>';
+  }
+
+  function scoreHits(m) {
+    // higher = better overall card for spotlight
+    var score = 0;
+    ['r', 'h', 'g', 's'].forEach(function (k) {
+      if (m.res[k] === 'hit') score += 2;
+      else if (m.res[k] === 'partial') score += 1;
+    });
+    return score;
+  }
+
+  function renderLeagueExtras(id, matches, kpis) {
+    var spots = document.getElementById('boardSpots');
+    var ribbon = document.getElementById('boardRibbon');
+    var matrix = document.getElementById('boardMatrixWrap');
+    if (!spots || !ribbon || !matrix) return;
+
+    var sorted = matches.slice().sort(function (a, b) { return scoreHits(b) - scoreHits(a); });
+    var best = sorted[0];
+    var worst = sorted[sorted.length - 1];
+    var hcBest = matches.filter(function (m) { return m.res.h === 'hit'; })[0] || best;
+    var coverPct = pct(countRes(matches, 'r', 'cover'), matches.length);
+
+    ribbon.innerHTML = '<strong>' + id + ' 速读：</strong>胜平负覆盖 <b>' + coverPct + '%</b>；让球含第二选 <b>' +
+      pct(countRes(matches, 'h', 'cover'), matches.length) + '%</b>；七比分池 <b>' +
+      pct(countRes(matches, 's', 'cover'), matches.length) + '%</b>。样本 ' + matches.length + ' 场，适合看结构而非外推到全赛季。';
+
+    spots.innerHTML =
+      '<div class="spot ok"><div class="k">结构最完整</div><div class="t">' + best.home + ' ' + best.score + ' ' + best.away +
+      '</div><div class="d">' + String(best.summary || '').slice(0, 90) + (best.summary && best.summary.length > 90 ? '…' : '') + '</div></div>' +
+      '<div class="spot warn"><div class="k">让球观察样本</div><div class="t">' + hcBest.home + ' ' + hcBest.score + ' ' + hcBest.away +
+      '</div><div class="d">' + cleanLabel(hcBest.res.hl) + ' · ' + hcBest.hc + '</div></div>' +
+      '<div class="spot bad"><div class="k">需复盘修正</div><div class="t">' + worst.home + ' ' + worst.score + ' ' + worst.away +
+      '</div><div class="d">' + String(worst.summary || '').slice(0, 90) + (worst.summary && worst.summary.length > 90 ? '…' : '') + '</div></div>';
+
+    matrix.innerHTML = '<table class="matrix"><thead><tr><th>市场</th><th>命中</th><th>覆盖</th><th>解读</th></tr></thead><tbody>' +
+      kpis.map(function (k) {
+        var cls = k.pct >= 66 ? 'good' : k.pct >= 45 ? 'mid' : 'bad';
+        var tip = k.pct >= 66 ? '结构可用' : k.pct >= 45 ? '需防守双选' : '明显薄弱';
+        return '<tr><td>' + k.label + '</td><td class="num">' + k.hit + '</td><td class="num ' + cls + '">' + k.pct + '%</td><td>' + tip + '</td></tr>';
+      }).join('') + '</tbody></table>';
+  }
+
+  function renderWcExtras(W, allWc) {
+    var spots = document.getElementById('boardSpots');
+    var ribbon = document.getElementById('boardRibbon');
+    var matrix = document.getElementById('boardMatrixWrap');
+    if (!spots || !ribbon || !matrix) return;
+    var by = { core: 0, pool: 0, dir: 0, miss: 0 };
+    allWc.forEach(function (m) { by[m.status] = (by[m.status] || 0) + 1; });
+    ribbon.innerHTML = '<strong>2026世界杯速读：</strong>明细 <b>' + allWc.length + '</b> 场（含三四名/决赛）。核心3 <b>' +
+      W.meta.core + '/86</b>，完整池 <b>' + W.meta.pool + '/86</b>，方向或比分覆盖 <b>' + W.meta.cover + '/86</b>。公开表述请同时披露分母与 90′ 口径。';
+
+    var coreEx = allWc.filter(function (m) { return m.status === 'core'; })[0];
+    var missEx = (W.misses && W.misses[0]) || allWc.filter(function (m) { return m.status === 'miss'; })[0];
+    var ko = allWc.filter(function (m) { return m.stage && m.stage !== '小组赛'; });
+    spots.innerHTML =
+      '<div class="spot ok"><div class="k">核心3样本</div><div class="t">' + (coreEx ? coreEx.home + ' ' + coreEx.score + ' ' + coreEx.away : '—') +
+      '</div><div class="d">' + (coreEx ? (coreEx.analysis || '').slice(0, 80) : '') + '</div></div>' +
+      '<div class="spot warn"><div class="k">淘汰赛体量</div><div class="t">' + ko.length + ' 场淘汰+决赛阶段</div>' +
+      '<div class="d">含 32强至决赛；淘汰赛池覆盖通常高于小组赛。</div></div>' +
+      '<div class="spot bad"><div class="k">典型未中</div><div class="t">' + (missEx ? (missEx.home + ' vs ' + missEx.away + ' ' + (missEx.score || '')) : '—') +
+      '</div><div class="d">' + (missEx ? (missEx.note || missEx.analysis || '') : '') + '</div></div>';
+
+    matrix.innerHTML = '<table class="matrix"><thead><tr><th>命中层级</th><th>场次</th><th>占比</th><th>含义</th></tr></thead><tbody>' +
+      [
+        ['核心3', by.core, '真实比分进入前三候选'],
+        ['比分池', by.pool, '进入七比分但不在前三'],
+        ['方向', by.dir, '比分未中但胜平负方向对'],
+        ['未中', by.miss, '比分与方向均未覆盖']
+      ].map(function (row) {
+        var p = pct(row[1], allWc.length);
+        var cls = row[0] === '未中' ? 'bad' : p >= 30 ? 'good' : 'mid';
+        return '<tr><td>' + row[0] + '</td><td class="num">' + row[1] + '</td><td class="num ' + cls + '">' + p + '%</td><td>' + row[2] + '</td></tr>';
+      }).join('') + '</tbody></table>';
+  }
+
+  function clearExtras() {
+    ['boardSpots', 'boardRibbon', 'boardMatrixWrap'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.innerHTML = '';
+    });
+  }
+
   function renderOverview(activeId) {
     var D = window.MS_DATA;
     var W = window.WC86_DATA;
@@ -372,6 +470,7 @@
 
       buildBoardFilters('wc');
       showWcExtra(W, true);
+      renderWcExtras(W, allWc);
       var note = LEAGUE_NOTES['世界杯'];
       setConclusions('2026世界杯结论',
         ['完整比分池覆盖 57/86（66.3%）', '方向或比分覆盖 78/86（90.7%）', '32强 / 1/4 阶段比分覆盖强', note.good[0]],
@@ -397,6 +496,7 @@
     document.getElementById('detailTitle').textContent = id + '逐场明细（' + matches.length + '）';
     document.getElementById('boardList').innerHTML = matches.map(reviewCard).join('');
     buildBoardFilters('league');
+    renderLeagueExtras(id, matches, kpis);
 
     var note = LEAGUE_NOTES[id] || { good: ['见上表分层命中'], bad: ['样本较小，仅供结构研究'] };
     setConclusions(id + ' 结论', note.good, note.bad, '共 ' + matches.length + ' 场可核验复盘。');
@@ -505,6 +605,7 @@
     wrap.querySelectorAll('.comp').forEach(function (b) {
       b.onclick = function () { selectBoard(b.dataset.comp); };
     });
+    renderDeskPulse();
     selectBoard('世界杯');
   }
 
