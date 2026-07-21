@@ -476,7 +476,7 @@ button,input{font:inherit}a{color:#0b6b5f}
     </div>
     <div class="nav" role="tablist">
       <button class="tab active" data-panel="dash" type="button"><b>复盘看板</b><span>按赛事分类 · 明细一体</span></button>
-      <button class="tab" data-panel="today" type="button"><b>今日推演</b><span>策略投票 · 4场情景</span></button>
+      <button class="tab" data-panel="today" type="button"><b>今日推演</b><span>待更新 · 情景投票</span></button>
       <button class="tab" data-panel="rank" type="button"><b>优先级</b><span>串关观察 · 热度风险</span></button>
       <button class="tab" data-panel="method" type="button"><b>方法迭代</b><span>问题 · 下一步</span></button>
     </div>
@@ -545,7 +545,7 @@ button,input{font:inherit}a{color:#0b6b5f}
     </div>
 
     <div class="card">
-      <h2>今日四场深度推演</h2>
+      <h2>今日深度推演</h2>
       <p class="sub">市场去水概率 vs 模型修正概率；让球 / 总进球 / 七比分情景仅供结构研究，不构成投注意见。</p>
       <div class="filters" id="todayFilters"></div>
       <div id="todayList"></div>
@@ -577,11 +577,11 @@ button,input{font:inherit}a{color:#0b6b5f}
     </div>
     <div class="split">
       <div class="card">
-        <h2>普通核心三串观察</h2>
+        <h2>普通核心组合观察</h2>
         <p class="sub" id="core3"></p>
       </div>
       <div class="card">
-        <h2>四场核心 / 让球前10</h2>
+        <h2>组合 / 让球复盘</h2>
         <p class="sub" id="core4"></p>
       </div>
     </div>
@@ -590,12 +590,12 @@ button,input{font:inherit}a{color:#0b6b5f}
   <section class="panel" id="method">
     <div class="card">
       <h2>模型迭代结论</h2>
-      <p class="sub">下一版四项核心修改（研究路线图）——先修排序与尾部，再扩池。</p>
+      <p class="sub">周一复盘后优先三项（研究路线图）——先收紧逆市场与比分一致性，再扩池。</p>
       <div class="kpi-grid">
-        <div class="kpi"><b>01</b><span>平局第一选择机制：平局与最高项差&lt;5pt 且预期进球低时可排第一</span></div>
-        <div class="kpi"><b>02</b><span>单独净胜球模型：±1 / ±2 / 3+ 与平局分列，不由胜率硬推</span></div>
-        <div class="kpi"><b>03</b><span>七比分改为场景排序：主/平/客主情景 + 相邻球 + 尾部冷门</span></div>
-        <div class="kpi"><b>04</b><span>特殊比赛放大方差：季军赛、长休首轮、轮换、德比、密防局</span></div>
+        <div class="kpi"><b>01</b><span>限制逆市场修正：与市场第一方向相反且幅度&gt;10pt → 低置信度，不得作让球强方向</span></div>
+        <div class="kpi"><b>02</b><span>低位封锁识别：抬平局与0-0/1-1，压低3球以上；热门客队对低位弱队须评估0-0</span></div>
+        <div class="kpi"><b>03</b><span>比分池与总球/双方进球一致：平≥27%且BTTS高时强制1-1+2-2；防4球须含对应4球比分</span></div>
+        <div class="kpi"><b>04</b><span>保留防守覆盖优势：防平/重点防平有效，但不得把覆盖率误读为单选命中率</span></div>
       </div>
     </div>
     <div class="card" style="margin-top:14px">
@@ -770,11 +770,15 @@ function buildFilters(wrapId,listId,mode){
 if(window.MS_ReviewBoards) window.MS_ReviewBoards.init();
 
 document.getElementById('todayBrief').innerHTML =
-  '<b>今日研究焦点</b><p>先在下方「策略投票」选择你的胜平负 / 让球 / 球数 / 比分偏好，实时查看各选项人数；再对照市场去水与模型修正分歧。内容仅供结构研究，不输出购彩指令。</p>';
+  (D.today && D.today.length)
+    ? '<b>今日研究焦点</b><p>先在下方「策略投票」选择你的胜平负 / 让球 / 球数 / 比分偏好，实时查看各选项人数；再对照市场去水与模型修正分歧。内容仅供结构研究，不输出购彩指令。</p>'
+    : '<b>今日推演待更新</b><p>周一4场（芬超 TPS / 玛丽港 · 瑞超 厄格里特 / 卡尔马）已写入「复盘看板」。新一轮今日预测稍后入库；投票区暂空，请先看复盘与方法迭代。</p>';
 
-document.getElementById('todayHero').innerHTML=D.today.map(t=>`
+document.getElementById('todayHero').innerHTML = (D.today && D.today.length)
+  ? D.today.map(t=>`
   <div class="th"><b>${t.id} ${t.home}</b><span>${t.pick}</span><div style="margin-top:6px;font-size:16px;font-weight:800">${t.conf}</div>
-  <div style="margin-top:8px;font-size:11px;opacity:.85">${t.league} · ${t.grade}</div></div>`).join('');
+  <div style="margin-top:8px;font-size:11px;opacity:.85">${t.league} · ${t.grade}</div></div>`).join('')
+  : '<div class="th" style="grid-column:1/-1"><b>暂无新场次</b><span>复盘已完成 · 等待下一轮推演</span><div style="margin-top:8px;font-size:12px;opacity:.85">看板 KPI 已切换为周一 1/4 · 防守 3/4</div></div>';
 
 
 function todayCard(m){
@@ -813,9 +817,18 @@ function todayCard(m){
     </div>
   </article>`;
 }
-document.getElementById('todayList').innerHTML=D.today.map(todayCard).join('');
-buildFilters('todayFilters','todayList','today');
-if(window.MS_Poll) window.MS_Poll.init(D.today);
+if (D.today && D.today.length) {
+  document.getElementById('todayList').innerHTML=D.today.map(todayCard).join('');
+  buildFilters('todayFilters','todayList','today');
+  if(window.MS_Poll) window.MS_Poll.init(D.today);
+} else {
+  document.getElementById('todayList').innerHTML =
+    '<div class="card" style="box-shadow:none;border:0;padding:0"><h2 style="margin:0 0 8px">等待下一轮场次</h2><p class="sub" style="margin:0">周一实际赛果与分层命中已进入芬超 / 瑞超复盘看板（筛选「周一」可看）。收到新预测后会重新填充本页推演与投票。</p></div>';
+  document.getElementById('todayFilters').innerHTML = '';
+  var pollWrap = document.querySelector('#today .poll-wrap');
+  if (pollWrap) pollWrap.style.display = 'none';
+  if (window.MS_Poll && window.MS_Poll.init) window.MS_Poll.init([]);
+}
 
 function paintTodayCharts(){
   document.querySelectorAll('.todayChart').forEach(cv=>{
@@ -835,13 +848,13 @@ function paintTodayCharts(){
 document.getElementById('rankResult').innerHTML=D.priorities.result.map((t,i)=>`<div class="rank"><div class="n">${i+1}</div><div>${t}</div></div>`).join('');
 document.getElementById('rankHc').innerHTML=D.priorities.handicap.map((t,i)=>`<div class="rank"><div class="n">${i+1}</div><div>${t}</div></div>`).join('');
 document.getElementById('rankIntro').innerHTML=`
-  <div class="kpi"><b>${D.priorities.core3.score}</b><span>核心三串观察 · ${D.priorities.core3.note}</span></div>
-  <div class="kpi"><b>${D.priorities.core4.score}</b><span>四场核心命中</span></div>
-  <div class="kpi"><b>${D.priorities.hcTop10}</b><span>让球优先级前10命中</span></div>`;
+  <div class="kpi"><b>${D.priorities.core3.score}</b><span>普通核心组合 · ${D.priorities.core3.note}</span></div>
+  <div class="kpi"><b>${D.priorities.core4.score}</b><span>同组观察命中</span></div>
+  <div class="kpi"><b>${D.priorities.hcTop10}</b><span>让球重点方向</span></div>`;
 document.getElementById('hotList').innerHTML=D.priorities.hotRisks.map(h=>`
   <div class="hot ${h.ok?'ok':'bad'}"><b>${h.m}</b><div class="tip">${h.tip}</div><div class="res">${h.ok?'预警有效 · ':'未完全兑现 · '}${h.result}</div></div>`).join('');
 document.getElementById('core3').innerHTML=`推荐观察：<b>${D.priorities.core3.picks.join(' × ')}</b><br>结果 <b>${D.priorities.core3.score}</b> — ${D.priorities.core3.note}`;
-document.getElementById('core4').innerHTML=`四场核心命中 <b>${D.priorities.core4.score}</b>（${D.priorities.core4.picks.join(' / ')}）<br>让球优先级前10命中 <b>${D.priorities.hcTop10}</b>`;
+document.getElementById('core4').innerHTML=`普通核心组合 <b>${D.priorities.core4.score}</b>（${D.priorities.core4.picks.join(' / ')}）<br>让球重点方向 <b>${D.priorities.hcTop10}</b>`;
 
 document.addEventListener('click',e=>{
   const head=e.target.closest('.match-head');

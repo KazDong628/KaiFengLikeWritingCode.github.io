@@ -15,12 +15,12 @@
       bad: ['让球净胜幅度不稳定', '开放局尾部进球（如汉坎 1-4）', '过热热门仍需保留平局']
     },
     '芬超': {
-      good: ['总进球区间 3/4', '赫尔辛基 / 库奥皮奥方向可用', '让负在轻优势局更清晰'],
-      bad: ['AC 奥卢主选方向失误', '国际图尔库密防 0-0 被低估', '主胜热门与伤停冲突需加强']
+      good: ['周一玛丽港 0-2 拉赫蒂完整命中', '总进球防守（含防4球）可用', '让负在轻优势 / 客胜清晰局更稳'],
+      bad: ['周一 TPS 大幅逆市场修正失败（1-3）', '国际图尔库密防 0-0 被低估', '逆市场>10pt 不得列为让球强方向']
     },
     '瑞超': {
-      good: ['普通胜平负 4/4 全中', '哈马比主胜为本轮强观察档', '天狼星 / 赫根方向正确'],
-      bad: ['让球穿盘判断偏弱（1/4 主选）', '过热客胜未下调完整性', '-2 与普通主胜置信度需拆分']
+      good: ['周末主选方向扎实；周一防平有效（0-0 / 2-2）', '卡尔马-1 让负结构清晰', '风险防守标签可保留'],
+      bad: ['周一客胜单选与开放球数误判', '高平局+双方进球须强制纳入 2-2', '低位封锁场景须抬 0-0 / 压低 3+ 球']
     },
     '世界杯': {
       good: ['决赛 90 分钟防平命中', '让球两端均覆盖', '七比分池覆盖决赛 0-0'],
@@ -266,7 +266,7 @@
       var score = String(m.score || '').replace(':', '-');
       return {
         n: 86 + i + 1,
-        date: m.day === '周六' ? '07-18' : '07-19',
+        date: m.day === '周六' ? '07-18' : m.day === '周日' ? '07-19' : '07-20',
         stage: stage,
         home: m.home,
         away: m.away,
@@ -337,7 +337,7 @@
       '<div class="pulse"><b>' + (leagueN + wcN) + '</b><span>可浏览复盘场次<br>世界杯 ' + wcN + ' + 联赛 ' + leagueN + '</span></div>' +
       '<div class="pulse"><b>5</b><span>赛事类型看板<br>世界杯 / 韩职 / 挪超 / 芬超 / 瑞超</span></div>' +
       '<div class="pulse"><b>' + W.meta.poolPct + '%</b><span>世界杯完整池覆盖<br>核心3 ' + W.meta.corePct + '% · 方向覆盖 ' + W.meta.coverPct + '%</span></div>' +
-      '<div class="pulse"><b>' + pct(cover22, D.matches.length) + '%</b><span>本轮 22 场胜平负覆盖<br>主选命中 ' + countRes(D.matches, 'r', 'hit') + '/' + D.matches.length + '</span></div>';
+      '<div class="pulse"><b>' + pct(cover22, D.matches.length) + '%</b><span>联赛样本胜平负覆盖 · ' + D.matches.length + '场<br>主选 ' + countRes(D.matches, 'r', 'hit') + '/' + D.matches.length + (D.meta.latestRound ? '<br>' + D.meta.latestRound : '') + '</span></div>';
   }
 
   function scoreHits(m) {
@@ -546,7 +546,8 @@
         '<button class="filter" data-f="partial" type="button">防守命中</button>' +
         '<button class="filter" data-f="miss" type="button">未覆盖</button>' +
         '<button class="filter" data-f="周六" type="button">周六</button>' +
-        '<button class="filter" data-f="周日" type="button">周日</button>' + bulk;
+        '<button class="filter" data-f="周日" type="button">周日</button>' +
+        '<button class="filter" data-f="周一" type="button">周一</button>' + bulk;
     }
     function apply() {
       var f = wrap.querySelector('.filter.active').dataset.f;
@@ -558,7 +559,7 @@
           else if (f !== 'all') ok = card.dataset.stage === f;
         } else {
           if (f === 'hit' || f === 'partial' || f === 'miss') ok = card.dataset.state === f;
-          else if (f === '周六' || f === '周日') ok = card.dataset.day === f;
+          else if (f === '周六' || f === '周日' || f === '周一') ok = card.dataset.day === f;
         }
         if (q && !(card.dataset.search || '').includes(q)) ok = false;
         card.style.display = ok ? '' : 'none';
