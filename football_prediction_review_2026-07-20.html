@@ -376,8 +376,41 @@ button,input{font:inherit}a{color:#0b6b5f}
 .today-brief b{color:#fff}.today-brief p{margin:6px 0 0;font-size:13px;line-height:1.65;opacity:.92}
 .comp-switch{position:sticky;top:8px;z-index:12;padding:8px;border-radius:16px;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border:1px solid #e5ecf0;box-shadow:0 8px 24px rgba(10,30,45,.06)}
 .count-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:#eef6f4;color:#0b5c52;font-size:12px;font-weight:800;margin-left:8px}
+.poll-wrap{margin-top:14px}
+.poll-status{
+  display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;
+  font-size:12px;font-weight:700;margin:8px 0 12px;
+}
+.poll-status.ok{background:#e8f7ef;color:#1f6b4a;border:1px solid #b7e0cb}
+.poll-status.warn{background:#fff8ef;color:#8a6419;border:1px solid #ead7a8}
+.poll-card{
+  border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:12px;
+  background:linear-gradient(180deg,#f7fbfc,#fff);box-shadow:0 8px 22px rgba(10,30,45,.05);
+}
+.poll-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px;align-items:flex-end}
+.poll-head b{display:block;font-size:14px}
+.poll-head span{display:block;margin-top:3px;font-size:13px;color:#445;font-weight:700}
+.poll-meta{font-size:12px;color:#667}
+.poll-meta b{color:#0b7a6c;font-size:16px}
+.poll-market{margin-top:10px}
+.poll-m-title{font-size:12px;font-weight:800;color:#0b5c52;margin-bottom:6px;letter-spacing:.04em}
+.poll-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.poll-opt{
+  border:1px solid #d7e2ea;background:#fff;border-radius:12px;padding:10px;cursor:pointer;
+  text-align:left;font:inherit;transition:.15s;
+}
+.poll-opt:hover{border-color:#9ec9c1;transform:translateY(-1px)}
+.poll-opt.selected{border-color:#0b7a6c;box-shadow:0 0 0 2px rgba(11,122,108,.18);background:#f2fbf8}
+.poll-opt-top{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:6px}
+.poll-opt .lab{font-size:13px;font-weight:800;color:#123040}
+.poll-opt .cnt{font-size:11px;color:#667;white-space:nowrap}
+.poll-opt .cnt b{color:#0b7a6c;font-size:13px}
+.poll-bar{height:7px;border-radius:99px;background:#e8eef2;overflow:hidden}
+.poll-bar i{display:block;height:100%;background:linear-gradient(90deg,#0b7a6c,#16c5ad);border-radius:99px;transition:width .25s ease}
+.poll-note{font-size:12px;color:#667;line-height:1.65;margin:0 0 4px}
 @media(max-width:960px){
   .desk-pulse,.spotlight-grid,.rank-intro,.gloss{grid-template-columns:1fr}
+  .poll-head{align-items:flex-start}
 }
 
 @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
@@ -423,7 +456,7 @@ button,input{font:inherit}a{color:#0b6b5f}
     </div>
     <div class="nav" role="tablist">
       <button class="tab active" data-panel="dash" type="button"><b>复盘看板</b><span>按赛事分类 · 明细一体</span></button>
-      <button class="tab" data-panel="today" type="button"><b>今日推演</b><span>4场深度情景</span></button>
+      <button class="tab" data-panel="today" type="button"><b>今日推演</b><span>策略投票 · 4场情景</span></button>
       <button class="tab" data-panel="rank" type="button"><b>优先级</b><span>串关观察 · 热度风险</span></button>
       <button class="tab" data-panel="method" type="button"><b>方法迭代</b><span>问题 · 下一步</span></button>
     </div>
@@ -482,6 +515,15 @@ button,input{font:inherit}a{color:#0b6b5f}
   <section class="panel" id="today">
     <div class="today-brief" id="todayBrief"></div>
     <div class="today-hero" id="todayHero"></div>
+
+    <div class="card poll-wrap">
+      <h2>今日策略投票</h2>
+      <p class="sub">每位浏览者可自选当日比赛策略：胜平负、让球、总进球、比分。人数为全局聚合（近实时刷新）；仅作研究偏好统计，不构成投注建议。</p>
+      <p class="poll-note">同一浏览器可改选；改选会从旧选项扣减并计入新选项。请勿刷票。</p>
+      <div class="poll-status ok" id="pollStatus">准备加载全局人数…</div>
+      <div id="pollBoard"></div>
+    </div>
+
     <div class="card">
       <h2>今日四场深度推演</h2>
       <p class="sub">市场去水概率 vs 模型修正概率；让球 / 总进球 / 七比分情景仅供结构研究，不构成投注意见。</p>
@@ -636,6 +678,7 @@ button,input{font:inherit}a{color:#0b6b5f}
 <script src="assets/js/matchstruct-data.js"></script>
 <script src="assets/js/worldcup86-data.js"></script>
 <script src="assets/js/review-boards.js"></script>
+<script src="assets/js/match-poll.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 function boot(){
@@ -705,7 +748,7 @@ function buildFilters(wrapId,listId,mode){
 if(window.MS_ReviewBoards) window.MS_ReviewBoards.init();
 
 document.getElementById('todayBrief').innerHTML =
-  '<b>今日研究焦点</b><p>四场覆盖芬超与瑞超：优先看「市场去水 vs 模型修正」分歧、让球情景分散度，以及过热标签。推演用于结构对照，不输出购彩指令。</p>';
+  '<b>今日研究焦点</b><p>先在下方「策略投票」选择你的胜平负 / 让球 / 球数 / 比分偏好，实时查看各选项人数；再对照市场去水与模型修正分歧。内容仅供结构研究，不输出购彩指令。</p>';
 
 document.getElementById('todayHero').innerHTML=D.today.map(t=>`
   <div class="th"><b>${t.id} ${t.home}</b><span>${t.pick}</span><div style="margin-top:6px;font-size:16px;font-weight:800">${t.conf}</div>
@@ -750,6 +793,7 @@ function todayCard(m){
 }
 document.getElementById('todayList').innerHTML=D.today.map(todayCard).join('');
 buildFilters('todayFilters','todayList','today');
+if(window.MS_Poll) window.MS_Poll.init(D.today);
 
 function paintTodayCharts(){
   document.querySelectorAll('.todayChart').forEach(cv=>{
@@ -792,7 +836,10 @@ function activatePanel(id){
   if(tab) tab.classList.add('active');
   const panel=document.getElementById(id);
   if(panel) panel.classList.add('active');
-  if(id==='today') paintTodayCharts();
+  if(id==='today'){
+    paintTodayCharts();
+    if(window.MS_Poll && window.MS_Poll.refresh) window.MS_Poll.refresh();
+  }
 }
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>activatePanel(t.dataset.panel));
 
