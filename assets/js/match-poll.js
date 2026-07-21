@@ -16,7 +16,13 @@
   function dayKey() {
     var t = (matches[0] && matches[0].time) || '';
     var m = t.match(/(\d{4})-(\d{2})-(\d{2})/);
-    return m ? (m[1] + m[2] + m[3]) : 'day';
+    if (m) return m[1] + m[2] + m[3];
+    // batch key when times are labels like「晚」— avoid colliding with older polls
+    var d0 = matches[0] && matches[0].day;
+    return d0 ? ('batch_' + d0 + '_' + matches.length) : 'day';
+  }
+  function matchKey(m) {
+    return String(m.day || '') + String(m.id);
   }
   function slug(s) {
     return String(s).replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_|_$/g, '').slice(0, 40);
@@ -152,14 +158,14 @@
     var root = document.getElementById('pollBoard');
     if (!root) return;
     root.innerHTML = matches.map(function (m) {
-      var id = m.id;
+      var id = matchKey(m);
       var n = participants(id, m);
       var mkHtml = marketsFor(m).map(function (mk) {
         return '<div class="poll-market"><div class="poll-m-title">' + mk.title + '</div><div class="poll-opts">' + renderBars(id, mk) + '</div></div>';
       }).join('');
       return '<article class="poll-card" data-id="' + id + '">' +
         '<div class="poll-head">' +
-          '<div><b>周一' + id + ' · ' + m.league + '</b><span>' + m.home + ' vs ' + m.away + '</span></div>' +
+          '<div><b>' + id + ' · ' + m.league + '</b><span>' + m.home + ' vs ' + m.away + '</span></div>' +
           '<div class="poll-meta">约 <b>' + n + '</b> 人已选胜平负 · 模型参考 ' + m.pick + '</div>' +
         '</div>' + mkHtml + '</article>';
     }).join('');
@@ -243,7 +249,7 @@
     var m = matches[rotateIdx % matches.length];
     rotateIdx++;
     refreshMatch(m).then(function () {
-      if (online) setStatus('已连接全局计数 · 正在轮询刷新「周一' + m.id + '」人数', true);
+      if (online) setStatus('已连接全局计数 · 正在轮询刷新「' + matchKey(m) + '」人数', true);
       else setStatus('全局计数暂不可用，已切换本机缓存。', false);
     });
   }

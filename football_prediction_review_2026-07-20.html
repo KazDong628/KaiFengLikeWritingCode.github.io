@@ -300,15 +300,15 @@ button,input{font:inherit}a{color:#0b6b5f}
 @media(max-width:720px){.wc-stages,.wc-detail{grid-template-columns:1fr}}
 
 .today-hero{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:12px;
 }
 .th{
   border-radius:14px;padding:12px;color:#fff;
   background:linear-gradient(145deg,#0d5c52,#129987);box-shadow:0 10px 24px rgba(11,122,108,.2);
 }
-.th:nth-child(2){background:linear-gradient(145deg,#1a4f6d,#2f7fa3)}
-.th:nth-child(3){background:linear-gradient(145deg,#6a4a16,#b8862b)}
-.th:nth-child(4){background:linear-gradient(145deg,#5a3030,#a85a54)}
+.th:nth-child(4n+2){background:linear-gradient(145deg,#1a4f6d,#2f7fa3)}
+.th:nth-child(4n+3){background:linear-gradient(145deg,#6a4a16,#b8862b)}
+.th:nth-child(4n+4){background:linear-gradient(145deg,#5a3030,#a85a54)}
 .th b{display:block;font-size:13px;margin-bottom:4px}
 .th span{font-size:11px;opacity:.9}
 
@@ -476,7 +476,7 @@ button,input{font:inherit}a{color:#0b6b5f}
     </div>
     <div class="nav" role="tablist">
       <button class="tab active" data-panel="dash" type="button"><b>复盘看板</b><span>按赛事分类 · 明细一体</span></button>
-      <button class="tab" data-panel="today" type="button"><b>今日推演</b><span>待更新 · 情景投票</span></button>
+      <button class="tab" data-panel="today" type="button"><b>今日推演</b><span>策略投票 · 11场情景</span></button>
       <button class="tab" data-panel="rank" type="button"><b>优先级</b><span>串关观察 · 热度风险</span></button>
       <button class="tab" data-panel="method" type="button"><b>方法迭代</b><span>问题 · 下一步</span></button>
     </div>
@@ -560,12 +560,12 @@ button,input{font:inherit}a{color:#0b6b5f}
     </div>
     <div class="split">
       <div class="card">
-        <h2>普通胜平负优先级 Top10</h2>
+        <h2>普通胜平负优先级</h2>
         <p class="sub">赛前排序（研究观察）</p>
         <div class="list" id="rankResult"></div>
       </div>
       <div class="card">
-        <h2>让球优先级 Top10</h2>
+        <h2>让球优先级</h2>
         <p class="sub">赛前排序（研究观察）</p>
         <div class="list" id="rankHc"></div>
       </div>
@@ -743,10 +743,13 @@ function setCardsOpen(listId, open){
 function buildFilters(wrapId,listId,mode){
   const wrap=document.getElementById(wrapId);
   if(!wrap) return;
+  const n=(window.MS_DATA && MS_DATA.today && MS_DATA.today.length) || 0;
   const bulk=`<span class="bulk-sep" aria-hidden="true"></span>
     <button class="bulk expand" type="button" data-bulk="open">一键展开</button>
     <button class="bulk collapse" type="button" data-bulk="close">一键收起</button>`;
-  wrap.innerHTML=`<button class="filter active" data-f="all" type="button">全部 4</button>
+  wrap.innerHTML=`<button class="filter active" data-f="all" type="button">全部 ${n||''}</button>
+      <button class="filter" data-f="周二" type="button">周二</button>
+      <button class="filter" data-f="周三" type="button">周三</button>
       <button class="filter" data-f="强势" type="button">强势</button>
       <button class="filter" data-f="平稳" type="button">平稳</button>
       <button class="filter" data-f="观察" type="button">观察</button>
@@ -757,7 +760,8 @@ function buildFilters(wrapId,listId,mode){
     const q=(wrap.querySelector('.search').value||'').toLowerCase();
     document.querySelectorAll(`#${listId} .match`).forEach(card=>{
       let ok=true;
-      if(f!=='all') ok=card.dataset.grade===f;
+      if(f==='周二'||f==='周三') ok=card.dataset.day===f;
+      else if(f!=='all') ok=card.dataset.grade===f;
       if(q && !card.dataset.search.toLowerCase().includes(q)) ok=false;
       card.style.display=ok?'':'none';
     });
@@ -771,20 +775,20 @@ if(window.MS_ReviewBoards) window.MS_ReviewBoards.init();
 
 document.getElementById('todayBrief').innerHTML =
   (D.today && D.today.length)
-    ? '<b>今日研究焦点</b><p>先在下方「策略投票」选择你的胜平负 / 让球 / 球数 / 比分偏好，实时查看各选项人数；再对照市场去水与模型修正分歧。内容仅供结构研究，不输出购彩指令。</p>'
-    : '<b>今日推演待更新</b><p>周一4场（芬超 TPS / 玛丽港 · 瑞超 厄格里特 / 卡尔马）已写入「复盘看板」。新一轮今日预测稍后入库；投票区暂空，请先看复盘与方法迭代。</p>';
+    ? '<b>今日研究焦点</b><p>截至 JST 13:56 的<strong>赛前非首发版</strong>（周二7场 + 周三4场）。模型已吸取周一教训：不轻易大幅逆市场；分歧大时降置信度。先投票再对照市场/模型；仅供结构研究，不输出购彩指令。开赛前可复核首发与固奖。</p>'
+    : '<b>今日推演待更新</b><p>周一复盘已入库。新一轮预测稍后填充。</p>';
 
 document.getElementById('todayHero').innerHTML = (D.today && D.today.length)
   ? D.today.map(t=>`
-  <div class="th"><b>${t.id} ${t.home}</b><span>${t.pick}</span><div style="margin-top:6px;font-size:16px;font-weight:800">${t.conf}</div>
+  <div class="th"><b>${t.day}${t.id} ${t.home}</b><span>${t.pick}</span><div style="margin-top:6px;font-size:16px;font-weight:800">${t.conf}</div>
   <div style="margin-top:8px;font-size:11px;opacity:.85">${t.league} · ${t.grade}</div></div>`).join('')
-  : '<div class="th" style="grid-column:1/-1"><b>暂无新场次</b><span>复盘已完成 · 等待下一轮推演</span><div style="margin-top:8px;font-size:12px;opacity:.85">看板 KPI 已切换为周一 1/4 · 防守 3/4</div></div>';
+  : '<div class="th" style="grid-column:1/-1"><b>暂无新场次</b><span>等待下一轮推演</span></div>';
 
 
 function todayCard(m){
-  return `<article class="match ${m.grade==='强势'?'hit':m.grade==='平稳'?'partial':'miss'}" data-grade="${m.grade}" data-search="${m.id}${m.home}${m.away}">
+  return `<article class="match ${m.grade==='强势'?'hit':m.grade==='平稳'?'partial':'miss'}" data-grade="${m.grade}" data-day="${m.day||''}" data-search="${m.day||''}${m.id}${m.home}${m.away}${m.league}">
     <div class="match-head">
-      <div class="meta"><span>周一${m.id}</span><span class="dot"></span><b>${m.league}</b><span>${m.time}</span>
+      <div class="meta"><span>${m.day||''}${m.id}</span><span class="dot"></span><b>${m.league}</b><span>${m.time||''}</span>
         <span class="tag ${m.grade==='强势'?'hit':m.grade==='平稳'?'partial':'miss'}">${m.grade}</span>
         <span class="chip">置信 ${m.conf}</span><span class="toggle"></span></div>
       <div class="teams"><span class="crest">${initials(m.home)}</span>${m.home}<span class="score">VS</span>${m.away}<span class="crest">${initials(m.away)}</span></div>
@@ -818,15 +822,17 @@ function todayCard(m){
   </article>`;
 }
 if (D.today && D.today.length) {
+  var pollWrap = document.querySelector('#today .poll-wrap');
+  if (pollWrap) pollWrap.style.display = '';
   document.getElementById('todayList').innerHTML=D.today.map(todayCard).join('');
   buildFilters('todayFilters','todayList','today');
   if(window.MS_Poll) window.MS_Poll.init(D.today);
 } else {
   document.getElementById('todayList').innerHTML =
-    '<div class="card" style="box-shadow:none;border:0;padding:0"><h2 style="margin:0 0 8px">等待下一轮场次</h2><p class="sub" style="margin:0">周一实际赛果与分层命中已进入芬超 / 瑞超复盘看板（筛选「周一」可看）。收到新预测后会重新填充本页推演与投票。</p></div>';
+    '<div class="card" style="box-shadow:none;border:0;padding:0"><h2 style="margin:0 0 8px">等待下一轮场次</h2><p class="sub" style="margin:0">复盘已入库。收到新预测后会重新填充本页推演与投票。</p></div>';
   document.getElementById('todayFilters').innerHTML = '';
-  var pollWrap = document.querySelector('#today .poll-wrap');
-  if (pollWrap) pollWrap.style.display = 'none';
+  var pollWrapEmpty = document.querySelector('#today .poll-wrap');
+  if (pollWrapEmpty) pollWrapEmpty.style.display = 'none';
   if (window.MS_Poll && window.MS_Poll.init) window.MS_Poll.init([]);
 }
 
@@ -848,13 +854,13 @@ function paintTodayCharts(){
 document.getElementById('rankResult').innerHTML=D.priorities.result.map((t,i)=>`<div class="rank"><div class="n">${i+1}</div><div>${t}</div></div>`).join('');
 document.getElementById('rankHc').innerHTML=D.priorities.handicap.map((t,i)=>`<div class="rank"><div class="n">${i+1}</div><div>${t}</div></div>`).join('');
 document.getElementById('rankIntro').innerHTML=`
-  <div class="kpi"><b>${D.priorities.core3.score}</b><span>普通核心组合 · ${D.priorities.core3.note}</span></div>
-  <div class="kpi"><b>${D.priorities.core4.score}</b><span>同组观察命中</span></div>
-  <div class="kpi"><b>${D.priorities.hcTop10}</b><span>让球重点方向</span></div>`;
+  <div class="kpi"><b>${D.priorities.core3.score}</b><span>普通第一档 · ${D.priorities.core3.note}</span></div>
+  <div class="kpi"><b>${D.priorities.core4.score}</b><span>扩展观察组合</span></div>
+  <div class="kpi"><b>${D.priorities.hcTop10}</b><span>让球优先级</span></div>`;
 document.getElementById('hotList').innerHTML=D.priorities.hotRisks.map(h=>`
-  <div class="hot ${h.ok?'ok':'bad'}"><b>${h.m}</b><div class="tip">${h.tip}</div><div class="res">${h.ok?'预警有效 · ':'未完全兑现 · '}${h.result}</div></div>`).join('');
-document.getElementById('core3').innerHTML=`推荐观察：<b>${D.priorities.core3.picks.join(' × ')}</b><br>结果 <b>${D.priorities.core3.score}</b> — ${D.priorities.core3.note}`;
-document.getElementById('core4').innerHTML=`普通核心组合 <b>${D.priorities.core4.score}</b>（${D.priorities.core4.picks.join(' / ')}）<br>让球重点方向 <b>${D.priorities.hcTop10}</b>`;
+  <div class="hot ${h.ok?'ok':'bad'}"><b>${h.m}</b><div class="tip">${h.tip}</div><div class="res">${h.ok?'风险已标注 · ':'未完全兑现 · '}${h.result}</div></div>`).join('');
+document.getElementById('core3').innerHTML=`推荐观察：<b>${D.priorities.core3.picks.join(' × ')}</b><br>状态 <b>${D.priorities.core3.score}</b> — ${D.priorities.core3.note}`;
+document.getElementById('core4').innerHTML=`扩展观察 <b>${D.priorities.core4.score}</b>（${D.priorities.core4.picks.join(' / ')}）<br>让球优先级 <b>${D.priorities.hcTop10}</b>`;
 
 document.addEventListener('click',e=>{
   const head=e.target.closest('.match-head');
