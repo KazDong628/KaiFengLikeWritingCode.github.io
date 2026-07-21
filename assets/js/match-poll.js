@@ -1,5 +1,6 @@
-/* MatchStruct — visitor strategy poll for today's matches (research demo, not betting advice)
- * Global counts: CounterAPI v1 (public). Falls back to local-only if network fails.
+/* MatchStruct — per-match strategy poll (research demo, not betting advice)
+ * Renders into each match card; dock shows overall progress.
+ * Global counts: CounterAPI v1. Falls back to local-only if network fails.
  */
 (function () {
   var NS = 'matchstructkf';
@@ -10,19 +11,25 @@
   var rotateIdx = 0;
   var online = true;
   var matches = [];
-  var counts = {}; // key -> number
-  var myVotes = {}; // matchId -> { r,h,g,s }
+  var counts = {};
+  var myVotes = {};
+  var bound = false;
 
   function dayKey() {
     var t = (matches[0] && matches[0].time) || '';
     var m = t.match(/(\d{4})-(\d{2})-(\d{2})/);
     if (m) return m[1] + m[2] + m[3];
-    // batch key when times are labels like「晚」— avoid colliding with older polls
     var d0 = matches[0] && matches[0].day;
     return d0 ? ('batch_' + d0 + '_' + matches.length) : 'day';
   }
   function matchKey(m) {
     return String(m.day || '') + String(m.id);
+  }
+  function findMatch(id) {
+    for (var i = 0; i < matches.length; i++) {
+      if (matchKey(matches[i]) === id) return matches[i];
+    }
+    return null;
   }
   function slug(s) {
     return String(s).replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_|_$/g, '').slice(0, 40);
@@ -89,7 +96,7 @@
         ]
       },
       {
-        id: 'h', title: '让球胜平负',
+        id: 'h', title: '让球',
         opts: [
           { v: 'HH', label: '让胜' },
           { v: 'HD', label: '让平' },
@@ -104,11 +111,11 @@
           { v: '2', label: '2球' },
           { v: '3', label: '3球' },
           { v: '4', label: '4球' },
-          { v: '5p', label: '5+球' }
+          { v: '5p', label: '5+' }
         ]
       },
       {
-        id: 's', title: '比分（七比分池）',
+        id: 's', title: '比分',
         opts: (m.scores || []).map(function (sc) {
           return { v: String(sc).replace(':', '-'), label: String(sc) };
         })
@@ -125,19 +132,29 @@
   }
 
   function participants(matchId, m) {
-    var set = {};
-    marketsFor(m).forEach(function (mk) {
-      mk.opts.forEach(function (o) {
-        var n = counts[ckey(matchId, mk.id, o.v)] || 0;
-        // approximate unique voters ~ max market total
-        set[mk.id] = Math.max(set[mk.id] || 0, n);
-      });
-    });
-    var max = 0;
-    Object.keys(set).forEach(function (k) { if (set[k] > max) max = set[k]; });
-    // better: sum of result market
     var r = marketsFor(m)[0];
     return marketTotal(matchId, 'r', r.opts);
+  }
+
+  function progress() {
+    var done = 0;
+    matches.forEach(function (m) {
+      var id = matchKey(m);
+      if (myVotes[id] && myVotes[id].r) done++;
+    });
+    return { done: done, total: matches.length };
+  }
+
+  function voteSummary(matchId) {
+    var v = myVotes[matchId] || {};
+    var parts = [];
+    if (v.r === 'H') parts.push('主胜');
+    if (v.r === 'D') parts.push('平局');
+    if (v.r === 'A') parts.push('客胜');
+    if (v.h === 'HH') parts.push('让胜');
+    if (v.h === 'HD') parts.push('让平');
+    if (v.h === 'HA') parts.push('让负');
+    return parts.join(' · ');
   }
 
   function renderBars(matchId, mk) {
@@ -148,39 +165,86 @@
       var pct = total ? Math.round(100 * n / total) : 0;
       var sel = mine === o.v ? ' selected' : '';
       return '<button type="button" class="poll-opt' + sel + '" data-match="' + matchId + '" data-market="' + mk.id + '" data-opt="' + o.v + '">' +
-        '<div class="poll-opt-top"><span class="lab">' + o.label + '</span><span class="cnt"><b>' + n + '</b>人 · ' + pct + '%</span></div>' +
+        '<div class="poll-opt-top"><span class="lab">' + o.label + '</span><span class="cnt"><b>' + n + '</b>·' + pct + '%</span></div>' +
         '<div class="poll-bar"><i style="width:' + pct + '%"></i></div>' +
         '</button>';
     }).join('');
   }
 
-  function render() {
-    var root = document.getElementById('pollBoard');
-    if (!root) return;
-    root.innerHTML = matches.map(function (m) {
-      var id = matchKey(m);
-      var n = participants(id, m);
-      var mkHtml = marketsFor(m).map(function (mk) {
-        return '<div class="poll-market"><div class="poll-m-title">' + mk.title + '</div><div class="poll-opts">' + renderBars(id, mk) + '</div></div>';
-      }).join('');
-      return '<article class="poll-card" data-id="' + id + '">' +
-        '<div class="poll-head">' +
-          '<div><b>' + id + ' · ' + m.league + '</b><span>' + m.home + ' vs ' + m.away + '</span></div>' +
-          '<div class="poll-meta">约 <b>' + n + '</b> 人已选胜平负 · 模型参考 ' + m.pick + '</div>' +
-        '</div>' + mkHtml + '</article>';
+  function renderMatchSlot(m) {
+    var id = matchKey(m);
+    var slot = document.getElementById('poll-slot-' + id);
+    if (!slot) return;
+    var n = participants(id, m);
+    var markets = marketsFor(m);
+    var primary = markets.slice(0, 2);
+    var extra = markets.slice(2);
+    var primaryHtml = primary.map(function (mk) {
+      return '<div class="poll-market"><div class="poll-m-title">' + mk.title +
+        '<span class="poll-hint">模型：' + (mk.id === 'r' ? m.pick : m.hc) + '</span></div>' +
+        '<div class="poll-opts">' + renderBars(id, mk) + '</div></div>';
     }).join('');
+    var extraHtml = extra.map(function (mk) {
+      return '<div class="poll-market"><div class="poll-m-title">' + mk.title + '</div>' +
+        '<div class="poll-opts poll-opts-dense">' + renderBars(id, mk) + '</div></div>';
+    }).join('');
+    slot.innerHTML =
+      '<div class="poll-inline-head">' +
+        '<div><b>你的策略偏好</b><span>对照上方模型后再选 · 仅研究统计</span></div>' +
+        '<div class="poll-meta">约 <b>' + n + '</b> 人已选胜平负</div>' +
+      '</div>' +
+      primaryHtml +
+      '<details class="poll-more">' +
+        '<summary>总进球与七比分（可选）</summary>' +
+        extraHtml +
+      '</details>';
+  }
 
-    root.querySelectorAll('.poll-opt').forEach(function (btn) {
-      btn.onclick = function () {
-        castVote(btn.dataset.match, btn.dataset.market, btn.dataset.opt);
-      };
+  function updateBadges() {
+    matches.forEach(function (m) {
+      var id = matchKey(m);
+      var badge = document.querySelector('[data-poll-badge="' + id + '"]');
+      if (!badge) return;
+      var sum = voteSummary(id);
+      if (sum) {
+        badge.hidden = false;
+        badge.textContent = '已选 ' + sum;
+        badge.classList.add('on');
+      } else {
+        badge.hidden = true;
+        badge.classList.remove('on');
+      }
+      var nav = document.querySelector('[data-jump="' + id + '"]');
+      if (nav) nav.classList.toggle('voted', !!sum);
     });
+    var prog = progress();
+    var el = document.getElementById('pollProgress');
+    if (el) {
+      el.innerHTML = '已选胜平负 <b>' + prog.done + '</b> / ' + prog.total;
+      el.classList.toggle('done', prog.total > 0 && prog.done === prog.total);
+    }
+    var fill = document.getElementById('pollProgressFill');
+    if (fill && prog.total) {
+      fill.style.width = Math.round(100 * prog.done / prog.total) + '%';
+    }
+  }
+
+  function render() {
+    if (!matches.length) {
+      var dock = document.getElementById('todayDock');
+      if (dock) dock.hidden = true;
+      return;
+    }
+    var dockEl = document.getElementById('todayDock');
+    if (dockEl) dockEl.hidden = false;
+    matches.forEach(renderMatchSlot);
+    updateBadges();
   }
 
   function castVote(matchId, market, opt) {
     if (!myVotes[matchId]) myVotes[matchId] = {};
     var prev = myVotes[matchId][market];
-    if (prev === opt) return; // already selected
+    if (prev === opt) return;
 
     var newKey = ckey(matchId, market, opt);
     var oldKey = prev ? ckey(matchId, market, prev) : null;
@@ -188,7 +252,6 @@
     myVotes[matchId][market] = opt;
     saveVotes();
 
-    // optimistic
     counts[newKey] = (counts[newKey] || 0) + 1;
     if (oldKey) counts[oldKey] = Math.max(0, (counts[oldKey] || 0) - 1);
     saveCounts();
@@ -205,21 +268,22 @@
         return apiUp(newKey).then(function (v) { counts[newKey] = v; saveCounts(); render(); })
           .catch(function () {
             online = false;
-            setStatus('全局计数暂不可用，已保存你的本机选择；联网后将继续同步人数。', false);
+            setStatus('全局计数暂不可用，已保存本机选择。', false);
           });
       }).then(function () {
-        if (online) setStatus('已同步到全局计数 · 约每 20 秒刷新他人选择', true);
+        if (online) setStatus('已同步 · 约每 20 秒刷新他人选择', true);
       });
     } else {
-      setStatus('离线本机模式：只保存你的选择；全局人数需联网后显示。', false);
+      setStatus('离线本机模式：选择已保存在本浏览器。', false);
     }
   }
 
   function keysForMatch(m) {
+    var id = matchKey(m);
     var keys = [];
     marketsFor(m).forEach(function (mk) {
       mk.opts.forEach(function (o) {
-        keys.push(ckey(m.id, mk.id, o.v));
+        keys.push(ckey(id, mk.id, o.v));
       });
     });
     return keys;
@@ -249,25 +313,47 @@
     var m = matches[rotateIdx % matches.length];
     rotateIdx++;
     refreshMatch(m).then(function () {
-      if (online) setStatus('已连接全局计数 · 正在轮询刷新「' + matchKey(m) + '」人数', true);
-      else setStatus('全局计数暂不可用，已切换本机缓存。', false);
+      if (online) setStatus('已连接 · 刷新「' + matchKey(m) + '」人数', true);
+      else setStatus('全局计数暂不可用，已切本机缓存。', false);
     });
   }
 
   function warmStart() {
-    // Refresh first match quickly for immediate feedback
     if (!matches[0]) return;
     setStatus('正在拉取全局选择人数…', true);
-    refreshMatch(matches[0]).then(function () {
-      if (online) setStatus('已连接全局计数 · 选择后实时计入，并定期刷新他人选择', true);
-      else setStatus('无法连接全局计数，当前为本机模式（选择仍会保存在本浏览器）。', false);
+    // warm first 3 matches for faster first paint
+    var first = matches.slice(0, 3);
+    var chain = Promise.resolve();
+    first.forEach(function (m) {
+      chain = chain.then(function () { return refreshMatch(m); });
+    });
+    chain.then(function () {
+      if (online) setStatus('已连接全局计数 · 展开场次后可投票', true);
+      else setStatus('无法连接全局计数，当前为本机模式。', false);
       render();
     });
+  }
+
+  function bindClicks() {
+    if (bound) return;
+    bound = true;
+    document.addEventListener('click', function (e) {
+      var btn = e.target.closest('.poll-opt');
+      if (!btn || !btn.dataset.match) return;
+      e.preventDefault();
+      castVote(btn.dataset.match, btn.dataset.market, btn.dataset.opt);
+    });
+  }
+
+  function refreshOpenMatch(matchId) {
+    var m = findMatch(matchId);
+    if (m) refreshMatch(m);
   }
 
   function init(list) {
     matches = list || [];
     loadLocal();
+    bindClicks();
     render();
     warmStart();
     if (refreshTimer) clearInterval(refreshTimer);
@@ -277,5 +363,11 @@
     });
   }
 
-  window.MS_Poll = { init: init, refresh: rotateRefresh };
+  window.MS_Poll = {
+    init: init,
+    refresh: rotateRefresh,
+    refreshMatch: refreshOpenMatch,
+    progress: progress,
+    matchKey: matchKey
+  };
 })();
