@@ -55,6 +55,21 @@ button,input{font:inherit}a{color:#0b6b5f}
 .pills{display:flex;gap:8px;flex-wrap:wrap}
 .pill{padding:6px 11px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.18);font-size:12px;font-weight:600}
 .pill b{color:#7dffd6}
+.pill.live{
+  display:inline-flex;align-items:center;gap:8px;
+  border-color:rgba(125,255,214,.35);background:rgba(11,122,108,.28);
+}
+.pill.live.is-offline{opacity:.75;border-color:rgba(255,200,120,.35)}
+.live-dot{
+  width:8px;height:8px;border-radius:50%;background:#7dffd6;
+  box-shadow:0 0 0 0 rgba(125,255,214,.7);
+  animation:livePulse 1.6s ease-out infinite;
+}
+@keyframes livePulse{
+  0%{box-shadow:0 0 0 0 rgba(125,255,214,.55)}
+  70%{box-shadow:0 0 0 10px rgba(125,255,214,0)}
+  100%{box-shadow:0 0 0 0 rgba(125,255,214,0)}
+}
 
 .legal{
   margin-top:14px;padding:11px 13px;border-radius:12px;font-size:12px;line-height:1.6;position:relative;z-index:1;
@@ -442,6 +457,11 @@ button,input{font:inherit}a{color:#0b6b5f}
         </div>
       </div>
       <div class="pills">
+        <span class="pill live" id="livePill" title="近实时在线人数">
+          <i class="live-dot" aria-hidden="true"></i>
+          在线 <b id="liveCount">—</b>
+        </span>
+        <span class="pill">今日访问 <b id="viewCount">—</b></span>
         <span class="pill">快照 <b id="snap">—</b></span>
         <span class="pill">口径 <b>90′ 竞彩</b></span>
         <span class="pill">足球 <b>演示中</b></span>
@@ -679,6 +699,7 @@ button,input{font:inherit}a{color:#0b6b5f}
 <script src="assets/js/worldcup86-data.js"></script>
 <script src="assets/js/review-boards.js"></script>
 <script src="assets/js/match-poll.js"></script>
+<script src="assets/js/live-presence.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 function boot(){
@@ -694,6 +715,7 @@ const fDlt=document.getElementById('fDlt'); if(fDlt) fDlt.href=abs('dlt.html');
 const D=window.MS_DATA;
 if(!D){ console.error('MS_DATA missing'); return; }
 document.getElementById('snap').textContent=D.meta.snapshot;
+if(window.MS_Live) window.MS_Live.init();
 
 function initials(n){return n.replace(/FC|SK|市民|现代|制铁|联/g,'').slice(0,2)}
 function safeChart(fn){
