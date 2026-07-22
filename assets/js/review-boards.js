@@ -7,8 +7,8 @@
 
   var LEAGUE_NOTES = {
     '韩职': {
-      good: ['让球范围 5/6，容错判断较好', '江原主胜、首尔客胜方向清晰', '安养防平与过热标签有效'],
-      bad: ['主客方向主选仅 2/6', '部分场次总进球上冲到 4 球', '名气队客场低比分冷门偏多']
+      good: ['周二让球强：全北/蔚山-1与济州+1均中', '防平覆盖有效（济州1-1、全北0-0）', '过热标签对全北有效'],
+      bad: ['普通主选偏弱；蔚山内部冲突（-1让负59%仍推主胜）', '全北平局情景未纳入0-0', '低概率场次仍被包装成单选']
     },
     '挪超': {
       good: ['普通胜平负主选 4/6', '莫尔德过热反例兑现', '维京主胜与 -2 防守拆分正确'],
@@ -21,6 +21,14 @@
     '瑞超': {
       good: ['周末主选方向扎实；周一防平有效（0-0 / 2-2）', '卡尔马-1 让负结构清晰', '风险防守标签可保留'],
       bad: ['周一客胜单选与开放球数误判', '高平局+双方进球须强制纳入 2-2', '低位封锁场景须抬 0-0 / 压低 3+ 球']
+    },
+    '巴甲': {
+      good: ['米竞技1-1：防平/让负/低比分/1-1第2位完整', '正确识别创造点缺阵压低净胜', '让负核心方向清晰'],
+      bad: ['主胜43%仍写成明确主胜，宜改为胜/平', '样本仅1场']
+    },
+    '欧冠': {
+      good: ['萨巴赫主胜+1-0场景正确', '格风暴主胜方向正确且防4球命中', '让球整体识别强队难穿盘'],
+      bad: ['奥胡斯1-4：节奏差/欧战经验严重低估', '格风暴净胜幅度与崩溃尾部不足', '首回合总球易偏高']
     },
     '世界杯': {
       good: ['决赛 90 分钟防平命中', '让球两端均覆盖', '七比分池覆盖决赛 0-0'],
@@ -266,7 +274,7 @@
       var score = String(m.score || '').replace(':', '-');
       return {
         n: 86 + i + 1,
-        date: m.day === '周六' ? '07-18' : m.day === '周日' ? '07-19' : '07-20',
+        date: m.day === '周六' ? '07-18' : m.day === '周日' ? '07-19' : m.day === '周一' ? '07-20' : m.day === '周二' ? '07-21' : '07-22',
         stage: stage,
         home: m.home,
         away: m.away,
@@ -299,7 +307,9 @@
       { id: '韩职', label: '韩职' },
       { id: '挪超', label: '挪超' },
       { id: '芬超', label: '芬超' },
-      { id: '瑞超', label: '瑞超' }
+      { id: '瑞超', label: '瑞超' },
+      { id: '巴甲', label: '巴甲' },
+      { id: '欧冠', label: '欧冠' }
     ];
     return types.map(function (t) {
       if (t.id === '世界杯') {
@@ -313,6 +323,7 @@
         };
       }
       var ms = D.matches.filter(function (m) { return m.league === t.id; });
+      if (!ms.length) return null;
       var cover = countRes(ms, 'r', 'cover');
       var hit = countRes(ms, 'r', 'hit');
       return {
@@ -322,7 +333,7 @@
         line1: '胜平负覆盖 ' + cover + '/' + ms.length,
         line2: '主选命中 ' + hit + '/' + ms.length
       };
-    });
+    }).filter(Boolean);
   }
 
   function renderDeskPulse() {
@@ -333,9 +344,12 @@
     var leagueN = D.matches.filter(function (m) { return m.league !== '世界杯'; }).length;
     var wcN = 86 + roundWcMatches(D).length;
     var cover22 = countRes(D.matches, 'r', 'cover');
+    var leagueTypes = ['韩职', '挪超', '芬超', '瑞超', '巴甲', '欧冠'].filter(function (L) {
+      return D.matches.some(function (m) { return m.league === L; });
+    });
     el.innerHTML =
       '<div class="pulse"><b>' + (leagueN + wcN) + '</b><span>可浏览复盘场次<br>世界杯 ' + wcN + ' + 联赛 ' + leagueN + '</span></div>' +
-      '<div class="pulse"><b>5</b><span>赛事类型看板<br>世界杯 / 韩职 / 挪超 / 芬超 / 瑞超</span></div>' +
+      '<div class="pulse"><b>' + (1 + leagueTypes.length) + '</b><span>赛事类型看板<br>世界杯 / ' + leagueTypes.join(' / ') + '</span></div>' +
       '<div class="pulse"><b>' + W.meta.poolPct + '%</b><span>世界杯完整池覆盖<br>核心3 ' + W.meta.corePct + '% · 方向覆盖 ' + W.meta.coverPct + '%</span></div>' +
       '<div class="pulse"><b>' + pct(cover22, D.matches.length) + '%</b><span>联赛样本胜平负覆盖 · ' + D.matches.length + '场<br>主选 ' + countRes(D.matches, 'r', 'hit') + '/' + D.matches.length + (D.meta.latestRound ? '<br>' + D.meta.latestRound : '') + '</span></div>';
   }
@@ -547,7 +561,8 @@
         '<button class="filter" data-f="miss" type="button">未覆盖</button>' +
         '<button class="filter" data-f="周六" type="button">周六</button>' +
         '<button class="filter" data-f="周日" type="button">周日</button>' +
-        '<button class="filter" data-f="周一" type="button">周一</button>' + bulk;
+        '<button class="filter" data-f="周一" type="button">周一</button>' +
+        '<button class="filter" data-f="周二" type="button">周二</button>' + bulk;
     }
     function apply() {
       var f = wrap.querySelector('.filter.active').dataset.f;
@@ -559,7 +574,7 @@
           else if (f !== 'all') ok = card.dataset.stage === f;
         } else {
           if (f === 'hit' || f === 'partial' || f === 'miss') ok = card.dataset.state === f;
-          else if (f === '周六' || f === '周日' || f === '周一') ok = card.dataset.day === f;
+          else if (f === '周六' || f === '周日' || f === '周一' || f === '周二') ok = card.dataset.day === f;
         }
         if (q && !(card.dataset.search || '').includes(q)) ok = false;
         card.style.display = ok ? '' : 'none';
@@ -595,8 +610,13 @@
       { id: '韩职', label: '韩职', sub: D.matches.filter(function (m) { return m.league === '韩职'; }).length + '场' },
       { id: '挪超', label: '挪超', sub: D.matches.filter(function (m) { return m.league === '挪超'; }).length + '场' },
       { id: '芬超', label: '芬超', sub: D.matches.filter(function (m) { return m.league === '芬超'; }).length + '场' },
-      { id: '瑞超', label: '瑞超', sub: D.matches.filter(function (m) { return m.league === '瑞超'; }).length + '场' }
-    ];
+      { id: '瑞超', label: '瑞超', sub: D.matches.filter(function (m) { return m.league === '瑞超'; }).length + '场' },
+      { id: '巴甲', label: '巴甲', sub: D.matches.filter(function (m) { return m.league === '巴甲'; }).length + '场' },
+      { id: '欧冠', label: '欧冠', sub: D.matches.filter(function (m) { return m.league === '欧冠'; }).length + '场' }
+    ].filter(function (c) {
+      if (c.id === '世界杯') return true;
+      return D.matches.some(function (m) { return m.league === c.id; });
+    });
 
     var wrap = document.getElementById('compSwitch');
     if (!wrap) return;

@@ -377,28 +377,69 @@ button,input{font:inherit}a{color:#0b6b5f}
 }
 .today-brief b{color:#fff}.today-brief p{margin:6px 0 0;font-size:13px;line-height:1.65;opacity:.92}
 
-.today-dock{
-  position:sticky;top:8px;z-index:20;margin-bottom:12px;padding:12px 14px;
-  border-radius:16px;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);
-  border:1px solid #d7e8e4;box-shadow:0 10px 28px rgba(10,30,45,.08);
-  display:grid;grid-template-columns:1fr auto;gap:10px 16px;align-items:center;
+.strategy-board{
+  margin-bottom:14px;padding:16px;border-radius:18px;
+  background:linear-gradient(165deg,#f7fbfa 0%,#fff 55%);
+  border:1px solid #d5e8e3;box-shadow:0 12px 28px rgba(10,30,45,.06);
 }
-.today-dock[hidden]{display:none!important}
-.dock-main{min-width:0}
-.dock-main b{font-size:14px;color:#0b5c52}
-.dock-main .dock-sub{margin-top:4px;font-size:12px;color:#667;line-height:1.5}
-.dock-progress-wrap{margin-top:8px;height:8px;border-radius:99px;background:#e8eef2;overflow:hidden}
-.dock-progress-wrap i{display:block;height:100%;width:0;background:linear-gradient(90deg,#0b7a6c,#16c5ad);border-radius:99px;transition:width .3s ease}
-#pollProgress{font-size:13px;font-weight:700;color:#445}
-#pollProgress b{color:#0b7a6c;font-size:16px}
-#pollProgress.done{color:#1f6b4a}
-.dock-side{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
-.poll-status{
-  display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;
-  font-size:11px;font-weight:700;margin:0;max-width:280px;
+.strategy-board .st-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start;margin-bottom:12px}
+.strategy-board .st-head h2{margin:0;font-size:18px;color:#0b5c52}
+.strategy-board .st-head p{margin:6px 0 0;font-size:12px;color:#667;line-height:1.6;max-width:52rem}
+.st-badge{
+  flex:0 0 auto;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:800;
+  background:#e8f7ef;color:#1f6b4a;border:1px solid #b7e0cb;
 }
-.poll-status.ok{background:#e8f7ef;color:#1f6b4a;border:1px solid #b7e0cb}
-.poll-status.warn{background:#fff8ef;color:#8a6419;border:1px solid #ead7a8}
+.st-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:12px}
+.st-col{display:flex;flex-direction:column;gap:10px}
+.st-block{
+  border:1px solid #e2ebe8;border-radius:14px;padding:12px 14px;background:#fff;
+}
+.st-block h3{margin:0 0 8px;font-size:13px;letter-spacing:.04em}
+.st-block.hot h3{color:#0b7a6c}
+.st-block.mid h3{color:#2f6f8c}
+.st-block.cold h3{color:#8a6419}
+.st-item{padding:8px 0;border-top:1px dashed #e8eef2}
+.st-item:first-of-type{border-top:0;padding-top:0}
+.st-item b{display:block;font-size:13px;color:#123040}
+.st-item span{display:block;margin-top:3px;font-size:12px;color:#667;line-height:1.5}
+.st-item .code{display:inline-block;margin-right:6px;color:#0b7a6c;font-weight:800}
+.st-hc{display:flex;flex-direction:column;gap:8px}
+.st-hc-row{
+  display:grid;grid-template-columns:28px 1fr;gap:8px;align-items:start;
+  padding:8px 10px;border-radius:12px;background:#f5faf8;border:1px solid #e3efeb;
+}
+.st-hc-row .n{
+  width:28px;height:28px;border-radius:8px;display:grid;place-items:center;
+  background:#0b7a6c;color:#fff;font-size:12px;font-weight:800;
+}
+.st-hc-row b{font-size:13px;color:#123040}
+.st-hc-row span{display:block;margin-top:2px;font-size:11px;color:#667;line-height:1.45}
+.st-combos{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.st-combo{
+  border-radius:14px;padding:12px;border:1px solid #e2ebe8;background:#fff;
+}
+.st-combo b{display:block;font-size:12px;color:#0b5c52;margin-bottom:4px}
+.st-combo .line{font-size:14px;font-weight:800;color:#123040;line-height:1.45}
+.st-combo .tip{margin-top:6px;font-size:11px;color:#667;line-height:1.5}
+.st-rules{
+  margin-top:12px;padding:10px 12px;border-radius:12px;background:#f3f7f9;border:1px solid #e2e9ee;
+  display:flex;flex-wrap:wrap;gap:8px;
+}
+.st-rules span{
+  font-size:11px;font-weight:700;color:#445;padding:5px 9px;border-radius:999px;
+  background:#fff;border:1px solid #dce5ea;
+}
+.st-picks{margin-top:12px;overflow:auto;border:1px solid #e2ebe8;border-radius:14px;background:#fff}
+.st-picks table{width:100%;border-collapse:collapse;font-size:12px}
+.st-picks th,.st-picks td{padding:9px 10px;text-align:left;border-bottom:1px solid #eef3f1;vertical-align:top}
+.st-picks th{background:#f3faf8;color:#0b5c52;font-weight:800;white-space:nowrap}
+.st-picks tr:last-child td{border-bottom:0}
+.st-picks .lv{font-weight:800;color:#0b7a6c}
+.st-picks .ch{font-weight:800;color:#123040}
+.st-picks button.jump{
+  border:0;background:transparent;color:#0b7a6c;font:inherit;font-weight:800;cursor:pointer;padding:0;
+}
+.st-picks button.jump:hover{text-decoration:underline}
 
 .today-hero{
   display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px;margin-bottom:12px;
@@ -413,62 +454,17 @@ button,input{font:inherit}a{color:#0b6b5f}
 .th:nth-child(4n+2){background:linear-gradient(145deg,#1a4f6d,#2f7fa3)}
 .th:nth-child(4n+3){background:linear-gradient(145deg,#6a4a16,#b8862b)}
 .th:nth-child(4n+4){background:linear-gradient(145deg,#5a3030,#a85a54)}
-.th.voted{box-shadow:0 0 0 2px #7dffd6,0 10px 24px rgba(11,122,108,.2)}
 .th b{display:block;font-size:13px;margin-bottom:4px}
 .th span{font-size:11px;opacity:.9}
-.th .th-vote{margin-top:8px;font-size:10px;opacity:.95;letter-spacing:.02em}
+.th .th-jump{margin-top:8px;font-size:10px;opacity:.95;letter-spacing:.02em}
 
-#todayList .match{scroll-margin-top:88px}
-
-.poll-badge{
-  display:inline-flex;align-items:center;padding:3px 8px;border-radius:999px;
-  background:#e8f7ef;color:#1f6b4a;border:1px solid #b7e0cb;font-size:11px;font-weight:800;
-}
-.poll-badge.on{display:inline-flex}
-.poll-inline{
-  margin-top:14px;padding:14px;border-radius:14px;
-  background:linear-gradient(180deg,#f3faf8,#fff);border:1px solid #d5e8e3;
-}
-.poll-inline-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px;align-items:flex-end}
-.poll-inline-head b{display:block;font-size:14px;color:#0b5c52}
-.poll-inline-head span{display:block;margin-top:2px;font-size:12px;color:#667}
-.poll-meta{font-size:12px;color:#667}
-.poll-meta b{color:#0b7a6c;font-size:15px}
-.poll-market{margin-top:10px}
-.poll-m-title{font-size:12px;font-weight:800;color:#0b5c52;margin-bottom:6px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
-.poll-hint{font-weight:600;color:#889;font-size:11px;max-width:70%;text-align:right}
-.poll-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.poll-opts-dense{grid-template-columns:repeat(auto-fit,minmax(88px,1fr))}
-.poll-opt{
-  border:1px solid #d7e2ea;background:#fff;border-radius:12px;padding:9px 10px;cursor:pointer;
-  text-align:left;font:inherit;transition:.15s;
-}
-.poll-opt:hover{border-color:#9ec9c1;transform:translateY(-1px)}
-.poll-opt.selected{border-color:#0b7a6c;box-shadow:0 0 0 2px rgba(11,122,108,.18);background:#f2fbf8}
-.poll-opt-top{display:flex;justify-content:space-between;gap:6px;align-items:center;margin-bottom:6px}
-.poll-opt .lab{font-size:13px;font-weight:800;color:#123040}
-.poll-opt .cnt{font-size:11px;color:#667;white-space:nowrap}
-.poll-opt .cnt b{color:#0b7a6c;font-size:12px}
-.poll-bar{height:6px;border-radius:99px;background:#e8eef2;overflow:hidden}
-.poll-bar i{display:block;height:100%;background:linear-gradient(90deg,#0b7a6c,#16c5ad);border-radius:99px;transition:width .25s ease}
-.poll-more{margin-top:10px;border-top:1px dashed #d5e0e6;padding-top:8px}
-.poll-more summary{
-  cursor:pointer;font-size:12px;font-weight:800;color:#0b5c52;list-style:none;
-  user-select:none;padding:4px 0;
-}
-.poll-more summary::-webkit-details-marker{display:none}
-.poll-more summary::before{content:'▸ ';opacity:.7}
-.poll-more[open] summary::before{content:'▾ '}
-.poll-note{font-size:12px;color:#667;line-height:1.65;margin:0}
+#todayList .match{scroll-margin-top:24px}
 
 .comp-switch{position:sticky;top:8px;z-index:12;padding:8px;border-radius:16px;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border:1px solid #e5ecf0;box-shadow:0 8px 24px rgba(10,30,45,.06)}
 .count-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:#eef6f4;color:#0b5c52;font-size:12px;font-weight:800;margin-left:8px}
 @media(max-width:960px){
   .desk-pulse,.spotlight-grid,.rank-intro,.gloss{grid-template-columns:1fr}
-  .today-dock{grid-template-columns:1fr}
-  .dock-side{align-items:flex-start}
-  .poll-opts{grid-template-columns:1fr 1fr 1fr}
-  .poll-hint{max-width:100%;text-align:left}
+  .st-grid,.st-combos{grid-template-columns:1fr}
 }
 
 @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
@@ -519,7 +515,7 @@ button,input{font:inherit}a{color:#0b6b5f}
     </div>
     <div class="nav" role="tablist">
       <button class="tab active" data-panel="dash" type="button"><b>复盘看板</b><span>按赛事分类 · 明细一体</span></button>
-      <button class="tab" data-panel="today" type="button"><b>今日推演</b><span>11场情景 · 文内投票</span></button>
+      <button class="tab" data-panel="today" type="button"><b>今日推演</b><span>策略台 · 12场</span></button>
       <button class="tab" data-panel="rank" type="button"><b>优先级</b><span>串关观察 · 热度风险</span></button>
       <button class="tab" data-panel="method" type="button"><b>方法迭代</b><span>问题 · 下一步</span></button>
     </div>
@@ -529,7 +525,7 @@ button,input{font:inherit}a{color:#0b6b5f}
     <div class="desk-pulse" id="deskPulse"></div>
     <div class="card">
       <h2>复盘看板 · 按赛事分类</h2>
-      <p class="sub">研究台覆盖 <strong>2026世界杯</strong> 与本轮 <strong>韩职 / 挪超 / 芬超 / 瑞超</strong>。先看全局脉冲与类型命中一览，再切入单一赛事的 KPI、亮点场次与逐场明细。</p>
+      <p class="sub">研究台覆盖 <strong>2026世界杯</strong> 与联赛样本（韩职 / 挪超 / 芬超 / 瑞超 / 巴甲 / 欧冠 / 美职等）。先看全局脉冲与类型命中一览，再切入单一赛事的 KPI、亮点场次与逐场明细。复盘 KPI 仍为<strong>周二7场</strong>；本轮推演为周三/周四12场。</p>
       <div class="type-overview" id="typeOverview"></div>
       <div class="comp-switch" id="compSwitch"></div>
     </div>
@@ -577,25 +573,11 @@ button,input{font:inherit}a{color:#0b6b5f}
 
   <section class="panel" id="today">
     <div class="today-brief" id="todayBrief"></div>
-
-    <div class="today-dock" id="todayDock" hidden>
-      <div class="dock-main">
-        <b>策略偏好进度</b>
-        <div class="dock-sub">先读推演再投票；点上方场次卡片可直达。人数为全局聚合，仅作研究统计。</div>
-        <div id="pollProgress">已选胜平负 <b>0</b> / 0</div>
-        <div class="dock-progress-wrap"><i id="pollProgressFill"></i></div>
-      </div>
-      <div class="dock-side">
-        <div class="poll-status ok" id="pollStatus">准备加载…</div>
-        <p class="poll-note" style="margin:0;text-align:right">可改选 · 请勿刷票</p>
-      </div>
-    </div>
-
+    <div class="strategy-board" id="strategyBoard" hidden></div>
     <div class="today-hero" id="todayHero"></div>
-
     <div class="card">
       <h2>今日深度推演</h2>
-      <p class="sub">市场去水 vs 模型修正；展开场次后在文末选择你的胜平负 / 让球偏好。总进球与比分可折叠填写。</p>
+      <p class="sub">市场去水 vs 模型修正；点上方场次卡片可直达并展开。内容仅供结构研究，不构成投注意见。</p>
       <div class="filters" id="todayFilters"></div>
       <div id="todayList"></div>
     </div>
@@ -639,12 +621,12 @@ button,input{font:inherit}a{color:#0b6b5f}
   <section class="panel" id="method">
     <div class="card">
       <h2>模型迭代结论</h2>
-      <p class="sub">周一复盘后优先三项（研究路线图）——先收紧逆市场与比分一致性，再扩池。</p>
+      <p class="sub">周二复盘后核心：限制低概率单选，让球反向约束普通赛果，补齐高低尾与联合分布一致性。</p>
       <div class="kpi-grid">
-        <div class="kpi"><b>01</b><span>限制逆市场修正：与市场第一方向相反且幅度&gt;10pt → 低置信度，不得作让球强方向</span></div>
-        <div class="kpi"><b>02</b><span>低位封锁识别：抬平局与0-0/1-1，压低3球以上；热门客队对低位弱队须评估0-0</span></div>
-        <div class="kpi"><b>03</b><span>比分池与总球/双方进球一致：平≥27%且BTTS高时强制1-1+2-2；防4球须含对应4球比分</span></div>
-        <div class="kpi"><b>04</b><span>保留防守覆盖优势：防平/重点防平有效，但不得把覆盖率误读为单选命中率</span></div>
+        <div class="kpi"><b>01</b><span>单选门控：最高概率&lt;48%禁止单胆；一二差&lt;12pt强制双选；平≥29%须进入主要方向</span></div>
+        <div class="kpi"><b>02</b><span>让球联动：-1让负≥57%禁止主胜单选；+1让胜≥57%须标受让不败；冲突自动降置信度</span></div>
+        <div class="kpi"><b>03</b><span>总球三状态：封闭(0-1) / 常规 / 崩溃(4+)；平局高且进攻弱时优先0—2球并纳入0-0</span></div>
+        <div class="kpi"><b>04</b><span>欧战节奏差与防线崩溃模块；首回合抬1-0；防负式三覆盖不计有效防守命中</span></div>
       </div>
     </div>
     <div class="card" style="margin-top:14px">
@@ -661,7 +643,7 @@ button,input{font:inherit}a{color:#0b6b5f}
       <div class="card">
         <h2>口径说明</h2>
         <ul>
-          <li>胜平负主选：只统计第一推荐；覆盖含明确防平/双选。</li>
+          <li>胜平负主选：只统计第一推荐；覆盖含明确防平/双选。<strong>「防负」式三覆盖不计有效防守命中</strong>。</li>
           <li>让球主选 / 范围：第一推荐或明确第二防守方向。</li>
           <li>总进球：核心区间及明确防守球数。</li>
           <li>七比分：90分钟准确比分是否进入七比分池。</li>
@@ -747,7 +729,6 @@ button,input{font:inherit}a{color:#0b6b5f}
 <script src="assets/js/matchstruct-data.js"></script>
 <script src="assets/js/worldcup86-data.js"></script>
 <script src="assets/js/review-boards.js"></script>
-<script src="assets/js/match-poll.js"></script>
 <script src="assets/js/live-presence.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -797,8 +778,8 @@ function buildFilters(wrapId,listId,mode){
     <button class="bulk expand" type="button" data-bulk="open">一键展开</button>
     <button class="bulk collapse" type="button" data-bulk="close">一键收起</button>`;
   wrap.innerHTML=`<button class="filter active" data-f="all" type="button">全部 ${n||''}</button>
-      <button class="filter" data-f="周二" type="button">周二</button>
       <button class="filter" data-f="周三" type="button">周三</button>
+      <button class="filter" data-f="周四" type="button">周四</button>
       <button class="filter" data-f="强势" type="button">强势</button>
       <button class="filter" data-f="平稳" type="button">平稳</button>
       <button class="filter" data-f="观察" type="button">观察</button>
@@ -809,7 +790,7 @@ function buildFilters(wrapId,listId,mode){
     const q=(wrap.querySelector('.search').value||'').toLowerCase();
     document.querySelectorAll(`#${listId} .match`).forEach(card=>{
       let ok=true;
-      if(f==='周二'||f==='周三') ok=card.dataset.day===f;
+      if(f==='周三'||f==='周四') ok=card.dataset.day===f;
       else if(f!=='all') ok=card.dataset.grade===f;
       if(q && !card.dataset.search.toLowerCase().includes(q)) ok=false;
       card.style.display=ok?'':'none';
@@ -824,10 +805,58 @@ if(window.MS_ReviewBoards) window.MS_ReviewBoards.init();
 
 document.getElementById('todayBrief').innerHTML =
   (D.today && D.today.length)
-    ? '<b>今日研究焦点</b><p>截至 JST 13:56 的<strong>赛前非首发版</strong>（周二7场 + 周三4场）。建议路径：点场次卡片直达 → 阅读推演 → 在文末投票。模型已吸取周一教训，不轻易大幅逆市场。仅供结构研究，不输出购彩指令。</p>'
-    : '<b>今日推演待更新</b><p>周一复盘已入库。新一轮预测稍后填充。</p>';
+    ? '<b>本轮研究焦点</b><p>迭代框架下的 <strong>12场</strong>（周三10 + 周四2）。最高概率&lt;48%或一二差&lt;12pt一律双选/回避。下方策略台含推荐总表与仓位规则；先看策略，再点场次读推演。仅供结构研究，不输出购彩指令。</p>'
+    : '<b>今日推演待更新</b><p>复盘已入库。新一轮预测稍后填充。</p>';
 
 function todayMatchKey(t){ return String(t.day||'') + String(t.id); }
+
+function findStrategyPick(m){
+  const S=D.strategy&&D.strategy.picks;
+  if(!S) return null;
+  return S.find(p=>String(p.day)===String(m.day)&&String(p.id)===String(m.id))||null;
+}
+
+function renderStrategyBoard(){
+  const box=document.getElementById('strategyBoard');
+  if(!box) return;
+  const S=D.strategy;
+  if(!S || !(D.today&&D.today.length)){ box.hidden=true; box.innerHTML=''; return; }
+  box.hidden=false;
+  const focusHtml=(S.focus||[]).map(block=>`
+    <div class="st-block ${block.tone||''}">
+      <h3>${block.tag}</h3>
+      ${(block.items||[]).map(it=>`<div class="st-item"><b><span class="code">${it.code}</span>${it.pick}</b><span>${it.note||''}</span></div>`).join('')}
+    </div>`).join('');
+  const hcHtml=`<div class="st-block"><h3>让球策略排序</h3><div class="st-hc">${(S.handicap||[]).map(h=>`
+    <div class="st-hc-row"><div class="n">${h.rank}</div><div><b>${h.pick}</b><span>${h.why||''}</span></div></div>`).join('')}</div></div>`;
+  const comboHtml=`<div class="st-combos">${(S.combos||[]).map(c=>`
+    <div class="st-combo"><b>${c.name}</b><div class="line">${c.line}</div><div class="tip">${c.tip||''}</div></div>`).join('')}</div>`;
+  const rulesHtml=`<div class="st-rules">${(S.rules||[]).map(r=>`<span>${r}</span>`).join('')}</div>`;
+  const picksHtml = (S.picks&&S.picks.length) ? `<div class="st-picks"><table>
+    <thead><tr><th>编号</th><th>推荐玩法</th><th>选择</th><th>级别</th><th>核心比分</th></tr></thead>
+    <tbody>${S.picks.map(p=>{
+      const key=String(p.day||'')+String(p.id);
+      return `<tr>
+        <td><button type="button" class="jump" data-jump="${key}">${p.day||''}${p.id}</button></td>
+        <td>${p.market||''}</td>
+        <td class="ch">${p.choice||''}</td>
+        <td class="lv">${p.level||''}</td>
+        <td>${p.core||''}</td>
+      </tr>`;
+    }).join('')}</tbody></table></div>` : '';
+  box.innerHTML=`
+    <div class="st-head">
+      <div><h2>${S.title}</h2><p>${S.subtitle||''}</p></div>
+      <div class="st-badge">研究观察 · 非购彩指令</div>
+    </div>
+    ${picksHtml}
+    <div class="st-grid" style="margin-top:12px">
+      <div class="st-col">${focusHtml}</div>
+      <div class="st-col">${hcHtml}</div>
+    </div>
+    ${comboHtml}
+    ${rulesHtml}`;
+}
 
 document.getElementById('todayHero').innerHTML = (D.today && D.today.length)
   ? D.today.map(t=>{
@@ -836,7 +865,7 @@ document.getElementById('todayHero').innerHTML = (D.today && D.today.length)
         <b>${t.day}${t.id} ${t.home}</b><span>${t.pick}</span>
         <div style="margin-top:6px;font-size:16px;font-weight:800">${t.conf}</div>
         <div style="margin-top:8px;font-size:11px;opacity:.85">${t.league} · ${t.grade}</div>
-        <div class="th-vote">点击直达并展开</div>
+        <div class="th-jump">点击直达并展开</div>
       </button>`;
     }).join('')
   : '<div class="th" style="grid-column:1/-1;cursor:default"><b>暂无新场次</b><span>等待下一轮推演</span></div>';
@@ -846,21 +875,21 @@ function jumpToTodayMatch(key){
   if(!card) return;
   card.classList.add('open');
   paintTodayCharts();
-  if(window.MS_Poll && MS_Poll.refreshMatch) MS_Poll.refreshMatch(key);
   card.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 function todayCard(m){
   const k=todayMatchKey(m);
+  const sp=findStrategyPick(m);
+  const stratChip=sp?`<span class="chip key">策略 ${sp.market} · ${sp.choice}（${sp.level}）</span>`:'';
   return `<article class="match ${m.grade==='强势'?'hit':m.grade==='平稳'?'partial':'miss'}" id="today-match-${k}" data-grade="${m.grade}" data-day="${m.day||''}" data-search="${m.day||''}${m.id}${m.home}${m.away}${m.league}">
     <div class="match-head">
       <div class="meta"><span>${m.day||''}${m.id}</span><span class="dot"></span><b>${m.league}</b><span>${m.time||''}</span>
         <span class="tag ${m.grade==='强势'?'hit':m.grade==='平稳'?'partial':'miss'}">${m.grade}</span>
         <span class="chip">置信 ${m.conf}</span>
-        <span class="poll-badge" data-poll-badge="${k}" hidden></span>
         <span class="toggle"></span></div>
       <div class="teams"><span class="crest">${initials(m.home)}</span>${m.home}<span class="score">VS</span>${m.away}<span class="crest">${initials(m.away)}</span></div>
-      <div class="predline"><span class="chip key">${m.pick}</span><span class="chip key">${m.hc}</span><span class="chip">${m.goals}</span></div>
+      <div class="predline"><span class="chip key">${m.pick}</span><span class="chip key">${m.hc}</span><span class="chip">${m.goals}</span>${stratChip}</div>
     </div>
     <div class="detail">
       <div class="grid2">
@@ -886,21 +915,17 @@ function todayCard(m){
         <div class="box"><h4>逐场分析</h4><ul>${m.analysis.map(x=>`<li>${x}</li>`).join('')}</ul></div>
         <div class="box"><h4>风险点</h4><ul>${m.risks.map(x=>`<li>${x}</li>`).join('')}</ul></div>
       </div>
-      <div class="poll-inline" id="poll-slot-${k}"></div>
     </div>
   </article>`;
 }
+renderStrategyBoard();
 if (D.today && D.today.length) {
   document.getElementById('todayList').innerHTML=D.today.map(todayCard).join('');
   buildFilters('todayFilters','todayList','today');
-  if(window.MS_Poll) window.MS_Poll.init(D.today);
 } else {
   document.getElementById('todayList').innerHTML =
-    '<div class="card" style="box-shadow:none;border:0;padding:0"><h2 style="margin:0 0 8px">等待下一轮场次</h2><p class="sub" style="margin:0">复盘已入库。收到新预测后会重新填充本页推演与投票。</p></div>';
+    '<div class="card" style="box-shadow:none;border:0;padding:0"><h2 style="margin:0 0 8px">等待下一轮场次</h2><p class="sub" style="margin:0">复盘已入库。收到新预测后会重新填充推演与策略台。</p></div>';
   document.getElementById('todayFilters').innerHTML = '';
-  var dockEmpty = document.getElementById('todayDock');
-  if (dockEmpty) dockEmpty.hidden = true;
-  if (window.MS_Poll && window.MS_Poll.init) window.MS_Poll.init([]);
 }
 
 function paintTodayCharts(){
@@ -941,11 +966,7 @@ document.addEventListener('click',e=>{
   if(head){
     const card=head.closest('.match');
     card.classList.toggle('open');
-    if(card.closest('#today') && card.classList.contains('open')){
-      paintTodayCharts();
-      const id=card.id && card.id.replace(/^today-match-/,'');
-      if(id && window.MS_Poll && MS_Poll.refreshMatch) MS_Poll.refreshMatch(id);
-    }
+    if(card.closest('#today') && card.classList.contains('open')) paintTodayCharts();
   }
 });
 function activatePanel(id){
@@ -955,10 +976,7 @@ function activatePanel(id){
   if(tab) tab.classList.add('active');
   const panel=document.getElementById(id);
   if(panel) panel.classList.add('active');
-  if(id==='today'){
-    paintTodayCharts();
-    if(window.MS_Poll && window.MS_Poll.refresh) window.MS_Poll.refresh();
-  }
+  if(id==='today') paintTodayCharts();
 }
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>activatePanel(t.dataset.panel));
 
