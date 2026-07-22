@@ -4,6 +4,20 @@
   var chartRates = null;
   var chartSide = null;
   var current = 'round';
+  var viewMode = 'league'; // league | day
+  var currentDay = '';
+
+  /** Weekday label → calendar stamp (aligned with 2026-07 snapshot) */
+  var DAY_META = {
+    '周五': { md: '07-17', name: '周五' },
+    '周六': { md: '07-18', name: '周六' },
+    '周日': { md: '07-19', name: '周日' },
+    '周一': { md: '07-20', name: '周一' },
+    '周二': { md: '07-21', name: '周二' },
+    '周三': { md: '07-22', name: '周三' },
+    '周四': { md: '07-23', name: '周四' }
+  };
+  var DAY_ORDER = ['周五', '周六', '周日', '周一', '周二', '周三', '周四'];
 
   var LEAGUE_NOTES = {
     '韩职': {
@@ -437,6 +451,262 @@
     });
   }
 
+  function dayMeta(day) {
+    return DAY_META[day] || { md: day, name: day };
+  }
+
+  function snapshotTodayMd() {
+    var snap = (window.MS_DATA && MS_DATA.meta && MS_DATA.meta.snapshot) || '';
+    var m = String(snap).match(/(\d{4})-(\d{2})-(\d{2})/);
+    if (m) return m[2] + '-' + m[3];
+    return '07-22';
+  }
+
+  /** Collect date chips: reviewed days from matches + pending days from today */
+  function collectDayChips(D) {
+    var map = {};
+    (D.matches || []).forEach(function (m) {
+      if (!m.day) return;
+      if (!map[m.day]) map[m.day] = { day: m.day, reviewed: [], pending: [] };
+      map[m.day].reviewed.push(m);
+    });
+    (D.today || []).forEach(function (m) {
+      if (!m.day) return;
+      if (!map[m.day]) map[m.day] = { day: m.day, reviewed: [], pending: [] };
+      map[m.day].pending.push(m);
+    });
+    var todayMd = snapshotTodayMd();
+    return DAY_ORDER.filter(function (d) { return !!map[d]; }).map(function (d) {
+      var row = map[d];
+      var meta = dayMeta(d);
+      var pendingOnly = row.pending.length && !row.reviewed.length;
+      var n = pendingOnly ? row.pending.length : row.reviewed.length;
+      var cover = pendingOnly ? 0 : countRes(row.reviewed, 'r', 'cover');
+      return {
+        day: d,
+        md: meta.md,
+        label: meta.md + ' ' + meta.name,
+        n: n,
+        cover: cover,
+        pending: pendingOnly,
+        isToday: meta.md === todayMd,
+        reviewed: row.reviewed,
+        pendingList: row.pending
+      };
+    });
+  }
+
+  function pendingCard(m) {
+    var grade = m.grade || '观察';
+    var rc = grade === '强势' ? 'hit' : grade === '平稳' ? 'partial' : 'miss';
+    return '<article class="match ' + rc + '" data-grade="' + grade + '" data-day="' + m.day + '" data-league="' + m.league + '" data-search="' +
+      (m.day + m.id + m.home + m.away + m.league).toLowerCase() + '">' +
+      '<div class="match-head">' +
+      '<div class="meta"><span>' + m.day + m.id + '</span><span class="dot"></span><b>' + m.league + '</b>' +
+      (m.time ? '<span>' + m.time + '</span>' : '') +
+      '<span class="tag ' + rc + '">' + grade + '</span>' +
+      '<span class="chip">置信 ' + m.conf + '</span><span class="stamp partial"><span class="ico">·</span>待赛</span></div>' +
+      '<div class="teams-row"><div class="teams"><span class="crest">' + initials(m.home) + '</span>' + m.home +
+      '<span class="score">VS</span>' + m.away + '<span class="crest">' + initials(m.away) + '</span></div></div>' +
+      '<div class="section-label">赛前推演</div>' +
+      '<div class="predline"><span class="chip key">' + m.pick + '</span><span class="chip key">' + m.hc + '</span><span class="chip">' + m.goals + '</span></div>' +
+      '<span class="toggle"></span></div>' +
+      '<div class="detail"><div class="grid2">' +
+      '<div class="box"><h4>模型胜平负</h4>' + probBars(m) + '<p style="margin:8px 0 0;font-size:12px;color:#667">' + (m.summary || '') + '</p></div>' +
+      '<div class="box"><h4>七比分池</h4><div class="scores">' + (m.scores || []).map(function (s, i) {
+        return '<span class="sc ' + (i < 3 ? 'top' : '') + '">' + s + '</span>';
+      }).join('') + '</div></div></div>' +
+      '<div class="grid2">' +
+      '<div class="box"><h4>逐场分析要点</h4><ul>' + (m.analysis || []).map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul></div>' +
+      '<div class="box"><h4>风险点</h4><ul>' + (m.risks || []).map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul></div>' +
+      '</div></div></article>';
+  }
+
+  function renderDateStrip(activeDay) {
+    var D = window.MS_DATA;
+    var el = document.getElementById('dateStrip');
+    if (!el || !D) return;
+    var chips = collectDayChips(D);
+    el.innerHTML = chips.map(function (c) {
+      var bot = c.pending
+        ? ('<span>' + c.n + '场</span>' + (c.isToday ? '<span class="today-tag">今日</span>' : ''))
+        : ('<span>' + c.n + ' 中 ' + c.cover + '</span>');
+      return '<button type="button" class="date-chip' +
+        (c.day === activeDay ? ' active' : '') +
+        (c.pending ? ' pending' : '') +
+        '" data-day="' + c.day + '">' +
+        '<span class="d-top">' + c.label + '</span>' +
+        '<span class="d-bot">' + bot + '</span></button>';
+    }).join('');
+    el.querySelectorAll('.date-chip').forEach(function (b) {
+      b.onclick = function () { selectDay(b.dataset.day); };
+    });
+    // Keep active chip in view
+    var act = el.querySelector('.date-chip.active');
+    if (act && act.scrollIntoView) {
+      try { act.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' }); } catch (e) { /* ignore */ }
+    }
+  }
+
+  function dayConclusions(day, matches) {
+    var cover = countRes(matches, 'r', 'cover');
+    var hit = countRes(matches, 'r', 'hit');
+    var leagues = [];
+    matches.forEach(function (m) {
+      if (leagues.indexOf(m.league) < 0) leagues.push(m.league);
+    });
+    var good = [
+      '胜平负含防守 ' + cover + '/' + matches.length + '（' + pct(cover, matches.length) + '%）',
+      '主选命中 ' + hit + '/' + matches.length,
+      '覆盖赛事：' + leagues.join(' / ')
+    ];
+    var bad = [];
+    var miss = matches.filter(function (m) { return m.res.r === 'miss'; });
+    if (miss.length) {
+      bad.push('未覆盖 ' + miss.length + ' 场，如 ' + miss[0].home + ' vs ' + miss[0].away);
+    }
+    if (pct(hit, matches.length) < 40) bad.push('主选命中偏低，宜看防守双选结构');
+    if (!bad.length) bad.push('样本仅单日切片，勿外推全赛季');
+    return { good: good, bad: bad, sub: dayMeta(day).md + ' ' + day + ' · ' + matches.length + ' 场可核验' };
+  }
+
+  function selectDay(day) {
+    currentDay = day;
+    viewMode = 'day';
+    var D = window.MS_DATA;
+    if (!D) return;
+    renderDateStrip(day);
+    destroyCharts();
+    showWcExtra(null, false);
+    clearExtras();
+
+    var chip = collectDayChips(D).filter(function (c) { return c.day === day; })[0];
+    if (!chip) return;
+
+    var chartH3a = document.querySelector('#boardCharts .chart-box:nth-child(1) h3');
+    var chartH3b = document.querySelector('#boardCharts .chart-box:nth-child(2) h3');
+    var meta = dayMeta(day);
+    var titleBase = meta.md + ' ' + meta.name;
+
+    if (chip.pending) {
+      var list = chip.pendingList;
+      document.getElementById('boardTitle').textContent = titleBase + ' · 待赛推演（' + list.length + '场）';
+      document.getElementById('ruleLine').textContent =
+        '当日场次尚未完赛，以下为赛前推演。完整策略台见「今日推演」。口径：竞彩 90′。';
+      document.getElementById('kpis').innerHTML =
+        '<div class="kpi"><b>' + list.length + '</b><span>待赛场次</span></div>' +
+        '<div class="kpi"><b>' + list.filter(function (m) { return m.grade === '强势'; }).length + '</b><span>强势观察</span></div>' +
+        '<div class="kpi"><b>—</b><span>命中待赛后入库</span></div>';
+      document.getElementById('detailTitle').textContent = titleBase + '推演明细（' + list.length + '）';
+      document.getElementById('boardLegend').innerHTML =
+        '<span><i class="l-hit"></i>强势</span><span><i class="l-partial"></i>平稳</span><span><i class="l-miss"></i>观察</span>';
+      document.getElementById('boardList').innerHTML = list.map(pendingCard).join('');
+      buildBoardFilters('pending');
+      var notice = document.getElementById('boardNotice');
+      if (notice) {
+        notice.hidden = false;
+        notice.innerHTML = chip.isToday
+          ? '今日场次 · 可切换到 <button type="button" class="jump-today" style="font:inherit;font-weight:800;color:#0b7a6c;background:none;border:0;cursor:pointer;text-decoration:underline">今日推演</button> 查看策略台与市场对比。'
+          : '待赛日切片 · 赛果入库后将显示「场次 中 覆盖」命中条。';
+        var jumpBtn = notice.querySelector('.jump-today');
+        if (jumpBtn) {
+          jumpBtn.onclick = function () {
+            if (typeof window.activatePanel === 'function') window.activatePanel('today');
+            else {
+              var tab = document.querySelector('.tab[data-panel="today"]');
+              if (tab) tab.click();
+            }
+          };
+        }
+      }
+      var ribbon = document.getElementById('boardRibbon');
+      if (ribbon) {
+        ribbon.innerHTML = '<strong>' + titleBase + '：</strong>共 <b>' + list.length + '</b> 场待赛推演；' +
+          (chip.isToday ? '标记为今日。' : '') + '命中情况将在完赛复盘后更新。';
+      }
+      setConclusions(titleBase + ' 待赛',
+        ['推演 ' + list.length + ' 场已发布', '详见今日推演策略台'],
+        ['尚未产生可核验命中'],
+        '完赛后自动并入按日期复盘。');
+      if (chartH3a) chartH3a.textContent = titleBase + ' 待赛分布';
+      if (chartH3b) chartH3b.textContent = '联赛构成';
+      var byL = {};
+      list.forEach(function (m) { byL[m.league] = (byL[m.league] || 0) + 1; });
+      var labs = Object.keys(byL);
+      paintBar(labs, labs.map(function (k) { return pct(byL[k], list.length); }), COLORS);
+      if (typeof Chart !== 'undefined') {
+        var cv = document.getElementById('chartLeague');
+        var gStrong = list.filter(function (m) { return m.grade === '强势'; }).length;
+        var gMid = list.filter(function (m) { return m.grade === '平稳'; }).length;
+        var gWatch = list.length - gStrong - gMid;
+        chartSide = new Chart(cv, {
+          type: 'doughnut',
+          data: {
+            labels: ['强势', '平稳', '观察'],
+            datasets: [{ data: [gStrong, gMid, gWatch], backgroundColor: ['#1f9a62', '#e0a01e', '#8a969e'] }]
+          },
+          options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+        });
+      }
+      return;
+    }
+
+    // Reviewed day
+    var matches = chip.reviewed;
+    var kpis = leagueKpis(matches);
+    document.getElementById('boardTitle').textContent = titleBase + ' · 命中审计（' + matches.length + '场）';
+    document.getElementById('ruleLine').textContent =
+      '按比赛日期汇总全赛事样本；命中条口径为「场次数 中 胜平负含防守」。竞彩 90′。';
+    document.getElementById('kpis').innerHTML = kpis.map(hitbar).join('');
+    document.getElementById('detailTitle').textContent = titleBase + '逐场明细（' + matches.length + '）';
+    document.getElementById('boardLegend').innerHTML =
+      '<span><i class="l-hit"></i>主选命中</span><span><i class="l-partial"></i>防守命中</span><span><i class="l-miss"></i>未覆盖</span>';
+    document.getElementById('boardList').innerHTML = matches.map(reviewCard).join('');
+    buildBoardFilters('day');
+    renderLeagueExtras(titleBase, matches, kpis);
+    var concl = dayConclusions(day, matches);
+    setConclusions(titleBase + ' 结论', concl.good, concl.bad, concl.sub);
+    if (chartH3a) chartH3a.textContent = titleBase + ' 分层命中率';
+    if (chartH3b) chartH3b.textContent = titleBase + ' 胜平负结构';
+    paintBar(kpis.map(function (k) { return k.label; }), kpis.map(function (k) { return k.pct; }), kpis.map(function (k) { return k.color; }));
+    if (typeof Chart !== 'undefined') {
+      var cv2 = document.getElementById('chartLeague');
+      var rHit = countRes(matches, 'r', 'hit');
+      var rCover = countRes(matches, 'r', 'cover') - rHit;
+      var rMiss = matches.length - countRes(matches, 'r', 'cover');
+      chartSide = new Chart(cv2, {
+        type: 'doughnut',
+        data: {
+          labels: ['主选命中', '防守命中', '未覆盖'],
+          datasets: [{ data: [rHit, rCover, rMiss], backgroundColor: ['#1f9a62', '#e0a01e', '#d4544c'] }]
+        },
+        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+      });
+    }
+  }
+
+  function setViewMode(mode) {
+    viewMode = mode;
+    var leagueBlock = document.getElementById('leagueViewBlock');
+    var dayBlock = document.getElementById('dayViewBlock');
+    if (leagueBlock) leagueBlock.hidden = mode !== 'league';
+    if (dayBlock) dayBlock.hidden = mode !== 'day';
+    document.querySelectorAll('#viewModes .view-mode').forEach(function (b) {
+      b.classList.toggle('active', b.dataset.mode === mode);
+    });
+    if (mode === 'day') {
+      var D = window.MS_DATA;
+      var chips = collectDayChips(D);
+      var todayChip = chips.filter(function (c) { return c.isToday; })[0];
+      var pick = todayChip || chips[chips.length - 1];
+      if (pick) selectDay(pick.day);
+    } else {
+      var notice = document.getElementById('boardNotice');
+      if (notice && current !== '世界杯') notice.hidden = true;
+      selectBoard(current === 'round' ? '世界杯' : current);
+    }
+  }
+
   function renderOverview(activeId) {
     var D = window.MS_DATA;
     var W = window.WC86_DATA;
@@ -455,6 +725,14 @@
 
   function selectBoard(id) {
     current = id;
+    viewMode = 'league';
+    var leagueBlock = document.getElementById('leagueViewBlock');
+    var dayBlock = document.getElementById('dayViewBlock');
+    if (leagueBlock) leagueBlock.hidden = false;
+    if (dayBlock) dayBlock.hidden = true;
+    document.querySelectorAll('#viewModes .view-mode').forEach(function (b) {
+      b.classList.toggle('active', b.dataset.mode === 'league');
+    });
     var D = window.MS_DATA;
     var W = window.WC86_DATA;
     document.querySelectorAll('#compSwitch .comp').forEach(function (b) {
@@ -512,8 +790,8 @@
     buildBoardFilters('league');
     renderLeagueExtras(id, matches, kpis);
 
-    var note = LEAGUE_NOTES[id] || { good: ['见上表分层命中'], bad: ['样本较小，仅供结构研究'] };
-    setConclusions(id + ' 结论', note.good, note.bad, '共 ' + matches.length + ' 场可核验复盘。');
+    var note2 = LEAGUE_NOTES[id] || { good: ['见上表分层命中'], bad: ['样本较小，仅供结构研究'] };
+    setConclusions(id + ' 结论', note2.good, note2.bad, '共 ' + matches.length + ' 场可核验复盘。');
     if (chartH3a) chartH3a.textContent = id + ' 分层命中率';
     if (chartH3b) chartH3b.textContent = id + ' 胜平负结构';
     paintBar(kpis.map(function (k) { return k.label; }), kpis.map(function (k) { return k.pct; }), kpis.map(function (k) { return k.color; }));
@@ -553,6 +831,25 @@
         '<button class="filter" data-f="pool" type="button">比分池</button>' +
         '<button class="filter" data-f="dir" type="button">方向</button>' +
         '<button class="filter" data-f="miss" type="button">未中</button>' + bulk;
+    } else if (mode === 'pending') {
+      wrap.innerHTML =
+        '<button class="filter active" data-f="all" type="button">全部</button>' +
+        '<button class="filter" data-f="强势" type="button">强势</button>' +
+        '<button class="filter" data-f="平稳" type="button">平稳</button>' +
+        '<button class="filter" data-f="观察" type="button">观察</button>' + bulk;
+    } else if (mode === 'day') {
+      wrap.innerHTML =
+        '<button class="filter active" data-f="all" type="button">全部</button>' +
+        '<button class="filter" data-f="hit" type="button">主选命中</button>' +
+        '<button class="filter" data-f="partial" type="button">防守命中</button>' +
+        '<button class="filter" data-f="miss" type="button">未覆盖</button>' +
+        '<button class="filter" data-f="韩职" type="button">韩职</button>' +
+        '<button class="filter" data-f="挪超" type="button">挪超</button>' +
+        '<button class="filter" data-f="芬超" type="button">芬超</button>' +
+        '<button class="filter" data-f="瑞超" type="button">瑞超</button>' +
+        '<button class="filter" data-f="巴甲" type="button">巴甲</button>' +
+        '<button class="filter" data-f="欧冠" type="button">欧冠</button>' +
+        '<button class="filter" data-f="世界杯" type="button">世界杯</button>' + bulk;
     } else {
       wrap.innerHTML =
         '<button class="filter active" data-f="all" type="button">全部</button>' +
@@ -572,6 +869,11 @@
         if (mode === 'wc' || mode === 'wc-mixed') {
           if (f === 'core' || f === 'pool' || f === 'dir' || f === 'miss') ok = card.dataset.status === f;
           else if (f !== 'all') ok = card.dataset.stage === f;
+        } else if (mode === 'pending') {
+          if (f !== 'all') ok = card.dataset.grade === f;
+        } else if (mode === 'day') {
+          if (f === 'hit' || f === 'partial' || f === 'miss') ok = card.dataset.state === f;
+          else if (f !== 'all') ok = card.dataset.league === f;
         } else {
           if (f === 'hit' || f === 'partial' || f === 'miss') ok = card.dataset.state === f;
           else if (f === '周六' || f === '周日' || f === '周一' || f === '周二') ok = card.dataset.day === f;
@@ -626,9 +928,17 @@
     wrap.querySelectorAll('.comp').forEach(function (b) {
       b.onclick = function () { selectBoard(b.dataset.comp); };
     });
+
+    var modes = document.getElementById('viewModes');
+    if (modes) {
+      modes.querySelectorAll('.view-mode').forEach(function (b) {
+        b.onclick = function () { setViewMode(b.dataset.mode); };
+      });
+    }
+
     renderDeskPulse();
     selectBoard('世界杯');
   }
 
-  window.MS_ReviewBoards = { init: init, select: selectBoard };
+  window.MS_ReviewBoards = { init: init, select: selectBoard, selectDay: selectDay, setViewMode: setViewMode };
 })();

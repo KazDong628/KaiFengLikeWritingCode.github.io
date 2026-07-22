@@ -243,6 +243,44 @@ button,input{font:inherit}a{color:#0b6b5f}
 }
 .comp b{display:block;font-size:14px;font-weight:800}
 .comp span{display:block;margin-top:3px;font-size:11px;opacity:.8}
+
+.view-modes{display:flex;gap:8px;margin:4px 0 10px;flex-wrap:wrap}
+.view-mode{
+  border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;
+  font:inherit;font-size:13px;font-weight:800;color:#445;cursor:pointer;transition:.15s;
+}
+.view-mode:hover{border-color:#9ec9c1}
+.view-mode.active{background:#0b7a6c;color:#fff;border-color:transparent}
+
+.date-strip-wrap{margin-top:10px}
+.date-strip-label{font-size:12px;font-weight:800;color:#0b5c52;margin-bottom:8px}
+.date-strip{
+  display:flex;gap:10px;overflow-x:auto;padding:4px 2px 10px;scroll-snap-type:x proximity;
+  -webkit-overflow-scrolling:touch;
+}
+.date-strip::-webkit-scrollbar{height:6px}
+.date-strip::-webkit-scrollbar-thumb{background:#c5d0d6;border-radius:99px}
+.date-chip{
+  flex:0 0 auto;min-width:118px;scroll-snap-align:start;
+  border:1px solid #e3eaee;background:#fff;border-radius:12px;padding:12px 14px;
+  cursor:pointer;text-align:left;font:inherit;transition:.15s;
+}
+.date-chip:hover{border-color:#9ec9c1;transform:translateY(-1px)}
+.date-chip .d-top{display:block;font-size:14px;font-weight:800;color:#1a2a33;white-space:nowrap}
+.date-chip .d-bot{
+  display:flex;align-items:center;gap:6px;margin-top:6px;font-size:12px;color:#8a969e;font-weight:700;
+}
+.date-chip.active{
+  background:#e8f6ef;border-color:#b7e0cb;
+}
+.date-chip.active .d-top,.date-chip.active .d-bot{color:#1f6b4a}
+.date-chip .today-tag{
+  display:inline-flex;align-items:center;padding:2px 7px;border-radius:999px;
+  background:#d8f0e4;color:#1f6b4a;font-size:11px;font-weight:800;
+}
+.date-chip.pending .d-bot{color:#6a7a84}
+.date-chip.active.pending .d-bot{color:#1f6b4a}
+
 .type-overview{
   display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:12px 0 14px;
 }
@@ -514,7 +552,7 @@ button,input{font:inherit}a{color:#0b6b5f}
       <a id="aTerms" href="terms/">免责声明</a> · <a id="aPrivacy" href="privacy/">隐私说明</a> · <a id="aAbout" href="about/">关于产品</a>
     </div>
     <div class="nav" role="tablist">
-      <button class="tab active" data-panel="dash" type="button"><b>复盘看板</b><span>按赛事分类 · 明细一体</span></button>
+      <button class="tab active" data-panel="dash" type="button"><b>复盘看板</b><span>按赛事 / 按日期</span></button>
       <button class="tab" data-panel="today" type="button"><b>今日推演</b><span>策略台 · 12场</span></button>
       <button class="tab" data-panel="rank" type="button"><b>优先级</b><span>串关观察 · 热度风险</span></button>
       <button class="tab" data-panel="method" type="button"><b>方法迭代</b><span>问题 · 下一步</span></button>
@@ -524,10 +562,22 @@ button,input{font:inherit}a{color:#0b6b5f}
   <section class="panel active" id="dash">
     <div class="desk-pulse" id="deskPulse"></div>
     <div class="card">
-      <h2>复盘看板 · 按赛事分类</h2>
-      <p class="sub">研究台覆盖 <strong>2026世界杯</strong> 与联赛样本（韩职 / 挪超 / 芬超 / 瑞超 / 巴甲 / 欧冠 / 美职等）。先看全局脉冲与类型命中一览，再切入单一赛事的 KPI、亮点场次与逐场明细。复盘 KPI 仍为<strong>周二7场</strong>；本轮推演为周三/周四12场。</p>
-      <div class="type-overview" id="typeOverview"></div>
-      <div class="comp-switch" id="compSwitch"></div>
+      <h2>复盘看板</h2>
+      <p class="sub">可按<strong>赛事类型</strong>或<strong>比赛日期</strong>查看命中情况。日期条显示「场次数 中 有效覆盖」；今日场次显示待赛数量。口径：竞彩 90′。</p>
+      <div class="view-modes" id="viewModes">
+        <button type="button" class="view-mode active" data-mode="league">按赛事类型</button>
+        <button type="button" class="view-mode" data-mode="day">按比赛日期</button>
+      </div>
+      <div id="leagueViewBlock">
+        <div class="type-overview" id="typeOverview"></div>
+        <div class="comp-switch" id="compSwitch"></div>
+      </div>
+      <div id="dayViewBlock" hidden>
+        <div class="date-strip-wrap">
+          <div class="date-strip-label">按日期切换 · 横向滑动查看更多</div>
+          <div class="date-strip" id="dateStrip"></div>
+        </div>
+      </div>
     </div>
 
     <div class="card" style="margin-top:14px">
@@ -978,6 +1028,7 @@ function activatePanel(id){
   if(panel) panel.classList.add('active');
   if(id==='today') paintTodayCharts();
 }
+window.activatePanel = activatePanel;
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>activatePanel(t.dataset.panel));
 
 
