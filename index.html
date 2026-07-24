@@ -553,7 +553,7 @@ button,input{font:inherit}a{color:#0b6b5f}
     </div>
     <div class="nav" role="tablist">
       <button class="tab active" data-panel="dash" type="button"><b>复盘看板</b><span>按赛事 / 按日期</span></button>
-      <button class="tab" data-panel="today" type="button"><b>今日推演</b><span>策略台 · 周五2场</span></button>
+      <button class="tab" data-panel="today" type="button"><b>今日推演</b><span>策略台 · 8场</span></button>
       <button class="tab" data-panel="rank" type="button"><b>优先级</b><span>串关观察 · 热度风险</span></button>
       <button class="tab" data-panel="method" type="button"><b>方法迭代</b><span>问题 · 下一步</span></button>
     </div>
@@ -829,6 +829,8 @@ function buildFilters(wrapId,listId,mode){
     <button class="bulk collapse" type="button" data-bulk="close">一键收起</button>`;
   wrap.innerHTML=`<button class="filter active" data-f="all" type="button">全部 ${n||''}</button>
       <button class="filter" data-f="周五" type="button">周五</button>
+      <button class="filter" data-f="周六" type="button">周六</button>
+      <button class="filter" data-f="周日" type="button">周日</button>
       <button class="filter" data-f="强势" type="button">强势</button>
       <button class="filter" data-f="平稳" type="button">平稳</button>
       <button class="filter" data-f="观察" type="button">观察</button>
@@ -839,7 +841,7 @@ function buildFilters(wrapId,listId,mode){
     const q=(wrap.querySelector('.search').value||'').toLowerCase();
     document.querySelectorAll(`#${listId} .match`).forEach(card=>{
       let ok=true;
-      if(f==='周五') ok=card.dataset.day===f;
+      if(f==='周五'||f==='周六'||f==='周日') ok=card.dataset.day===f;
       else if(f!=='all') ok=card.dataset.grade===f;
       if(q && !card.dataset.search.toLowerCase().includes(q)) ok=false;
       card.style.display=ok?'':'none';
@@ -854,7 +856,7 @@ if(window.MS_ReviewBoards) window.MS_ReviewBoards.init();
 
 document.getElementById('todayBrief').innerHTML =
   (D.today && D.today.length)
-    ? '<b>本轮研究焦点</b><p>周四7场已入库（七比分 <strong>6/7</strong>，主要策略 <strong>4/7</strong>；最大错误圣加仑爆冷，最大矛盾哈伊杜克/贝西克塔斯让球单选）。现仅剩周五 <strong>2场</strong>：雅罗+1让胜、韦斯特罗斯主胜。仅供结构研究，不输出购彩指令。</p>'
+    ? '<b>本轮研究焦点</b><p>迭代框架下的 <strong>8场</strong>（周五2 + 周六韩职2 + 周日韩职4）。七比分1—7全量映射；韩职高平局场以<strong>受让保护</strong>为主，仅<strong>韦斯特罗斯主胜</strong>适合单选。策略台含排序与组合参考。仅供结构研究，不输出购彩指令。</p>'
     : '<b>今日推演待更新</b><p>复盘已入库。新一轮预测稍后填充。</p>';
 
 function todayMatchKey(t){ return String(t.day||'') + String(t.id); }
