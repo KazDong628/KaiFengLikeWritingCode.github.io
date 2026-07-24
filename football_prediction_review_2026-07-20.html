@@ -553,7 +553,7 @@ button,input{font:inherit}a{color:#0b6b5f}
     </div>
     <div class="nav" role="tablist">
       <button class="tab active" data-panel="dash" type="button"><b>复盘看板</b><span>按赛事 / 按日期</span></button>
-      <button class="tab" data-panel="today" type="button"><b>今日推演</b><span>策略台 · 12场</span></button>
+      <button class="tab" data-panel="today" type="button"><b>今日推演</b><span>策略台 · 周五2场</span></button>
       <button class="tab" data-panel="rank" type="button"><b>优先级</b><span>串关观察 · 热度风险</span></button>
       <button class="tab" data-panel="method" type="button"><b>方法迭代</b><span>问题 · 下一步</span></button>
     </div>
@@ -671,12 +671,12 @@ button,input{font:inherit}a{color:#0b6b5f}
   <section class="panel" id="method">
     <div class="card">
       <h2>模型迭代结论</h2>
-      <p class="sub">周二复盘后核心：限制低概率单选，让球反向约束普通赛果，补齐高低尾与联合分布一致性。</p>
+      <p class="sub">周四7场复盘后核心：场景覆盖已强于投注排序；优先修复比分池→让球硬联动，并单独建模欧战首回合冷门。</p>
       <div class="kpi-grid">
-        <div class="kpi"><b>01</b><span>单选门控：最高概率&lt;48%禁止单胆；一二差&lt;12pt强制双选；平≥29%须进入主要方向</span></div>
-        <div class="kpi"><b>02</b><span>让球联动：-1让负≥57%禁止主胜单选；+1让胜≥57%须标受让不败；冲突自动降置信度</span></div>
-        <div class="kpi"><b>03</b><span>总球三状态：封闭(0-1) / 常规 / 崩溃(4+)；平局高且进攻弱时优先0—2球并纳入0-0</span></div>
-        <div class="kpi"><b>04</b><span>欧战节奏差与防线崩溃模块；首回合抬1-0；防负式三覆盖不计有效防守命中</span></div>
+        <div class="kpi"><b>01</b><span>硬一致性：1-0/2-1累计高必须含让平；2-0进前三禁止单选让负；0-0入池总球必须覆盖0球</span></div>
+        <div class="kpi"><b>02</b><span>欧战首回合：高知名度客胜原则上≤62—65%；至少保留一个主胜尾部；慢热/轮换/先丢控速四状态</span></div>
+        <div class="kpi"><b>03</b><span>让球单选门槛：≥55%且差≥12pt，且七比分前三全部支持该方向，否则双选/回避</span></div>
+        <div class="kpi"><b>04</b><span>低比分门控：平≥26% + 让负第一 + 一球差集中 → 总球切0—2；主胜&lt;58%且客胜入池不得只推主胜/平</span></div>
       </div>
     </div>
     <div class="card" style="margin-top:14px">
@@ -828,8 +828,7 @@ function buildFilters(wrapId,listId,mode){
     <button class="bulk expand" type="button" data-bulk="open">一键展开</button>
     <button class="bulk collapse" type="button" data-bulk="close">一键收起</button>`;
   wrap.innerHTML=`<button class="filter active" data-f="all" type="button">全部 ${n||''}</button>
-      <button class="filter" data-f="周三" type="button">周三</button>
-      <button class="filter" data-f="周四" type="button">周四</button>
+      <button class="filter" data-f="周五" type="button">周五</button>
       <button class="filter" data-f="强势" type="button">强势</button>
       <button class="filter" data-f="平稳" type="button">平稳</button>
       <button class="filter" data-f="观察" type="button">观察</button>
@@ -840,7 +839,7 @@ function buildFilters(wrapId,listId,mode){
     const q=(wrap.querySelector('.search').value||'').toLowerCase();
     document.querySelectorAll(`#${listId} .match`).forEach(card=>{
       let ok=true;
-      if(f==='周三'||f==='周四') ok=card.dataset.day===f;
+      if(f==='周五') ok=card.dataset.day===f;
       else if(f!=='all') ok=card.dataset.grade===f;
       if(q && !card.dataset.search.toLowerCase().includes(q)) ok=false;
       card.style.display=ok?'':'none';
@@ -855,7 +854,7 @@ if(window.MS_ReviewBoards) window.MS_ReviewBoards.init();
 
 document.getElementById('todayBrief').innerHTML =
   (D.today && D.today.length)
-    ? '<b>本轮研究焦点</b><p>迭代框架下的 <strong>12场</strong>（周三10 + 周四2）。最高概率&lt;48%或一二差&lt;12pt一律双选/回避。下方策略台含推荐总表与仓位规则；先看策略，再点场次读推演。仅供结构研究，不输出购彩指令。</p>'
+    ? '<b>本轮研究焦点</b><p>周四7场已入库（七比分 <strong>6/7</strong>，主要策略 <strong>4/7</strong>；最大错误圣加仑爆冷，最大矛盾哈伊杜克/贝西克塔斯让球单选）。现仅剩周五 <strong>2场</strong>：雅罗+1让胜、韦斯特罗斯主胜。仅供结构研究，不输出购彩指令。</p>'
     : '<b>今日推演待更新</b><p>复盘已入库。新一轮预测稍后填充。</p>';
 
 function todayMatchKey(t){ return String(t.day||'') + String(t.id); }

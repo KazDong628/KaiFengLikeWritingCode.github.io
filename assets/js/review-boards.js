@@ -9,7 +9,7 @@
 
   /** Weekday label → calendar stamp (aligned with 2026-07 snapshot) */
   var DAY_META = {
-    '周五': { md: '07-17', name: '周五' },
+    '周五': { md: '07-24', name: '周五' },
     '周六': { md: '07-18', name: '周六' },
     '周日': { md: '07-19', name: '周日' },
     '周一': { md: '07-20', name: '周一' },
@@ -17,16 +17,16 @@
     '周三': { md: '07-22', name: '周三' },
     '周四': { md: '07-23', name: '周四' }
   };
-  var DAY_ORDER = ['周五', '周六', '周日', '周一', '周二', '周三', '周四'];
+  var DAY_ORDER = ['周六', '周日', '周一', '周二', '周三', '周四', '周五'];
 
   var LEAGUE_NOTES = {
     '韩职': {
-      good: ['周二让球强：全北/蔚山-1与济州+1均中', '防平覆盖有效（济州1-1、全北0-0）', '过热标签对全北有效'],
-      bad: ['普通主选偏弱；蔚山内部冲突（-1让负59%仍推主胜）', '全北平局情景未纳入0-0', '低概率场次仍被包装成单选']
+      good: ['周三光州1-1完整：防平/+1让胜/1-1第2', '首尔主胜方向兑现', '富川+1覆盖安养一球小胜'],
+      bad: ['首尔3-1：低比分先验过重，漏3-1/让胜', '富川2-3：高平局误判成低节奏，漏5球开放', '总球与开放状态拆分不足']
     },
     '挪超': {
-      good: ['普通胜平负主选 4/6', '莫尔德过热反例兑现', '维京主胜与 -2 防守拆分正确'],
-      bad: ['让球净胜幅度不稳定', '开放局尾部进球（如汉坎 1-4）', '过热热门仍需保留平局']
+      good: ['博德3-0本轮最佳：-2让胜+精确比分第一', '利勒1-2维京：过热下调与+1让平覆盖', '强弱崩盘尾部模型有效'],
+      bad: ['普通净胜幅度仍须防让平', '开放局总球偶发低估']
     },
     '芬超': {
       good: ['周一玛丽港 0-2 拉赫蒂完整命中', '总进球防守（含防4球）可用', '让负在轻优势 / 客胜清晰局更稳'],
@@ -37,12 +37,20 @@
       bad: ['周一客胜单选与开放球数误判', '高平局+双方进球须强制纳入 2-2', '低位封锁场景须抬 0-0 / 压低 3+ 球']
     },
     '巴甲': {
-      good: ['米竞技1-1：防平/让负/低比分/1-1第2位完整', '正确识别创造点缺阵压低净胜', '让负核心方向清晰'],
-      bad: ['主胜43%仍写成明确主胜，宜改为胜/平', '样本仅1场']
+      good: ['科林蒂安3-0：主胜/让胜/总球/池内完整', '博塔弗戈-1让负与防平正确', '弗拉门戈客胜方向（周三）仍可复用'],
+      bad: ['博塔弗戈0-0：池含0-0但总球未覆盖', '圣保罗主胜锚定（周三）', '低节奏局须触发0—2门控']
+    },
+    '美职': {
+      good: ['洛杉矶3-1：胜/平与总球/池内覆盖', '迈阿密开放局总球与3-2入池判断有效'],
+      bad: ['迈阿密-1让负：比分矩阵与投注输出硬冲突', '高权重让平情景不得单选让负', '盐湖城黑马权重可再降']
+    },
+    '欧罗巴': {
+      good: ['哈马比1-1：精确比分+让负本轮最佳', '特温特-1让负覆盖客胜', '七比分场景生成整体偏强'],
+      bad: ['圣加仑2-1本菲卡：豪门首回合冷门零覆盖', '哈伊杜克/贝西克塔斯：池内比分与让球单选矛盾', '资格赛客胜须封顶并留主胜尾部']
     },
     '欧冠': {
-      good: ['萨巴赫主胜+1-0场景正确', '格风暴主胜方向正确且防4球命中', '让球整体识别强队难穿盘'],
-      bad: ['奥胡斯1-4：节奏差/欧战经验严重低估', '格风暴净胜幅度与崩溃尾部不足', '首回合总球易偏高']
+      good: ['奥莫尼亚1-0：首回合控险与1-0前三命中', '萨巴赫主胜+1-0场景正确', '资格赛一球差权重有效'],
+      bad: ['奥胡斯1-4节奏差低估（周二）', '首回合总球偶发偏高']
     },
     '世界杯': {
       good: ['决赛 90 分钟防平命中', '让球两端均覆盖', '七比分池覆盖决赛 0-0'],
@@ -323,7 +331,9 @@
       { id: '芬超', label: '芬超' },
       { id: '瑞超', label: '瑞超' },
       { id: '巴甲', label: '巴甲' },
-      { id: '欧冠', label: '欧冠' }
+      { id: '欧冠', label: '欧冠' },
+      { id: '美职', label: '美职' },
+      { id: '欧罗巴', label: '欧罗巴' }
     ];
     return types.map(function (t) {
       if (t.id === '世界杯') {
@@ -358,7 +368,7 @@
     var leagueN = D.matches.filter(function (m) { return m.league !== '世界杯'; }).length;
     var wcN = 86 + roundWcMatches(D).length;
     var cover22 = countRes(D.matches, 'r', 'cover');
-    var leagueTypes = ['韩职', '挪超', '芬超', '瑞超', '巴甲', '欧冠'].filter(function (L) {
+    var leagueTypes = ['韩职', '挪超', '芬超', '瑞超', '巴甲', '欧冠', '美职', '欧罗巴'].filter(function (L) {
       return D.matches.some(function (m) { return m.league === L; });
     });
     el.innerHTML =
@@ -1066,6 +1076,8 @@
         '<button class="filter" data-f="挪超" type="button">挪超</button>' +
         '<button class="filter" data-f="芬超" type="button">芬超</button>' +
         '<button class="filter" data-f="瑞超" type="button">瑞超</button>' +
+        '<button class="filter" data-f="美职" type="button">美职</button>' +
+        '<button class="filter" data-f="欧罗巴" type="button">欧罗巴</button>' +
         '<button class="filter" data-f="世界杯" type="button">世界杯</button>' + bulk;
     } else if (mode === 'day') {
       wrap.innerHTML =
@@ -1079,6 +1091,8 @@
         '<button class="filter" data-f="瑞超" type="button">瑞超</button>' +
         '<button class="filter" data-f="巴甲" type="button">巴甲</button>' +
         '<button class="filter" data-f="欧冠" type="button">欧冠</button>' +
+        '<button class="filter" data-f="美职" type="button">美职</button>' +
+        '<button class="filter" data-f="欧罗巴" type="button">欧罗巴</button>' +
         '<button class="filter" data-f="世界杯" type="button">世界杯</button>' + bulk;
     } else {
       wrap.innerHTML =
@@ -1153,7 +1167,9 @@
       { id: '芬超', label: '芬超', sub: D.matches.filter(function (m) { return m.league === '芬超'; }).length + '场' },
       { id: '瑞超', label: '瑞超', sub: D.matches.filter(function (m) { return m.league === '瑞超'; }).length + '场' },
       { id: '巴甲', label: '巴甲', sub: D.matches.filter(function (m) { return m.league === '巴甲'; }).length + '场' },
-      { id: '欧冠', label: '欧冠', sub: D.matches.filter(function (m) { return m.league === '欧冠'; }).length + '场' }
+      { id: '欧冠', label: '欧冠', sub: D.matches.filter(function (m) { return m.league === '欧冠'; }).length + '场' },
+      { id: '美职', label: '美职', sub: D.matches.filter(function (m) { return m.league === '美职'; }).length + '场' },
+      { id: '欧罗巴', label: '欧罗巴', sub: D.matches.filter(function (m) { return m.league === '欧罗巴'; }).length + '场' }
     ].filter(function (c) {
       if (c.id === '世界杯') return true;
       return D.matches.some(function (m) { return m.league === c.id; });
